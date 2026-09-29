@@ -46,3 +46,6 @@ jobs:
         env:
           UV_PYTHON_DOWNLOADS: never
         run: uv sync --frozen --no-install-project && uv run --no-sync python check_fixtures.py
+      - name: Supplier name matching cases, and the AI server's name keys against the pipeline's
+        working-directory: pipeline
+        run: uv run --no-sync python check_matching.py
