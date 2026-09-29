@@ -17,10 +17,10 @@ Generated 2026-09-29 by `pipeline/suppliers.py`. A supplier page groups every re
 ## Counts
 
 - Name keys (names after the same-name step): 14,299.
-- Suppliers after joining: 13,605.
-- Name keys folded into another: 694 (341 business number, 195 same name, 68 bilingual, 40 unit, 28 postal code, 19 reviewed, 3 same award).
-- Names printed more than one way (same name once spelling is set aside): 3,091, listed in `docs/supplier-merges.csv` with their other printings.
-- Close names left apart: 2,746 (`docs/supplier-near-matches.csv`).
+- Suppliers after joining: 13,604.
+- Name keys folded into another: 695 (341 business number, 196 same name, 68 bilingual, 40 unit, 28 postal code, 19 reviewed, 3 same award).
+- Names printed more than one way (same name once spelling is set aside): 3,090, listed in `docs/supplier-merges.csv` with their other printings.
+- Close names left apart: 2,724 (`docs/supplier-near-matches.csv`).
 - Joins stopped by a reviewed "apart" decision: 0.
 
 ## Largest merges by value
@@ -29,7 +29,7 @@ Generated 2026-09-29 by `pipeline/suppliers.py`. A supplier page groups every re
 |---|---|---:|---:|---|
 | Government of Newfoundland and Labrador | Province of Newfoundland and Labrador; Government of Newfoundland and Labrador - Department of Health and Community Services; GOVERNMENT OF NEWFOUNDLAND AND LABRADOR NEWFOUNDLAND EXCHEQUER ACCOUNT; NEWFOUNDLAND EXCHEQUER ACCOUNT; and 11 more | 377 | $1,574,416,940 | bilingual, reviewed, same name, unit |
 | Nunatsiavut Government | Nunatsiavut Government, Department of Health & Social Development; Nunatsiavut Government - Department of Health and Social Development (DHSD); NUNATISIAVUT GOVERNMENT; gouvernement nunatsiavut; and 2 more | 249 | $1,234,153,321 | bilingual, postal code, unit |
-| Memorial University of Newfoundland | Memorial University; Grenfell Campus, Memorial University of Newfoundland; Memorial University of Newfoundland and Labrador; Memorial University of Newfoundland Fisheries and Marine Institute; and 13 more | 836 | $367,960,204 | bilingual, business number, same name, unit |
+| Memorial University of Newfoundland | Memorial University; Grenfell Campus, Memorial University of Newfoundland; Memorial University of Newfoundland and Labrador; Fisheries & Marine Institute of Memorial University of Nfld.; and 16 more | 869 | $383,775,828 | bilingual, business number, same name, unit |
 | Mushuau Innu First Nation | Mushuau Innu First Nation Innu Band Council | 84 | $294,478,295 | business number |
 | St. John's Dockyard | NEWDOCK - ST. JOHN'S DOCKYARD LTD | 67 | $252,102,485 | reviewed |
 | Sheshatshiu Innu First Nation | Sheshatshiu Innu Band Council; premiere nation innue sheshatshiu | 115 | $224,746,961 | bilingual, reviewed |
@@ -58,12 +58,10 @@ Generated 2026-09-29 by `pipeline/suppliers.py`. A supplier page groups every re
 | Name | Other name | Why not joined |
 |---|---|---|
 | NEWFOUNDLAND AND LABRADOR DEPARTMENT OF JUSTICE AND PUBLIC SAFETY ($46,374,110) | Province of Newfoundland and Labrador, Department of Justice and Public Safety ($27,253,603) | one name inside the other (often a parent and its subsidiary or branch) |
-| Fisheries & Marine Institute of Memorial University of Nfld. ($14,594,248) | Memorial University of Newfoundland ($540,169,119) | same business number, different names (a parent body's number, or an owner's) |
 | GE Healthcare ($10,009,005) | GE Healthcare Canada ($31,793,963) | one name inside the other (often a parent and its subsidiary or branch) |
 | Newfoundland and Labrador Association of Technology and Innovation Inc. ($84,136,752) | Newfoundland and Labrador Association of Technology Industries Incorporated ($9,977,876) | same business number, different names (a parent body's number, or an owner's) |
 | Department of Industry, Energy and Technology ($9,194,653) | Government of Newfoundland and Labrador ($1,922,715,201) | same business number, different names (a parent body's number, or an owner's) |
 | Department of Industry, Energy and Technology ($9,194,653) | Province of Newfoundland and Labrador ($5,643,235,971) | same business number, different names (a parent body's number, or an owner's) |
-| Fisheries & Marine Institute of Memorial University of Nfld. ($14,594,248) | Memorial University ($8,142,667) | same business number, different names (a parent body's number, or an owner's) |
 | Department of Industry, Energy and Technology ($9,194,653) | Department of Tourism Culture Arts and Recreation ($7,008,090) | same business number, different names (a parent body's number, or an owner's) |
 | Department of Tourism Culture Arts and Recreation ($7,008,090) | Government of Newfoundland and Labrador ($1,922,715,201) | same business number, different names (a parent body's number, or an owner's) |
 | Department of Tourism Culture Arts and Recreation ($7,008,090) | Province of Newfoundland and Labrador ($5,643,235,971) | same business number, different names (a parent body's number, or an owner's) |
@@ -87,5 +85,7 @@ Generated 2026-09-29 by `pipeline/suppliers.py`. A supplier page groups every re
 | The Excite Corporation Inc. ($3,145,609) | Town of Grand Falls-Windsor ($57,319,038) | same business number, different names (a parent body's number, or an owner's) |
 | NEWFOUNDLAND AND LABRADOR DEPARTMENT OF JUSTICE AND PUBLIC SAFETY ($46,374,110) | Newfoundland & Labrador Justice and Public Safety ($3,100,253) | one name inside the other (often a parent and its subsidiary or branch) |
 | Newfoundland & Labrador Justice and Public Safety ($3,100,253) | Province of Newfoundland and Labrador, Department of Justice and Public Safety ($27,253,603) | one name inside the other (often a parent and its subsidiary or branch) |
+| Bluedrop ISM Limited ($3,075,000) | Bluedrop Performance Learning Inc. ($14,278,677) | same business number, different names (a parent body's number, or an owner's) |
+| Fédération des francophones de Terre-Neuve et du Labrador ($8,260,814) | Fédération des francophones de Terre-Neuve-et-Labrador Inc ($2,695,925) | one name inside the other (often a parent and its subsidiary or branch) |
 
 Every merge, with its evidence: `docs/supplier-merges.csv`.
