@@ -73,7 +73,7 @@ export function searchPage({ params, result, flags, page }) {
   ${empty ? html`<p class="lede">Try one of these:</p><ul class="chips">${examples.map((e) => `<li><a href="/search/?q=${encodeURIComponent(e)}">${esc(e)}</a></li>`)}</ul>
     <p class="muted">Search looks in supplier and recipient names, people's names as published, descriptions, programs and places. Words match the start of words: <em>snow</em> finds snowplow. Records containing every word come first; records close in meaning follow them, and a misspelled name is corrected when nothing matches.</p>`
     : html`${corrected ? html`<p class="small" role="status">No record contains <strong>${esc(p.q)}</strong>. Showing records for <strong>${esc(corrected.q)}</strong>.</p>` : ""}
-      ${items.length ? html`<p class="small muted" aria-live="polite">${num(items.length)} records on this page${result.more ? " (more on the next page)" : ""}, ${moneyWords(total)} together, largest first. Each links to its source.</p>
+      ${items.length ? html`<p class="small muted" aria-live="polite">${num(items.length)} record${items.length === 1 ? "" : "s"} on this page${result.more ? " (more on the next page)" : ""}, ${moneyWords(total)} together, largest first. Each links to its source.</p>
       <ol class="results">${sorted.map((it) => resultItem(it, flags))}</ol>
       ${pager(base, page, result.more)}`
       : html`<p class="empty">${p.q ? html`No record contains every word of <strong>${esc(p.q)}</strong>.` : "Nothing matched."}${near.length ? "" : " Try fewer or shorter words, or remove a filter."}</p>`}
