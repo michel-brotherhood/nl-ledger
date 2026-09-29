@@ -29,6 +29,13 @@ NL_TAX_2025 = {
     "basic_personal_amount": 11067,
     # Low-income tax reduction, single person: form NL428 (2025) lines 95, 100 and 102
     "low_income": {"basic": 997, "threshold": 23928, "rate": 0.16},
+    # Employee contributions, 2025 (CRA payroll pages). Base CPP and EI premiums are credits at the
+    # lowest provincial rate (form NL428 lines 27 and 29, from federal lines 30800 and 31200); the
+    # enhanced CPP and CPP2 amounts are deductions from income (federal lines 22215).
+    "cpp": {"exemption": 3500, "ympe": 71300, "yampe": 81200, "base_rate": 0.0495, "enhanced_rate": 0.01, "cpp2_rate": 0.04,
+            "source": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/payroll/payroll-deductions-contributions/canada-pension-plan-cpp/cpp-contribution-rates-maximums-exemptions.html"},
+    "ei": {"rate": 0.0164, "max_insurable": 65700,
+           "source": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/payroll/payroll-deductions-contributions/employment-insurance-ei/ei-premium-rates-maximums.html"},
     "source": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/tax-rates-brackets/last-year.html",
     "source_label": "Canada Revenue Agency, tax rates and income brackets used on the 2025 tax return, Newfoundland and Labrador; basic personal amount and low-income tax reduction from form NL428 (2025)",
 }

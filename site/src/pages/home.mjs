@@ -16,7 +16,7 @@ export function home(D, R) {
   const citeWage = notes.cite({ url: S.median_weekly_wage.url, label: `Statistics Canada table ${S.median_weekly_wage.table} (vector ${S.median_weekly_wage.vector}), median weekly wage of full-time employees in Newfoundland and Labrador, ${S.median_weekly_wage.year}: ${money(S.median_weekly_wage.value, { cents: true })}, times 52 weeks = ${money(S.median_annual_wage.value)} a year` });
   const citeHH = notes.cite({ url: S.households.url, label: `Statistics Canada table ${S.households.table}, private households in Newfoundland and Labrador, 2021 Census: ${num(S.households.value)}` });
   const citeRev = notes.cite({ url: S.provincial_government.url, label: `Statistics Canada table ${S.provincial_government.table}, Newfoundland and Labrador provincial government, ${S.provincial_government.year}: income taxes from households ${moneyWords(S.provincial_government.personal_income_tax)} (vector ${S.provincial_government.vectors["From households"]}) of total revenue ${moneyWords(S.provincial_government.revenue)} (vector ${S.provincial_government.vectors["General governments revenue"]})` });
-  const citeTax = notes.cite({ url: S.nl_tax.source, label: `${S.nl_tax.source_label}. The receipt applies the ${S.nl_tax.year} brackets and the basic personal amount credit only` });
+  const citeTax = notes.cite({ url: S.nl_tax.source, label: `${S.nl_tax.source_label}. The receipt applies the ${S.nl_tax.year} brackets, the basic personal amount, CPP and EI credits and the low-income reduction; other credits are not applied` });
 
   const people = Math.round(yearsOfWage(total, S));
   const median = S.median_annual_wage.value;

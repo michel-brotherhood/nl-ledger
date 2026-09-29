@@ -100,18 +100,37 @@ export async function keyHash(s, n = 10) {
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("").slice(0, n);
 }
 
-// Provincial income tax, the way form NL428 computes it: tax on the brackets, less the
-// basic personal amount credit at the lowest rate. Other credits are ignored.
+// Employee CPP and EI for a year of employment income, at the tax year's rates:
+// base CPP (a credit), enhanced CPP and CPP2 (deductions from income), EI premiums (a credit).
+export function payrollContributions(income, tax) {
+  const { cpp, ei } = tax;
+  if (!cpp || !ei) return { baseCpp: 0, deduction: 0, ei: 0 };
+  const pensionable = Math.min(Math.max(income - cpp.exemption, 0), cpp.ympe - cpp.exemption);
+  const second = Math.min(Math.max(income - cpp.ympe, 0), cpp.yampe - cpp.ympe);
+  const cents = (x) => Math.round(x * 100) / 100;
+  return {
+    baseCpp: cents(pensionable * cpp.base_rate),
+    deduction: cents(pensionable * cpp.enhanced_rate) + cents(second * cpp.cpp2_rate),
+    ei: cents(Math.min(income, ei.max_insurable) * ei.rate),
+  };
+}
+
+// Provincial income tax, the way form NL428 computes it, for a single employee whose income is
+// all employment income: the brackets on net income (income less the enhanced CPP and CPP2
+// deductions), less the credits at the lowest rate (basic personal amount, base CPP and EI
+// premiums). Other credits are ignored.
 export function nlIncomeTax(income, tax) {
+  const pay = payrollContributions(income, tax);
+  const net = Math.max(0, income - pay.deduction);
   let owed = 0;
   for (const [lo, hi, rate] of tax.brackets) {
-    if (income <= lo) break;
-    owed += (Math.min(income, hi ?? Infinity) - lo) * rate;
+    if (net <= lo) break;
+    owed += (Math.min(net, hi ?? Infinity) - lo) * rate;
   }
-  owed -= tax.basic_personal_amount * tax.brackets[0][2];
+  owed -= (tax.basic_personal_amount + pay.baseCpp + pay.ei) * tax.brackets[0][2];
   // Low-income tax reduction for a single person (form NL428 lines 95 to 104)
   if (tax.low_income) {
-    const red = Math.max(0, tax.low_income.basic - tax.low_income.rate * Math.max(0, income - tax.low_income.threshold));
+    const red = Math.max(0, tax.low_income.basic - tax.low_income.rate * Math.max(0, net - tax.low_income.threshold));
     owed -= red;
   }
   return Math.max(0, owed);

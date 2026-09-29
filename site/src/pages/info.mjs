@@ -1,6 +1,6 @@
 // Sources and report card, methods, corrections, about, data access, the fold-out scale, 404.
 import { esc, html, icon, Notes, schedule, leaders } from "../../lib/html.mjs";
-import { money, moneyWords, num, pct, date as fmtDate, workTime, SITE } from "../../lib/format.mjs";
+import { money, moneyWords, num, pct, date as fmtDate, workTime, SITE, payrollContributions, nlIncomeTax } from "../../lib/format.mjs";
 import { pagehead, caveat, datasetLabel } from "../common.mjs";
 import { connectPage } from "./connect.mjs";
 
@@ -25,6 +25,41 @@ const OTHER = [
   ["Statistics Canada tables 14-10-0064, 17-10-0009, 98-10-0002, 36-10-0450", "https://www150.statcan.gc.ca/", "Median wage, population, households, provincial revenue and interest."],
   ["Canada Revenue Agency, Form NL428", "https://www.canada.ca/en/revenue-agency.html", "Provincial income tax brackets for the personal receipt."],
 ];
+
+// The receipt's arithmetic for one income, line by line, so a reader can redo it with a calculator.
+function workedExample(S) {
+  const t = S.nl_tax;
+  const income = Math.round(S.median_annual_wage.value);
+  const p = payrollContributions(income, t);
+  const net = income - p.deduction;
+  const rate1 = t.brackets[0][2];
+  const cents = (x) => money(x, { cents: true });
+  let brackets = 0;
+  const parts = [];
+  for (const [lo, hi, rate] of t.brackets) {
+    if (net <= lo) break;
+    const slice = Math.min(net, hi ?? Infinity) - lo;
+    brackets += slice * rate;
+    parts.push(`${cents(slice)} at ${(rate * 100).toFixed(1)}%`);
+  }
+  const credits = t.basic_personal_amount + p.baseCpp + p.ei;
+  const lowIncome = Math.max(0, t.low_income.basic - t.low_income.rate * Math.max(0, net - t.low_income.threshold));
+  const rows = [
+    ["Employment income (the median full-time wage, Statistics Canada)", cents(income)],
+    ["Base CPP, 4.95% of earnings above $3,500 (a credit)", cents(p.baseCpp)],
+    ["Enhanced CPP, 1% of the same earnings (a deduction)", cents(p.deduction)],
+    ["EI premiums, 1.64% of income (a credit)", cents(p.ei)],
+    ["Net income: income less the deduction", cents(net)],
+    [`Tax on the brackets: ${parts.join(" and ")}`, cents(brackets)],
+    [`Credits: basic personal amount ${cents(t.basic_personal_amount)} + CPP + EI = ${cents(credits)}, times ${(rate1 * 100).toFixed(1)}%`, cents(credits * rate1)],
+    ["Low-income tax reduction (none at this income)", cents(lowIncome)],
+    ["Provincial income tax on the receipt", cents(nlIncomeTax(income, t))],
+  ];
+  return html`<h2>Worked example at the median wage</h2>
+  <p>The same arithmetic the receipt runs, for ${money(income)} of employment income in ${t.year}. Redo it with a calculator, or check it against form NL428 (lines 27 and 29 are the CPP and EI credits).</p>
+  ${schedule({ compact: true, cols: [{ label: "Step" }, { label: "Amount", num: true }], rows: rows.map((r) => ({ cells: [esc(r[0]), r[1]] })) })}
+  <p class="small">Without the CPP and EI credits and the enhanced CPP deduction, the same income would show ${cents(nlIncomeTax(income, { ...t, cpp: undefined, ei: undefined }))}.</p>`;
+}
 
 export function info(D, R) {
   const out = [];
@@ -92,11 +127,14 @@ export function info(D, R) {
 <section class="section"><div class="wrap prose">
   <ol>
     <li>Your provincial income tax is worked out from your income with the ${S.nl_tax.year} Newfoundland and Labrador brackets (${S.nl_tax.brackets.map((b) => `${(b[2] * 100).toFixed(1)}%${b[1] ? ` up to ${money(b[1])}` : " above that"}`).join(", ")}), less the basic personal amount credit (${money(S.nl_tax.basic_personal_amount)} at ${(S.nl_tax.brackets[0][2] * 100).toFixed(1)}%). Source: ${esc(S.nl_tax.source_label)}.</li>
-    <li>The Newfoundland and Labrador low-income tax reduction is applied for a single person: $997, less 16% of income over $23,928 (form NL428, 2025). Income is treated as net income.</li>
-    <li>Other credits (CPP and EI contributions, pension, age, tuition, dependants) are not applied, so the receipt overstates tax somewhat; at the median wage by about 6%.</li>
+    <li>The receipt treats your income as employment income from one job. The enhanced CPP and CPP2 contributions are deducted from it to get net income, which the brackets and the low-income reduction then use.</li>
+    <li>The Newfoundland and Labrador low-income tax reduction is applied for a single person: $997, less 16% of net income over $23,928 (form NL428, 2025).</li>
+    <li>Two more credits, at the same lowest rate (${(S.nl_tax.brackets[0][2] * 100).toFixed(1)}%), come from what an employee pays into the Canada Pension Plan and Employment Insurance (form NL428 lines 27 and 29): base CPP is ${(S.nl_tax.cpp.base_rate * 100).toFixed(2)}% of earnings from ${money(S.nl_tax.cpp.exemption)} to ${money(S.nl_tax.cpp.ympe)}; EI is ${(S.nl_tax.ei.rate * 100).toFixed(2)}% of earnings up to ${money(S.nl_tax.ei.max_insurable)}. Enhanced CPP is ${(S.nl_tax.cpp.enhanced_rate * 100).toFixed(0)}% of the same earnings, and CPP2 is ${(S.nl_tax.cpp.cpp2_rate * 100).toFixed(0)}% of earnings from ${money(S.nl_tax.cpp.ympe)} to ${money(S.nl_tax.cpp.yampe)}. Sources: <a href="${esc(S.nl_tax.cpp.source)}" rel="noopener">CRA, CPP rates and maximums</a>, <a href="${esc(S.nl_tax.ei.source)}" rel="noopener">CRA, EI premium rates and maximums</a>.</li>
+    <li>Other credits (pension, age, tuition, dependants) are not applied, so the receipt overstates tax somewhat for anyone who has them.</li>
     <li>That tax is split across departments in proportion to each department's share of gross spending in ${R.year}, from the Report on the Program Expenditures and Revenues of the Consolidated Revenue Fund.</li>
     <li>"Your share" of a contract is the contract's value times your tax divided by all provincial spending that year: the fraction of everything the province spent that your tax matches.</li>
   </ol>
+  ${workedExample(S)}
   <p>Provincial spending is paid for by many revenues. Personal income tax was ${pct(S.provincial_government.personal_income_tax / S.provincial_government.revenue)} of provincial revenue in ${S.provincial_government.year} (Statistics Canada table ${S.provincial_government.table}). The receipt shows how your part would be spread, not the whole bill. Nothing you enter leaves your browser except as a web address when you press the button without JavaScript.</p>
 </div></section>`,
   }]);
