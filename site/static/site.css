@@ -1814,6 +1814,8 @@ article a,
   max-inline-size: var(--measure);
 }
 .steps li { margin-block: 0.35rem; padding-inline-start: 0.2rem; }
+.step-dl { display: block; margin-block: 0.5rem 0.25rem; }
+.step-dl .btn { white-space: normal; text-align: start; }
 .steps li::marker { font-weight: 800; font-variant-numeric: tabular-nums; }
 .client-check {
   color: var(--ink-3);

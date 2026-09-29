@@ -126,7 +126,12 @@ export const PROMPTS = [
 // ---- discovery: MCP registry server.json and the (draft) MCP server card
 export const REGISTRY_NAME = "ca.nlledger/nl-ledger";
 const DESCRIPTION = "Read-only public spending records for Newfoundland and Labrador, each with its source.";
-export const SERVER_VERSION = "0.2.0";
+export const SERVER_VERSION = "0.2.1";
+// The logo, for clients that show one beside the server's name (icons in server info, server.json and the server card).
+export const ICONS = () => [
+  { src: `${SITE.url}/nl-ledger-icon-256.png`, mimeType: "image/png", sizes: ["256x256"] },
+  { src: `${SITE.url}/app-icon.svg`, mimeType: "image/svg+xml", sizes: ["any"] },
+];
 
 export function serverJson() {
   return {
@@ -136,6 +141,7 @@ export function serverJson() {
     description: DESCRIPTION,
     version: SERVER_VERSION,
     websiteUrl: `${SITE.url}/data/`,
+    icons: ICONS(),
     remotes: [{ type: "streamable-http", url: `${SITE.url}/mcp` }],
   };
 }
@@ -148,7 +154,7 @@ export function serverCard() {
     description: DESCRIPTION,
     version: SERVER_VERSION,
     websiteUrl: `${SITE.url}/data/`,
-    icons: [{ src: `${SITE.url}/favicon.svg`, mimeType: "image/svg+xml" }],
+    icons: ICONS(),
     remotes: [{ type: "streamable-http", url: `${SITE.url}/mcp`, supportedProtocolVersions: PROTOCOLS }],
   };
 }
@@ -446,7 +452,7 @@ async function one(msg, io) {
       return { jsonrpc: "2.0", id, result: {
         protocolVersion: v,
         capabilities: { tools: { listChanged: false }, prompts: { listChanged: false } },
-        serverInfo: { name: "nl-ledger", title: SITE.name, version: SERVER_VERSION, websiteUrl: `${SITE.url}/data/` },
+        serverInfo: { name: "nl-ledger", title: SITE.name, version: SERVER_VERSION, websiteUrl: `${SITE.url}/data/`, icons: ICONS() },
         instructions: INSTRUCTIONS,
       } };
     }

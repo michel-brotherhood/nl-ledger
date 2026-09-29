@@ -27,7 +27,8 @@ function actionButton(a) {
 
 function clientPanel(c) {
   const at = c.action ? c.action.after ?? c.steps.length : -1;
-  const list = (steps, start) => (steps.length ? `<ol class="steps"${start > 1 ? ` start="${start}"` : ""}>${steps.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>` : "");
+  const step = (s) => (typeof s === "string" ? esc(s) : `${esc(s.text)}<span class="step-dl"><a class="btn ghost" href="${esc(s.download.href)}" download>${icon("out")}${esc(s.download.label)}</a></span>`);
+  const list = (steps, start) => (steps.length ? `<ol class="steps"${start > 1 ? ` start="${start}"` : ""}>${steps.map((s) => `<li>${step(s)}</li>`).join("")}</ol>` : "");
   // Chat apps: address first, then the button, then the steps. Coding tools: button, steps, then the config to copy.
   const chat = c.group === "chat";
   return html`<article class="client" id="${c.id}" data-client="${c.id}" aria-labelledby="h-${c.id}">
@@ -84,7 +85,7 @@ export function connectPage(D, R) {
       <h2 id="ask-h">2. Ask it something</h2>
       <p class="lede">A few questions that show what is in the records. Copy one, or open a new chat with it already typed in, then press send.</p>
     </div>
-    <p class="warn"><strong>Connect first.</strong> The Ask links only open a chat; your assistant uses the records once the connector is added. In ChatGPT, also choose Developer mode and ${esc(SITE.name)} from the + menu in each new chat, or it will answer without the records.</p>
+    <p class="warn"><strong>Connect first.</strong> The Ask links only open a chat; your assistant uses the records once the connector is added. In ChatGPT, also type @${esc(SITE.name)} in each new chat and pick it from the list, or it will answer without the records.</p>
     <ol class="asks" role="list">${QUESTIONS.map((x, i) => html`<li class="ask">
       <p class="ask-q">${esc(x.q)}</p>
       <div class="ask-do">

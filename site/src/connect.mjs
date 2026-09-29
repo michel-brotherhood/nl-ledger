@@ -4,6 +4,7 @@
 import { SITE } from "../lib/format.mjs";
 
 export const MCP_URL = `${SITE.url}/mcp`;
+export const ICON_PNG = "/nl-ledger-icon-256.png";
 const SLUG = "nl-ledger";
 const b64 = (o) => Buffer.from(JSON.stringify(o)).toString("base64");
 const json = (o) => JSON.stringify(o, null, 2);
@@ -35,16 +36,18 @@ export const CLIENTS = [
   },
   {
     id: "chatgpt", name: "ChatGPT", group: "chat",
-    lead: "Set it up at chatgpt.com in a web browser. It needs developer mode, which Plus, Pro, Business, Enterprise and Education accounts have.",
+    lead: "Set it up at chatgpt.com in a web browser, on a Pro account or above. It does not work in the ChatGPT phone apps.",
     copy: [{ label: "The address", text: MCP_URL }],
     action: { href: "https://chatgpt.com/plugins", label: "Copy the address and open ChatGPT's plugins page", copies: MCP_URL, after: 1 },
     steps: [
-      "First turn on developer mode: in ChatGPT open Settings, then Security and login, then switch on Developer mode.",
-      "Press the button above. It copies the address and opens the plugins page. Press +, then create a new app for an MCP server.",
-      `Name it ${SITE.name}, paste the address, and choose No Authentication. The new app appears under Drafts.`,
-      "Important: in every new chat, open the + menu, choose Developer mode, and select NL Ledger. Without that, ChatGPT answers without the records.",
+      { text: "Download the icon first. ChatGPT only accepts an icon while the app is being created, and it cannot be added later.", download: { href: ICON_PNG, label: "Download the icon (PNG, 256 px)" } },
+      "Press the button above. It copies the address and opens the plugins page. Press Add, then Create MCP App.",
+      `Choose the icon you downloaded. For Name, type ${SITE.name}. For Description, type "Public spending records for Newfoundland and Labrador". Under Connection, choose Server URL and paste the address.`,
+      "Under Authentication, choose No authentication. Tick \"I understand and want to continue\", press Create, then press Connect.",
+      `Start a new chat, type @${SITE.name} and pick it from the list, or press Try in chat on the app's page. The app applies to the message it is attached to, so repeat this for each question.`,
     ],
-    verified: "docs", doc: "https://developers.openai.com/api/docs/guides/developer-mode",
+    note: "On Pro accounts a custom app can read records but not change anything, which is all this one does.",
+    verified: "tested", doc: "https://help.openai.com/en/articles/12584461-developer-mode-and-mcp-apps-in-chatgpt",
   },
   {
     id: "claude-code", name: "Claude Code", group: "code", lead: "Works in the terminal.",
@@ -76,7 +79,7 @@ export const CLIENTS = [
     verified: "docs", doc: "https://code.visualstudio.com/docs/copilot/customization/mcp-servers",
   },
   {
-    id: "gemini", name: "Gemini CLI", group: "code", lead: "Works in the terminal.",
+    id: "gemini", name: "Gemini CLI", group: "code", lead: "Works in the terminal. Google's docs say Gemini CLI was replaced by Antigravity CLI on 18 June 2026 for unpaid-tier and Google One users.",
     steps: ["Run this in the folder you work in (add -s user for every folder). Or add the lines below to settings.json by hand."],
     copy: [
       { label: "Terminal", text: `gemini mcp add --transport http ${SLUG} ${MCP_URL}` },
@@ -86,12 +89,12 @@ export const CLIENTS = [
   },
   {
     id: "devin", name: "Windsurf / Devin", docName: "Devin", group: "code", lead: "Works in Devin Desktop, formerly Windsurf.",
-    steps: ["Devin Local: run the command below.", "Cascade: add the JSON to ~/.config/devin/mcp_config.json (on Windows, %APPDATA%\\devin\\). Enterprise accounts must turn MCP on first."],
+    steps: ["Devin Local (the default agent): run the command below. Or put the JSON in ~/.config/devin/mcp_config.json for every project, or .devin/mcp_config.json for one.", "Cascade (the older agent): add the same JSON to ~/.config/devin/mcp_config.json (on Windows, %APPDATA%\\devin\\). Enterprise accounts must turn MCP on first."],
     copy: [
       { label: "Terminal", text: `devin mcp add ${SLUG} ${MCP_URL}` },
       { label: "mcp_config.json", text: json({ mcpServers: { [SLUG]: { serverUrl: MCP_URL } } }) },
     ],
-    verified: "docs", doc: "https://docs.devin.ai/desktop/cascade/mcp",
+    verified: "docs", doc: "https://docs.devin.ai/cli/extensibility/mcp/configuration",
   },
   {
     id: "goose", name: "Goose", group: "code", lead: "Works in Goose desktop and CLI.",

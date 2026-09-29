@@ -154,9 +154,9 @@ export function departments(D, R) {
     const tmax = Math.max(...trend.map((t) => t.v || 0), 1);
 
     const figs = sum ? html`<div class="figs">
-      <div><span class="big">${moneyWords(sum.gross)}</span><span class="what">spent in ${latest}${cite}</span></div>
-      <div><span class="big">${money(perPerson(sum.gross, S))}</span><span class="what">for every person in the province</span></div>
-      <div><span class="big">${workTime(sum.gross, S)}</span><span class="what">of work at the median full-time wage</span></div>
+      <div><span class="big">${moneyWords(sum.gross)}</span><span class="what">spent by the province in ${latest}${cite}</span></div>
+      <div><span class="big">${money(perPerson(sum.gross, S))}</span><span class="what">of provincial spending for every person in the province</span></div>
+      <div><span class="big">${workTime(sum.gross, S)}</span><span class="what">of work at the median full-time wage to earn what the province spent</span></div>
     </div>` : "";
 
     const progTable = progs.length ? schedule({

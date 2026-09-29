@@ -39,7 +39,7 @@ export function home(D, R) {
   const cover = html`
 <section class="cover" aria-labelledby="cover-h">
   <div class="cover-in">
-    <h1 id="cover-h" class="cover-title">Newfoundland and Labrador spent</h1>
+    <h1 id="cover-h" class="cover-title">The Newfoundland and Labrador government spent</h1>
     <p class="cover-fig">${moneyWords(total)}${cite}</p>
     <p class="cover-sub">in ${fy}. That is <em>${money(perPerson(total, S))}</em> for every person in the province${citePop}, or what <em>${num(people)}</em> people earning the median full-time wage make in a year${citeWage}.</p>
     <hr class="cover-rule">
@@ -108,9 +108,9 @@ export function home(D, R) {
       <p class="lede">Someone earning the median full-time wage here, ${money(median)} a year, makes about ${moneyWords(career)} over a 40-year career. In ${fy} the province spent that much every ${h} hours and ${m} minutes.</p>
     </div>
     <div style="max-inline-size:40rem;margin-block-end:2.5rem">${leaders([
-      { label: `Spent for every resident, ${fy.replace("-", "\u2011")}`, value: money(perPerson(total, S)) },
-      { label: `For every household${citeHH}`, value: money(perHousehold(total, S)) },
-      { label: "Every hour, around the clock, all year", value: moneyWords(perHour, 1) },
+      { label: `Provincial spending for every resident, ${fy.replace("-", "\u2011")}`, value: money(perPerson(total, S)) },
+      { label: `Provincial spending for every household${citeHH}`, value: money(perHousehold(total, S)) },
+      { label: "Provincial spending every hour, around the clock, all year", value: moneyWords(perHour, 1) },
       { label: "A 40-year career at the median wage", value: moneyWords(career), cls: "total" },
     ]).replace('class="leaders"', 'class="leaders big"')}</div>
     <div class="grid-2" style="align-items:stretch">
