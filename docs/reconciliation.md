@@ -9,7 +9,7 @@ Generated 2026-09-29 by `pipeline/reconcile.py` from `data/build/ledger.db`.
 |---|---:|---:|
 | mha | 58,521 | $7,057,632.94 |
 | sunshine | 34,493 | $4,406,623,501.22 |
-| fed_grant | 29,294 | $8,509,445,623.16 |
+| fed_grant | 29,207 | $8,430,775,591.69 |
 | fed_contract | 8,533 | $2,614,227,060.51 |
 | ppa | 6,327 | $1,358,312,018.08 |
 | minister | 2,585 | $3,424,682.22 |
@@ -80,7 +80,12 @@ Superseded issues (original dropped, revised kept):
 - Contracts over $10K to suppliers with an NL postal code: 9,882 rows worth $11,888,299,441.12 as published.
 - Each amendment repeats the whole contract. Grouped by (procurement id, cleaned vendor name) across departments, latest kept: 8,533 contracts worth $2,614,227,060.51. An earlier grouping by department and raw vendor name gave about $2.83B; it counted a purchase order twice when two departments reported it or the vendor was spelled two ways.
 - Non-competitive (solicitation code TN): $210,910,392.52.
-- Grants and contributions to NL recipients: 35,876 rows worth $11,680,096,859.79. One value per agreement (department, agreement number, recipient): latest amendment where the department reports running totals, amendments summed where it reports changes (aandc-aadnc, isc-sac): 29,294 agreements worth $8,509,445,623.16. Agreement values can span several years.
+- Grants and contributions to NL recipients: 35,876 rows worth $11,680,096,859.79. One value per agreement (department, agreement number, recipient; a renamed recipient stays in its agreement): latest amendment where the department reports running totals, amendments summed where it reports changes (aandc-aadnc, isc-sac, pch, phac-aspc): 29,207 agreements worth $8,430,775,591.69. Agreement values can span several years.
+- Check of the change-reporting departments against Public Accounts transfer payments to NL recipients (payments of $100K or more):
+  - Indigenous Services Canada: rows added up $1,541,824,956.00; latest row only $124,374,148.00; paid 2021-22 to 2024-25 $933,170,991.00.
+  - Crown-Indigenous Relations and Northern Affairs Canada: rows added up $1,170,954,066.00; latest row only $185,594,268.00; paid 2021-22 to 2024-25 $626,664,634.00.
+  - Canadian Heritage: rows added up $184,247,430.00; latest row only $141,598,572.00; paid 2021-22 to 2024-25 $78,988,445.00.
+  - Public Health Agency of Canada: rows added up $51,000,929.00; latest row only $29,635,590.00; paid 2021-22 to 2024-25 $33,515,044.00.
 - CanadaBuys award notices with an NL supplier: 538 ($855,968,652.83). These overlap the contracts disclosure and are never added to totals.
 
 Major federal transfers to NL, 2024-25 (Public Accounts, $ millions as published):

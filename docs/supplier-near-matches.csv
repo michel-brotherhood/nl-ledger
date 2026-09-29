@@ -1,93 +1,89 @@
 name,records,value,other_name,other_records,other_value,why_not_joined
 NEWFOUNDLAND AND LABRADOR DEPARTMENT OF JUSTICE AND PUBLIC SAFETY,17,46374110.0,"Province of Newfoundland and Labrador, Department of Justice and Public Safety",1,27253603.34,one name inside the other (often a parent and its subsidiary or branch)
 GE Healthcare,26,10009004.98,GE Healthcare Canada,17,31793963.46,one name inside the other (often a parent and its subsidiary or branch)
-Newfoundland and Labrador Association of Technology and Innovation Inc.,30,84136752.48,Newfoundland and Labrador Association of Technology Industries Incorporated,56,9977875.95,"same business number, different names (a parent body's number, or an owner's)"
-"Department of Industry, Energy and Technology",7,9194653.0,Government of Newfoundland and Labrador,140,1922657096.0,"same business number, different names (a parent body's number, or an owner's)"
-"Department of Industry, Energy and Technology",7,9194653.0,Province of Newfoundland and Labrador,109,5643235971.0,"same business number, different names (a parent body's number, or an owner's)"
-"Department of Industry, Energy and Technology",7,9194653.0,Department of Tourism Culture Arts and Recreation,6,7008090.0,"same business number, different names (a parent body's number, or an owner's)"
-Department of Tourism Culture Arts and Recreation,6,7008090.0,Government of Newfoundland and Labrador,140,1922657096.0,"same business number, different names (a parent body's number, or an owner's)"
-Department of Tourism Culture Arts and Recreation,6,7008090.0,Province of Newfoundland and Labrador,109,5643235971.0,"same business number, different names (a parent body's number, or an owner's)"
-Horizon économique de Terre-Neuve-et-Labrador Inc.,6,7498237.46,Reseau de Developpement Economique et d'Employabilite de Terre-Neuve-et-Labrador,23,6730043.71,"same business number, different names (a parent body's number, or an owner's)"
-Department of Energy and Mines,1,6500000.0,"Department of Industry, Energy and Technology",7,9194653.0,"same business number, different names (a parent body's number, or an owner's)"
+Newfoundland and Labrador Association of Technology and Innovation Inc.,30,84136752.48,Newfoundland and Labrador Association of Technology Industries Incorporated,55,9808634.95,"same business number, different names (a parent body's number, or an owner's)"
+Department of Tourism Culture Arts and Recreation,6,7008090.0,Government of Newfoundland and Labrador,140,1923373096.0,"same business number, different names (a parent body's number, or an owner's)"
+Department of Tourism Culture Arts and Recreation,6,7008090.0,Province of Newfoundland and Labrador,109,5645722971.0,"same business number, different names (a parent body's number, or an owner's)"
 Department of Energy and Mines,1,6500000.0,Department of Tourism Culture Arts and Recreation,6,7008090.0,"same business number, different names (a parent body's number, or an owner's)"
-Department of Energy and Mines,1,6500000.0,Government of Newfoundland and Labrador,140,1922657096.0,"same business number, different names (a parent body's number, or an owner's)"
-Department of Energy and Mines,1,6500000.0,Province of Newfoundland and Labrador,109,5643235971.0,"same business number, different names (a parent body's number, or an owner's)"
-Fisheries & Marine Institute of Memorial University of Nfld.,20,14594248.5,MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES,4,5444430.0,"same business number, different names (a parent body's number, or an owner's)"
+Department of Energy and Mines,1,6500000.0,Government of Newfoundland and Labrador,140,1923373096.0,"same business number, different names (a parent body's number, or an owner's)"
+Department of Energy and Mines,1,6500000.0,Province of Newfoundland and Labrador,109,5645722971.0,"same business number, different names (a parent body's number, or an owner's)"
+Horizon économique de Terre-Neuve-et-Labrador Inc.,6,7498237.46,Reseau de Developpement Economique et d'Employabilite de Terre-Neuve-et-Labrador,22,6239448.55,"same business number, different names (a parent body's number, or an owner's)"
 Memorial University,37,8142666.62,MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES,4,5444430.0,"same business number, different names (a parent body's number, or an owner's)"
-Memorial University of Newfoundland,702,540165410.12,MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES,4,5444430.0,"same business number, different names (a parent body's number, or an owner's)"
-Fisheries & Marine Institute of Memorial University of Nfld.,20,14594248.5,Fisheries and Marine Institute of the Memorial University of Newfoundland and Labrador,2,5188643.22,one name inside the other (often a parent and its subsidiary or branch)
-Fédération des francophones de Terre-Neuve et du Labrador,32,8260813.65,FÉDÉRATION DES FRANCOPHONES DE TERRE-NEUVE ET DU LABRADOR (LA),39,3881154.0,one name inside the other (often a parent and its subsidiary or branch)
+Memorial University of Newfoundland,703,541082578.12,MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES,4,5444430.0,"same business number, different names (a parent body's number, or an owner's)"
+Fédération des francophones de Terre-Neuve et du Labrador,32,8260813.65,FÉDÉRATION DES FRANCOPHONES DE TERRE-NEUVE ET DU LABRADOR (LA),39,4969410.0,one name inside the other (often a parent and its subsidiary or branch)
+SmartICE Monitoring & Information Inc.,5,4830982.66,SmartICE Sea Ice Monitoring & Information Inc.,21,9712294.0,"same business number, different names (a parent body's number, or an owner's)"
+Department of Energy and Mines,1,6500000.0,"Department of Industry, Energy and Technology",6,3994653.0,"same business number, different names (a parent body's number, or an owner's)"
+"Department of Industry, Energy and Technology",6,3994653.0,Department of Tourism Culture Arts and Recreation,6,7008090.0,"same business number, different names (a parent body's number, or an owner's)"
+"Department of Industry, Energy and Technology",6,3994653.0,Government of Newfoundland and Labrador,140,1923373096.0,"same business number, different names (a parent body's number, or an owner's)"
+"Department of Industry, Energy and Technology",6,3994653.0,Province of Newfoundland and Labrador,109,5645722971.0,"same business number, different names (a parent body's number, or an owner's)"
 D F BARNES LIMITED,20,3760422.47,D.F. Barnes Services Limited,29,10204266.88,one name inside the other (often a parent and its subsidiary or branch)
 Commissionaires,10,3699767.84,COMMISSIONAIRES NL,23,4760912.96,one name inside the other (often a parent and its subsidiary or branch)
 Commissionaires,10,3699767.84,COMMISSIONAIRES OF NFLD,22,8385847.48,one name inside the other (often a parent and its subsidiary or branch)
 Miawpukek First Nation,116,33057046.42,Netukulimk Fisheries Limited,6,3692479.0,"same business number, different names (a parent body's number, or an owner's)"
 Miawpukek Mi'kamawey Mawi'omi,55,16446753.0,Netukulimk Fisheries Limited,6,3692479.0,"same business number, different names (a parent body's number, or an owner's)"
-10566 Energy NL Inc.,14,4634795.0,Newfoundland & Labrador Oil & Gas Industries Association Inc.,21,3612278.99,"same business number, different names (a parent body's number, or an owner's)"
 Emmanuel Construction,1,5079001.0,Emmanuel Construction Services Ltd,2,3309490.0,one name inside the other (often a parent and its subsidiary or branch)
-The Excite Corporation Inc.,14,3145609.0,Town of Grand Falls-Windsor,66,57319038.32,"same business number, different names (a parent body's number, or an owner's)"
+Fisheries & Marine Institute of Memorial University of Nfld.,19,3294815.5,MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES,4,5444430.0,"same business number, different names (a parent body's number, or an owner's)"
+Fisheries & Marine Institute of Memorial University of Nfld.,19,3294815.5,Fisheries and Marine Institute of the Memorial University of Newfoundland and Labrador,2,5188643.22,one name inside the other (often a parent and its subsidiary or branch)
+The Excite Corporation Inc.,14,3145609.0,Town of Grand Falls-Windsor,65,43862751.32,"same business number, different names (a parent body's number, or an owner's)"
+10566 Energy NL Inc.,14,4634795.0,Newfoundland & Labrador Oil & Gas Industries Association Inc.,20,3113479.0,"same business number, different names (a parent body's number, or an owner's)"
 NEWFOUNDLAND AND LABRADOR DEPARTMENT OF JUSTICE AND PUBLIC SAFETY,17,46374110.0,Newfoundland & Labrador Justice and Public Safety,1,3100253.27,one name inside the other (often a parent and its subsidiary or branch)
 Newfoundland & Labrador Justice and Public Safety,1,3100253.27,"Province of Newfoundland and Labrador, Department of Justice and Public Safety",1,27253603.34,one name inside the other (often a parent and its subsidiary or branch)
 Bluedrop ISM Limited,2,3075000.0,Bluedrop Performance Learning Inc.,8,14278677.0,"same business number, different names (a parent body's number, or an owner's)"
 Fédération des francophones de Terre-Neuve et du Labrador,32,8260813.65,Fédération des francophones de Terre-Neuve-et-Labrador Inc,6,2695925.0,one name inside the other (often a parent and its subsidiary or branch)
-FÉDÉRATION DES FRANCOPHONES DE TERRE-NEUVE ET DU LABRADOR (LA),39,3881154.0,Fédération des francophones de Terre-Neuve-et-Labrador Inc,6,2695925.0,one name inside the other (often a parent and its subsidiary or branch)
+FÉDÉRATION DES FRANCOPHONES DE TERRE-NEUVE ET DU LABRADOR (LA),39,4969410.0,Fédération des francophones de Terre-Neuve-et-Labrador Inc,6,2695925.0,one name inside the other (often a parent and its subsidiary or branch)
 Fédération des francophones de Terre-Neuve et du Labrador,32,8260813.65,"LA FÉDÉRATION DES FRANCOPHONES DE TERRE-NEUVE ET DU LABRADOR, INC.",15,2609779.0,one name inside the other (often a parent and its subsidiary or branch)
 Fédération des francophones de Terre-Neuve-et-Labrador Inc,6,2695925.0,"LA FÉDÉRATION DES FRANCOPHONES DE TERRE-NEUVE ET DU LABRADOR, INC.",15,2609779.0,one name inside the other (often a parent and its subsidiary or branch)
 CANADIAN CORPS COMMISSIONAIRES,12,5471332.42,Canadian Corps of Commissionaires (Newfoundland),4,2307635.0,one name inside the other (often a parent and its subsidiary or branch)
 CANADIAN CORPS OF COMMISSIONAIRES,58,11500081.92,Canadian Corps of Commissionaires (Newfoundland),4,2307635.0,one name inside the other (often a parent and its subsidiary or branch)
-Department of Justice and Public Safety,1,2304033.0,NEWFOUNDLAND AND LABRADOR DEPARTMENT OF JUSTICE AND PUBLIC SAFETY,17,46374110.0,one name inside the other (often a parent and its subsidiary or branch)
-Department of Justice and Public Safety,1,2304033.0,"Province of Newfoundland and Labrador, Department of Justice and Public Safety",1,27253603.34,one name inside the other (often a parent and its subsidiary or branch)
-Eastern Regional Health Authority,11,4007350.49,Provincial Health Authority,5,2256553.0,"same business number, different names (a parent body's number, or an owner's)"
+Eastern Regional Health Authority,11,4607350.49,Provincial Health Authority,5,2256553.0,"same business number, different names (a parent body's number, or an owner's)"
 Commissionaires,10,3699767.84,COMMISSIONAIRES NEWFOUNDLAND,8,2240837.83,one name inside the other (often a parent and its subsidiary or branch)
 COMMISSIONAIRES NEWFOUNDLAND,8,2240837.83,COMMISSIONAIRES NL,23,4760912.96,one name inside the other (often a parent and its subsidiary or branch)
 Newfoundland and Labrador Association of Technology and Innovation Inc.,30,84136752.48,techNL Innovation Inc.,10,2166056.16,"same business number, different names (a parent body's number, or an owner's)"
-SmartICE Monitoring & Information Inc.,5,2037390.46,SmartICE Sea Ice Monitoring & Information Inc.,23,12705293.2,"same business number, different names (a parent body's number, or an owner's)"
 "Department of Fisheries, Forestry and Agriculture",2,1962512.0,"Government of Newfoundland and Labrador Department of Fisheries, Forestry and Agriculture",1,27750000.0,one name inside the other (often a parent and its subsidiary or branch)
-Eastern Regional Health Authority,11,4007350.49,NEWFOUNDLAND & LABRADOR HEALTH SERVICES,7,1947786.61,"same business number, different names (a parent body's number, or an owner's)"
+Eastern Regional Health Authority,11,4607350.49,NEWFOUNDLAND & LABRADOR HEALTH SERVICES,7,1947786.61,"same business number, different names (a parent body's number, or an owner's)"
 NEWFOUNDLAND & LABRADOR HEALTH SERVICES,7,1947786.61,Provincial Health Authority,5,2256553.0,"same business number, different names (a parent body's number, or an owner's)"
 Government of Newfoundland and Labrador - Department of Health and Community Services,20,510229627.0,NEWFOUNDLAND & LABRADOR HEALTH SERVICES,7,1947786.61,one name inside the other (often a parent and its subsidiary or branch)
 Department of Energy and Mines,1,6500000.0,"Government of Newfoundland and Labrador, Department of Education",1,1944015.0,"same business number, different names (a parent body's number, or an owner's)"
-"Department of Industry, Energy and Technology",7,9194653.0,"Government of Newfoundland and Labrador, Department of Education",1,1944015.0,"same business number, different names (a parent body's number, or an owner's)"
+"Department of Industry, Energy and Technology",6,3994653.0,"Government of Newfoundland and Labrador, Department of Education",1,1944015.0,"same business number, different names (a parent body's number, or an owner's)"
 Department of Tourism Culture Arts and Recreation,6,7008090.0,"Government of Newfoundland and Labrador, Department of Education",1,1944015.0,"same business number, different names (a parent body's number, or an owner's)"
 68028 NEWFOUNDLAND &,79,1917216.62,68028 Newfoundland & Labrador Corp,5,2138164.45,one name inside the other (often a parent and its subsidiary or branch)
 Telus Health,2,1895483.86,Telus Health Solutions Inc.,2,4641570.13,one name inside the other (often a parent and its subsidiary or branch)
 PITTMAN ENTERPRISES LTD.,8,1834768.45,PITTMAN'S ENTERPRISES LIMITED,13,19241359.57,"a spelling slip apart, with no business number, postal code or review to confirm it"
 The Call Centre Inc.,12,2380300.0,Telelink,2,1755000.0,"same business number, different names (a parent body's number, or an owner's)"
-Eastern Health,4,1592817.0,Eastern Regional Health Authority,11,4007350.49,"same business number, different names (a parent body's number, or an owner's)"
+Eastern Health,4,1592817.0,Eastern Regional Health Authority,11,4607350.49,"same business number, different names (a parent body's number, or an owner's)"
 Eastern Health,4,1592817.0,NEWFOUNDLAND & LABRADOR HEALTH SERVICES,7,1947786.61,"same business number, different names (a parent body's number, or an owner's)"
 Eastern Health,4,1592817.0,Provincial Health Authority,5,2256553.0,"same business number, different names (a parent body's number, or an owner's)"
-St. John's Native Friendship Centre,16,4814203.0,St. John's Native Friendship Centre Association,12,1549026.79,one name inside the other (often a parent and its subsidiary or branch)
-SEAFOOD PROCESSORS OF NEWFOUNDLAND,1,1411587.1,Seafood Processors of Newfoundland and Labrador Inc.,10,3089543.18,one name inside the other (often a parent and its subsidiary or branch)
+SEAFOOD PROCESSORS OF NEWFOUNDLAND,1,1411587.1,Seafood Processors of Newfoundland and Labrador Inc.,8,2128359.18,one name inside the other (often a parent and its subsidiary or branch)
 "Berger, Harris-Memorial University of Newfoundland",1,1400000.0,"Dobre, Octavia-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
-"Berger, Harris-Memorial University of Newfoundland",1,1400000.0,Fisheries & Marine Institute of Memorial University of Nfld.,20,14594248.5,"same business number, different names (a parent body's number, or an owner's)"
+"Berger, Harris-Memorial University of Newfoundland",1,1400000.0,Fisheries & Marine Institute of Memorial University of Nfld.,19,3294815.5,"same business number, different names (a parent body's number, or an owner's)"
 "Berger, Harris-Memorial University of Newfoundland",1,1400000.0,Memorial University,37,8142666.62,"same business number, different names (a parent body's number, or an owner's)"
-"Berger, Harris-Memorial University of Newfoundland",1,1400000.0,Memorial University of Newfoundland,702,540165410.12,"same business number, different names (a parent body's number, or an owner's)"
+"Berger, Harris-Memorial University of Newfoundland",1,1400000.0,Memorial University of Newfoundland,703,541082578.12,"same business number, different names (a parent body's number, or an owner's)"
 "Berger, Harris-Memorial University of Newfoundland",1,1400000.0,MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES,4,5444430.0,"same business number, different names (a parent body's number, or an owner's)"
 "Berger, Harris-Memorial University of Newfoundland",1,1400000.0,"Passow, Uta-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Berger, Harris-Memorial University of Newfoundland",1,1400000.0,"Ziegler, Susan-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
-"Dobre, Octavia-Memorial University of Newfoundland",1,1400000.0,Fisheries & Marine Institute of Memorial University of Nfld.,20,14594248.5,"same business number, different names (a parent body's number, or an owner's)"
+"Dobre, Octavia-Memorial University of Newfoundland",1,1400000.0,Fisheries & Marine Institute of Memorial University of Nfld.,19,3294815.5,"same business number, different names (a parent body's number, or an owner's)"
 "Dobre, Octavia-Memorial University of Newfoundland",1,1400000.0,Memorial University,37,8142666.62,"same business number, different names (a parent body's number, or an owner's)"
-"Dobre, Octavia-Memorial University of Newfoundland",1,1400000.0,Memorial University of Newfoundland,702,540165410.12,"same business number, different names (a parent body's number, or an owner's)"
+"Dobre, Octavia-Memorial University of Newfoundland",1,1400000.0,Memorial University of Newfoundland,703,541082578.12,"same business number, different names (a parent body's number, or an owner's)"
 "Dobre, Octavia-Memorial University of Newfoundland",1,1400000.0,MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES,4,5444430.0,"same business number, different names (a parent body's number, or an owner's)"
 "Dobre, Octavia-Memorial University of Newfoundland",1,1400000.0,"Passow, Uta-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Dobre, Octavia-Memorial University of Newfoundland",1,1400000.0,"Ziegler, Susan-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
-Fisheries & Marine Institute of Memorial University of Nfld.,20,14594248.5,"Passow, Uta-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
-Fisheries & Marine Institute of Memorial University of Nfld.,20,14594248.5,"Ziegler, Susan-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
+Fisheries & Marine Institute of Memorial University of Nfld.,19,3294815.5,"Passow, Uta-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
+Fisheries & Marine Institute of Memorial University of Nfld.,19,3294815.5,"Ziegler, Susan-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
 Memorial University,37,8142666.62,"Passow, Uta-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
 Memorial University,37,8142666.62,"Ziegler, Susan-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
-Memorial University of Newfoundland,702,540165410.12,"Passow, Uta-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
-Memorial University of Newfoundland,702,540165410.12,"Ziegler, Susan-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
+Memorial University of Newfoundland,703,541082578.12,"Passow, Uta-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
+Memorial University of Newfoundland,703,541082578.12,"Ziegler, Susan-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
 MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES,4,5444430.0,"Passow, Uta-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
 MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES,4,5444430.0,"Ziegler, Susan-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Passow, Uta-Memorial University of Newfoundland",1,1400000.0,"Ziegler, Susan-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
 TxtSquad,2,15445000.0,TxtSquad Enterprises Inc.,18,1330891.0,one name inside the other (often a parent and its subsidiary or branch)
-Humber Arm Environmental Assoc,6,1431696.8,Humber Arm Environmental Association Inc.,22,1268717.87,"same business number, different names (a parent body's number, or an owner's)"
-Fogo Island Cooperative Soc,3,1262077.0,Fogo Island Co-Operative Society Limited,20,8774919.51,"same business number, different names (a parent body's number, or an owner's)"
-Public Legal Information Association,3,1196750.0,PUBLIC LEGAL INFORMATION ASSOCIATION OF NEWFOUNDLAND,14,3592606.0,one name inside the other (often a parent and its subsidiary or branch)
+Public Legal Information Association,3,1196750.0,PUBLIC LEGAL INFORMATION ASSOCIATION OF NEWFOUNDLAND,13,2240606.0,one name inside the other (often a parent and its subsidiary or branch)
 Public Legal Information Association,3,1196750.0,PUBLIC LEGAL INFORMATION ASSOCIATION OF NEWFOUNDLAND AND LABRADOR,26,11409359.0,one name inside the other (often a parent and its subsidiary or branch)
 Abbott Medical,2,1142171.0,Abbott Medical Canada,4,2269154.67,one name inside the other (often a parent and its subsidiary or branch)
-Organization for Community Action Initiative Inc,4,1131044.0,Organization for Community Action Initiatives Inc,7,1715165.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
+Organization for Community Action Initiative Inc,4,1131044.0,Organization for Community Action Initiatives Inc,7,2846209.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 MAHER'S CONTRACTING LTD.,7,10907042.65,MAJOR'S CONTRACTING LIMITED,17,1123523.69,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Roche Diagnositics,1,1100000.0,Roche Diagnostics,13,9573937.35,"a spelling slip apart, with no business number, postal code or review to confirm it"
+Humber Arm Environmental Assoc,5,1031412.8,Humber Arm Environmental Association Inc.,22,1268717.87,"same business number, different names (a parent body's number, or an owner's)"
 "Berger, Harris-Memorial University of Newfoundland",1,1400000.0,Fisheries and Marine Institute of Memorial University,11,1009424.0,"same business number, different names (a parent body's number, or an owner's)"
 "Dobre, Octavia-Memorial University of Newfoundland",1,1400000.0,Fisheries and Marine Institute of Memorial University,11,1009424.0,"same business number, different names (a parent body's number, or an owner's)"
 Fisheries and Marine Institute of Memorial University,11,1009424.0,MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES,4,5444430.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -97,20 +93,21 @@ Fisheries and Marine Institute of Memorial University,11,1009424.0,Fisheries and
 "Benoukraf, Touati Memorial University of Newfoundland",2,1000000.0,"Berger, Harris-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Benoukraf, Touati Memorial University of Newfoundland",2,1000000.0,"Dobre, Octavia-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Benoukraf, Touati Memorial University of Newfoundland",2,1000000.0,Fisheries and Marine Institute of Memorial University,11,1009424.0,"same business number, different names (a parent body's number, or an owner's)"
-"Benoukraf, Touati Memorial University of Newfoundland",2,1000000.0,Fisheries & Marine Institute of Memorial University of Nfld.,20,14594248.5,"same business number, different names (a parent body's number, or an owner's)"
+"Benoukraf, Touati Memorial University of Newfoundland",2,1000000.0,Fisheries & Marine Institute of Memorial University of Nfld.,19,3294815.5,"same business number, different names (a parent body's number, or an owner's)"
 "Benoukraf, Touati Memorial University of Newfoundland",2,1000000.0,Memorial University,37,8142666.62,"same business number, different names (a parent body's number, or an owner's)"
-"Benoukraf, Touati Memorial University of Newfoundland",2,1000000.0,Memorial University of Newfoundland,702,540165410.12,"same business number, different names (a parent body's number, or an owner's)"
+"Benoukraf, Touati Memorial University of Newfoundland",2,1000000.0,Memorial University of Newfoundland,703,541082578.12,"same business number, different names (a parent body's number, or an owner's)"
 "Benoukraf, Touati Memorial University of Newfoundland",2,1000000.0,MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES,4,5444430.0,"same business number, different names (a parent body's number, or an owner's)"
 "Benoukraf, Touati Memorial University of Newfoundland",2,1000000.0,"Passow, Uta-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Benoukraf, Touati Memorial University of Newfoundland",2,1000000.0,"Ziegler, Susan-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
 Department of Energy and Mines,1,6500000.0,GEOLOGICAL SURVEY OF NEWFOUNDLAND AND LABRADOR,2,1000000.0,"same business number, different names (a parent body's number, or an owner's)"
-"Department of Industry, Energy and Technology",7,9194653.0,GEOLOGICAL SURVEY OF NEWFOUNDLAND AND LABRADOR,2,1000000.0,"same business number, different names (a parent body's number, or an owner's)"
+"Department of Industry, Energy and Technology",6,3994653.0,GEOLOGICAL SURVEY OF NEWFOUNDLAND AND LABRADOR,2,1000000.0,"same business number, different names (a parent body's number, or an owner's)"
 Department of Tourism Culture Arts and Recreation,6,7008090.0,GEOLOGICAL SURVEY OF NEWFOUNDLAND AND LABRADOR,2,1000000.0,"same business number, different names (a parent body's number, or an owner's)"
-GEOLOGICAL SURVEY OF NEWFOUNDLAND AND LABRADOR,2,1000000.0,Government of Newfoundland and Labrador,140,1922657096.0,"same business number, different names (a parent body's number, or an owner's)"
+GEOLOGICAL SURVEY OF NEWFOUNDLAND AND LABRADOR,2,1000000.0,Government of Newfoundland and Labrador,140,1923373096.0,"same business number, different names (a parent body's number, or an owner's)"
 GEOLOGICAL SURVEY OF NEWFOUNDLAND AND LABRADOR,2,1000000.0,"Government of Newfoundland and Labrador, Department of Education",1,1944015.0,"same business number, different names (a parent body's number, or an owner's)"
-GEOLOGICAL SURVEY OF NEWFOUNDLAND AND LABRADOR,2,1000000.0,Province of Newfoundland and Labrador,109,5643235971.0,"same business number, different names (a parent body's number, or an owner's)"
-Trinity-Conception Family Resource Centre,4,986488.0,Trinity-Conception Family Resource Centre Committee Inc.,2,1479732.0,one name inside the other (often a parent and its subsidiary or branch)
+GEOLOGICAL SURVEY OF NEWFOUNDLAND AND LABRADOR,2,1000000.0,Province of Newfoundland and Labrador,109,5645722971.0,"same business number, different names (a parent body's number, or an owner's)"
+Trinity-Conception Family Resource Centre,4,986488.0,Trinity-Conception Family Resource Centre Committee Inc.,2,2466220.0,one name inside the other (often a parent and its subsidiary or branch)
 Miawpukek Horizon Maritime Services Ltd,26,9830927.41,Miawpukek Horizon Maritimes Services Ltd,3,931500.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
+St. John's Native Friendship Centre,16,4814203.0,ST. JOHN'S NATIVE FRIENDSHIP CENTRE ASSOCIATION (THE),11,931483.79,one name inside the other (often a parent and its subsidiary or branch)
 CoLab AI Inc.,5,920000.0,CoLab Software Inc.,27,13129189.13,"same business number, different names (a parent body's number, or an owner's)"
 "Bell Island Sobriety, Housing and Employment Inc.",2,908425.0,Bell Island Support Network Inc,3,2353405.0,"same business number, different names (a parent body's number, or an owner's)"
 Canada Fluorspar Inc,1,900000.0,Canada Fluorspar (NL) Inc.,6,6521855.0,one name inside the other (often a parent and its subsidiary or branch)
@@ -120,7 +117,7 @@ Edwards Lifesciences,1,857500.0,Edwards Lifesciences Canada,2,2716000.0,one name
 Gros Morne Cooperating Association Inc.,41,12427619.01,Gros Morne Co-op Association,5,849039.99,"a spelling slip apart, with no business number, postal code or review to confirm it"
 K&D Pratt,7,828694.18,K&D Pratt Group Inc.,17,3608238.6,one name inside the other (often a parent and its subsidiary or branch)
 Wartsila,3,786768.78,WARTSILA CANADA INC,107,9342087.36,one name inside the other (often a parent and its subsidiary or branch)
-MI'KMAQ ALSUMK MOWIMSIKIK KOQOEY,6,783405.0,Mi'kmaq Alsumk Mowimsikik Koqoey Association,31,9903644.0,one name inside the other (often a parent and its subsidiary or branch)
+MI'KMAQ ALSUMK MOWIMSIKIK KOQOEY,6,783405.0,Mi'kmaq Alsumk Mowimsikik Koqoey Association,30,9808329.0,one name inside the other (often a parent and its subsidiary or branch)
 "Benoukraf, Touati Memorial University of Newfoundland",2,1000000.0,Memorial University of Newfoundland and Labrador,25,753973.5,"same business number, different names (a parent body's number, or an owner's)"
 "Berger, Harris-Memorial University of Newfoundland",1,1400000.0,Memorial University of Newfoundland and Labrador,25,753973.5,"same business number, different names (a parent body's number, or an owner's)"
 "Dobre, Octavia-Memorial University of Newfoundland",1,1400000.0,Memorial University of Newfoundland and Labrador,25,753973.5,"same business number, different names (a parent body's number, or an owner's)"
@@ -132,37 +129,37 @@ Bluedrop Learning Networks Inc.,3,744000.0,Bluedrop Performance Learning Inc.,8,
 NEWFOUNDLAND AND LABRADOR HYDRO,15,9688738.8,Newfoundland Labrador Hydro,3,738622.0,one name inside the other (often a parent and its subsidiary or branch)
 Flowserve Corporation,6,709318.0,Flowserve Canada Corp.,6,1130850.05,one name inside the other (often a parent and its subsidiary or branch)
 Westower communication,2,1177144.6,WESTOWER COMMUNICATIONS LTD,11,706579.35,"a spelling slip apart, with no business number, postal code or review to confirm it"
-Mi'kmaq Alsumk Mowimsikik Koqoe Association,1,701797.0,Mi'kmaq Alsumk Mowimsikik Koqoey Association,31,9903644.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
-Report Mate Inc.,5,686210.0,Sift Med Inc.,13,4389676.0,"same business number, different names (a parent body's number, or an owner's)"
-Canadian Parks and Wilderness Society,15,1964524.0,Canadian Parks and Wilderness Society Newfoundland and Labrador Chapter,10,681650.0,"same business number, different names (a parent body's number, or an owner's)"
+Mi'kmaq Alsumk Mowimsikik Koqoe Association,1,701797.0,Mi'kmaq Alsumk Mowimsikik Koqoey Association,30,9808329.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
+Canadian Parks and Wilderness Society,14,1924644.0,Canadian Parks and Wilderness Society Newfoundland and Labrador Chapter,10,681650.0,"same business number, different names (a parent body's number, or an owner's)"
 Becton Dickingson,1,677912.0,Becton Dickinson,4,2627012.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
+Report Mate Inc.,4,650210.0,Sift Med Inc.,13,4389676.0,"same business number, different names (a parent body's number, or an owner's)"
 Miawpukek Mi'kamawey Mawi'omi,55,16446753.0,MIAWPUKEK MI'KAMAWEY MAWI'OMI FIRST NATION,6,644799.0,one name inside the other (often a parent and its subsidiary or branch)
-Memorial University,37,8142666.62,Memorial University of Newfoundland - International Centre,10,638293.0,one name inside the other (often a parent and its subsidiary or branch)
-Memorial University of Newfoundland,702,540165410.12,Memorial University of Newfoundland - International Centre,10,638293.0,one name inside the other (often a parent and its subsidiary or branch)
-Eastern Regional Health Authority,11,4007350.49,WESTERN REGIONAL HEALTH AUTHORITY,6,627174.25,"a spelling slip apart, with no business number, postal code or review to confirm it"
+Eastern Regional Health Authority,11,4607350.49,WESTERN REGIONAL HEALTH AUTHORITY,6,627174.25,"a spelling slip apart, with no business number, postal code or review to confirm it"
 FIREFLY METALS CANADA LIMITED,1,613775.0,Rambler Metals and Mining Canada Limited,6,3053832.0,"same business number, different names (a parent body's number, or an owner's)"
 "Benoukraf, Touati Memorial University of Newfoundland",2,1000000.0,"Carter, Angela-Memorial University of Newfoundland",1,600000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Berger, Harris-Memorial University of Newfoundland",1,1400000.0,"Carter, Angela-Memorial University of Newfoundland",1,600000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Carter, Angela-Memorial University of Newfoundland",1,600000.0,"Dobre, Octavia-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Carter, Angela-Memorial University of Newfoundland",1,600000.0,Fisheries and Marine Institute of Memorial University,11,1009424.0,"same business number, different names (a parent body's number, or an owner's)"
-"Carter, Angela-Memorial University of Newfoundland",1,600000.0,Fisheries & Marine Institute of Memorial University of Nfld.,20,14594248.5,"same business number, different names (a parent body's number, or an owner's)"
+"Carter, Angela-Memorial University of Newfoundland",1,600000.0,Fisheries & Marine Institute of Memorial University of Nfld.,19,3294815.5,"same business number, different names (a parent body's number, or an owner's)"
 "Carter, Angela-Memorial University of Newfoundland",1,600000.0,Memorial University,37,8142666.62,"same business number, different names (a parent body's number, or an owner's)"
-"Carter, Angela-Memorial University of Newfoundland",1,600000.0,Memorial University of Newfoundland,702,540165410.12,"same business number, different names (a parent body's number, or an owner's)"
+"Carter, Angela-Memorial University of Newfoundland",1,600000.0,Memorial University of Newfoundland,703,541082578.12,"same business number, different names (a parent body's number, or an owner's)"
 "Carter, Angela-Memorial University of Newfoundland",1,600000.0,Memorial University of Newfoundland and Labrador,25,753973.5,"same business number, different names (a parent body's number, or an owner's)"
 "Carter, Angela-Memorial University of Newfoundland",1,600000.0,MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES,4,5444430.0,"same business number, different names (a parent body's number, or an owner's)"
 "Carter, Angela-Memorial University of Newfoundland",1,600000.0,"Passow, Uta-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Carter, Angela-Memorial University of Newfoundland",1,600000.0,"Ziegler, Susan-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
 BELL CANADA,6688,3503207.11,Dell Canada Inc.,9,595346.24,"a spelling slip apart, with no business number, postal code or review to confirm it"
-Grieg Marine NL Ltd.,6,2790079.6,Grieg NL Seafarms Ltd.,6,586062.6,"same business number, different names (a parent body's number, or an owner's)"
-St. John's Status of Women Council,4,569658.0,St. John's Women Centre Inc.,3,1654070.0,"same business number, different names (a parent body's number, or an owner's)"
-St. John's Status of Women Council,4,569658.0,St. John's Women's Centre,12,2532289.0,"same business number, different names (a parent body's number, or an owner's)"
+Grieg Marine NL Ltd,5,2467612.0,Grieg NL Seafarms Ltd.,6,586062.6,"same business number, different names (a parent body's number, or an owner's)"
+St. John's Status of Women Council,4,569658.0,St. John's Women Centre Inc.,2,1226270.0,"same business number, different names (a parent body's number, or an owner's)"
+St. John's Status of Women Council,4,569658.0,St. John's Women's Centre,11,1916359.0,"same business number, different names (a parent body's number, or an owner's)"
+Memorial University,37,8142666.62,Memorial University of Newfoundland - International Centre,9,563711.0,one name inside the other (often a parent and its subsidiary or branch)
+Memorial University of Newfoundland,703,541082578.12,Memorial University of Newfoundland - International Centre,9,563711.0,one name inside the other (often a parent and its subsidiary or branch)
 Hermes Medical Solution,1,560485.0,Hermes Medical Solutions,1,589325.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 COADY CONSTRUCTION & EXCAVATING LTD,17,24500505.5,Coady Construction & Excavation Limited,1,556025.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Inclusion Canada Newfoundland and Labrador Inc.,4,552008.0,NL Association for Community Living,8,811850.0,"same business number, different names (a parent body's number, or an owner's)"
 Brother T.I. Murphy Learning Resource Centre Inc.,13,3049814.0,Murphy Centre Inc.,6,547102.0,"same business number, different names (a parent body's number, or an owner's)"
+Camber Arts,8,539233.3,Gros Morne Summer Music Inc.,25,1663709.75,"same business number, different names (a parent body's number, or an owner's)"
 Heddle Marine Service (NL) Inc.,3,534854.32,HEDDLE MARINE SERVICES NL INC,6,2873520.37,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Schneider Electric Canada Inc.,15,535275.6,Schneider Electric Systems Canada Inc.,4,516303.8,one name inside the other (often a parent and its subsidiary or branch)
-Camber Arts,8,509233.3,Gros Morne Summer Music Inc.,25,1534709.75,"same business number, different names (a parent body's number, or an owner's)"
 Miawpukek Mi'kamawey Manwi'omi,4,504435.0,Miawpukek Mi'kamawey Mawi'omi,55,16446753.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 "Benoukraf, Touati Memorial University of Newfoundland",2,1000000.0,"Nguyen, Hai-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Benoukraf, Touati Memorial University of Newfoundland",2,1000000.0,"Robert, Katleen-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -179,15 +176,15 @@ Miawpukek Mi'kamawey Manwi'omi,4,504435.0,Miawpukek Mi'kamawey Mawi'omi,55,16446
 Fisheries and Marine Institute of Memorial University,11,1009424.0,"Nguyen, Hai-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
 Fisheries and Marine Institute of Memorial University,11,1009424.0,"Robert, Katleen-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
 Fisheries and Marine Institute of Memorial University,11,1009424.0,"Welch, Nicholas-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
-Fisheries & Marine Institute of Memorial University of Nfld.,20,14594248.5,"Nguyen, Hai-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
-Fisheries & Marine Institute of Memorial University of Nfld.,20,14594248.5,"Robert, Katleen-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
-Fisheries & Marine Institute of Memorial University of Nfld.,20,14594248.5,"Welch, Nicholas-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
+Fisheries & Marine Institute of Memorial University of Nfld.,19,3294815.5,"Nguyen, Hai-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
+Fisheries & Marine Institute of Memorial University of Nfld.,19,3294815.5,"Robert, Katleen-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
+Fisheries & Marine Institute of Memorial University of Nfld.,19,3294815.5,"Welch, Nicholas-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
 Memorial University,37,8142666.62,"Nguyen, Hai-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
 Memorial University,37,8142666.62,"Robert, Katleen-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
 Memorial University,37,8142666.62,"Welch, Nicholas-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
-Memorial University of Newfoundland,702,540165410.12,"Nguyen, Hai-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
-Memorial University of Newfoundland,702,540165410.12,"Robert, Katleen-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
-Memorial University of Newfoundland,702,540165410.12,"Welch, Nicholas-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
+Memorial University of Newfoundland,703,541082578.12,"Nguyen, Hai-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
+Memorial University of Newfoundland,703,541082578.12,"Robert, Katleen-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
+Memorial University of Newfoundland,703,541082578.12,"Welch, Nicholas-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
 Memorial University of Newfoundland and Labrador,25,753973.5,"Nguyen, Hai-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
 Memorial University of Newfoundland and Labrador,25,753973.5,"Robert, Katleen-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
 Memorial University of Newfoundland and Labrador,25,753973.5,"Welch, Nicholas-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -203,29 +200,22 @@ MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES,4,5444
 "Robert, Katleen-Memorial University of Newfoundland",1,500000.0,"Welch, Nicholas-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Robert, Katleen-Memorial University of Newfoundland",1,500000.0,"Ziegler, Susan-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Welch, Nicholas-Memorial University of Newfoundland",1,500000.0,"Ziegler, Susan-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
-Report Mate Inc.,5,686210.0,SiftMed Inc.,1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
+Report Mate Inc.,4,650210.0,SiftMed Inc.,1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
 Search and Rescue Volunteer Association of Canada (SARVAC),26,34702054.01,Search and Rescue Volunteer Association of Canada (SARVAC)/ Association canadienne des volontaires en recherche et sauvetage,1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
 Aqua Bounty Canada Inc.,1,500000.0,Aqua Bounty Canada Inc. and Aqua Bounty Technologies Inc.,2,3208919.0,one name inside the other (often a parent and its subsidiary or branch)
-EASTPORT PENINSULA ARTS AND HERITAGE SOCIETY INC.,15,496323.0,EASTPORT PENINSULA HERITAGE SOCIETY INC.,17,791443.0,"same business number, different names (a parent body's number, or an owner's)"
-Theatre Newfoundland Labrador,4,471348.0,TNL,24,7735463.0,"same business number, different names (a parent body's number, or an owner's)"
+EASTPORT PENINSULA ARTS AND HERITAGE SOCIETY INC.,15,496323.0,EASTPORT PENINSULA HERITAGE SOCIETY INC.,17,798243.0,"same business number, different names (a parent body's number, or an owner's)"
+Theatre Newfoundland Labrador,4,471348.0,TNL,24,7985463.0,"same business number, different names (a parent body's number, or an owner's)"
 Clarion Medical,3,468992.98,Clarion Medical Technologies,2,880000.0,one name inside the other (often a parent and its subsidiary or branch)
 Salesforce,1,457901.0,Salesforce Canada Corporation,3,728551.64,one name inside the other (often a parent and its subsidiary or branch)
-Labrador Grenfell Health,1,450000.0,Provinical Health Authority,1,450000.0,"same business number, different names (a parent body's number, or an owner's)"
 Provincial Health Authority,5,2256553.0,Provinical Health Authority,1,450000.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
-NDITIVE Technologies Inc.,6,510000.0,Nditive3D Inc.,4,449705.0,"same business number, different names (a parent body's number, or an owner's)"
 Morgan Sculpture Inc.,6,827817.42,Morgan Sculptures Inc,2,431138.65,"a spelling slip apart, with no business number, postal code or review to confirm it"
-Miawpukek,1,412990.0,Miawpukek Band,66,391526950.1,one name inside the other (often a parent and its subsidiary or branch)
-Miawpukek,1,412990.0,Miawpukek First Nation,116,33057046.42,one name inside the other (often a parent and its subsidiary or branch)
-Miawpukek,1,412990.0,Miawpukek First Nations,7,655279.0,one name inside the other (often a parent and its subsidiary or branch)
-Long Range Regional Economic Development Corporation,7,843404.0,Long Range Regional Economic Development Board,5,412875.0,one name inside the other (often a parent and its subsidiary or branch)
 Federation des Francophones du Terre-Neuve et du Labrador,2,412363.0,"LA FÉDÉRATION DES FRANCOPHONES DE TERRE-NEUVE ET DU LABRADOR, INC.",15,2609779.0,one name inside the other (often a parent and its subsidiary or branch)
-FÉDÉRATION DES FRANCOPHONES DE TERRE-NEUVE ET DU LABRADOR (LA),39,3881154.0,Federation des Francophones du Terre-Neuve et du Labrador,2,412363.0,one name inside the other (often a parent and its subsidiary or branch)
+FÉDÉRATION DES FRANCOPHONES DE TERRE-NEUVE ET DU LABRADOR (LA),39,4969410.0,Federation des Francophones du Terre-Neuve et du Labrador,2,412363.0,one name inside the other (often a parent and its subsidiary or branch)
 Talon Energy,1,406158.96,Talon Energy Services Inc.,15,3116548.68,one name inside the other (often a parent and its subsidiary or branch)
-BOULDER BOOKS LTD.,13,637710.0,Boulder Publications ltd,5,399390.0,"same business number, different names (a parent body's number, or an owner's)"
-FIRST LIGHT ST. JOHN'S FRIENDSHIP CENTRE INC.,87,45209846.58,FIRST LIGHT ST.JOHN'S NATIVE FRIENDSHIP CENTRE,2,386727.0,"same business number, different names (a parent body's number, or an owner's)"
+BOULDER BOOKS LTD.,13,715910.0,Boulder Publications ltd,5,399390.0,"same business number, different names (a parent body's number, or an owner's)"
+FIRST LIGHT ST. JOHN'S FRIENDSHIP CENTRE INC.,87,45869389.58,FIRST LIGHT ST.JOHN'S NATIVE FRIENDSHIP CENTRE,2,386727.0,"same business number, different names (a parent body's number, or an owner's)"
 FIRST LIGHT ST.JOHN'S NATIVE FRIENDSHIP CENTRE,2,386727.0,St. John's Native Friendship Centre,16,4814203.0,"same business number, different names (a parent body's number, or an owner's)"
 GIBBONS & SNOW ARCHITECTS INC.,4,382040.0,GIBBONS SNOW ARCHITECTS,19,1906092.09,one name inside the other (often a parent and its subsidiary or branch)
-Inclusion Canada Newfoundland and Labrador Inc.,4,552008.0,Newfoundland Association for Community Living,2,381299.0,"same business number, different names (a parent body's number, or an owner's)"
 "Benoukraf, Touati Memorial University of Newfoundland",2,1000000.0,Memorial University of Newfoundland - Faculty of Eng. & Applied Science,7,379000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Berger, Harris-Memorial University of Newfoundland",1,1400000.0,Memorial University of Newfoundland - Faculty of Eng. & Applied Science,7,379000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Carter, Angela-Memorial University of Newfoundland",1,600000.0,Memorial University of Newfoundland - Faculty of Eng. & Applied Science,7,379000.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -239,7 +229,8 @@ Memorial University of Newfoundland - Faculty of Eng. & Applied Science,7,379000
 81903 Newfoundland & Labrador Inc.,5,378949.0,Oliver POS Inc.,15,2413643.75,"same business number, different names (a parent body's number, or an owner's)"
 Newfoundland & Labrador Search & Rescue Inc.,1,370000.0,Newfoundland and Labrador Search and Rescue Association,4,2758273.0,one name inside the other (often a parent and its subsidiary or branch)
 Bell Aliant,8,364001.39,BELL ALIANT REGIONAL,66,158224820.73,one name inside the other (often a parent and its subsidiary or branch)
-St. John's International Women's Film & Video Festival,11,361517.0,"St. John's International Women's Film Festival, Inc.",29,2776715.0,"same business number, different names (a parent body's number, or an owner's)"
+St. John's International Women's Film & Video Festival,11,361517.0,"St. John's International Women's Film Festival, Inc.",29,2886715.0,"same business number, different names (a parent body's number, or an owner's)"
+THE SUNDAY HERALD LIMITED,2,337068.68,SUNDAY HERALD LIMITED - THE NEWFOUNDLAND HERALD,2,558145.0,one name inside the other (often a parent and its subsidiary or branch)
 Becton Dickinson,4,2627012.0,Becton Dickinson Canada Inc.,5,330781.36,one name inside the other (often a parent and its subsidiary or branch)
 International Brotherhood of Electrical Workers Local 2330,2,436034.0,United Brotherhood of Electrical Workers Local 2330,1,324976.0,"same business number, different names (a parent body's number, or an owner's)"
 ONX ENTERPRISE SOLUTIONS LTD,22,1750087.16,OnX Enterprise Solutions Canada,3,324223.03,one name inside the other (often a parent and its subsidiary or branch)
@@ -261,9 +252,9 @@ BELL CANADA,6688,3503207.11,Bell Canada Enterprises,1,250483.68,one name inside 
 "Carter, Angela-Memorial University of Newfoundland",1,600000.0,"Chen, Bing-Memorial University of Newfoundland",1,250000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Chen, Bing-Memorial University of Newfoundland",1,250000.0,"Dobre, Octavia-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Chen, Bing-Memorial University of Newfoundland",1,250000.0,Fisheries and Marine Institute of Memorial University,11,1009424.0,"same business number, different names (a parent body's number, or an owner's)"
-"Chen, Bing-Memorial University of Newfoundland",1,250000.0,Fisheries & Marine Institute of Memorial University of Nfld.,20,14594248.5,"same business number, different names (a parent body's number, or an owner's)"
+"Chen, Bing-Memorial University of Newfoundland",1,250000.0,Fisheries & Marine Institute of Memorial University of Nfld.,19,3294815.5,"same business number, different names (a parent body's number, or an owner's)"
 "Chen, Bing-Memorial University of Newfoundland",1,250000.0,Memorial University,37,8142666.62,"same business number, different names (a parent body's number, or an owner's)"
-"Chen, Bing-Memorial University of Newfoundland",1,250000.0,Memorial University of Newfoundland,702,540165410.12,"same business number, different names (a parent body's number, or an owner's)"
+"Chen, Bing-Memorial University of Newfoundland",1,250000.0,Memorial University of Newfoundland,703,541082578.12,"same business number, different names (a parent body's number, or an owner's)"
 "Chen, Bing-Memorial University of Newfoundland",1,250000.0,Memorial University of Newfoundland and Labrador,25,753973.5,"same business number, different names (a parent body's number, or an owner's)"
 "Chen, Bing-Memorial University of Newfoundland",1,250000.0,Memorial University of Newfoundland - Faculty of Eng. & Applied Science,7,379000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Chen, Bing-Memorial University of Newfoundland",1,250000.0,MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES,4,5444430.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -272,6 +263,7 @@ BELL CANADA,6688,3503207.11,Bell Canada Enterprises,1,250483.68,one name inside 
 "Chen, Bing-Memorial University of Newfoundland",1,250000.0,"Robert, Katleen-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Chen, Bing-Memorial University of Newfoundland",1,250000.0,"Welch, Nicholas-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Chen, Bing-Memorial University of Newfoundland",1,250000.0,"Ziegler, Susan-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
+Long Range Regional Economic Development Corporation,7,843404.0,Long Range Regional Economic Development Board,4,246375.0,one name inside the other (often a parent and its subsidiary or branch)
 DF Barnes Service Limited,1,244470.0,DF BARNES SERVICES LIMITED,45,15138286.17,"a spelling slip apart, with no business number, postal code or review to confirm it"
 GOVERNMENT OF NEWFOUNDLAND LABRADOR DEPARTMENT OF TRANSPORTATION & INFRASTRUCTURE,1,242765.0,Newfoundland and Labrador Department of Transportation and Infrastructure,4,41934835.0,one name inside the other (often a parent and its subsidiary or branch)
 "First Technology Association, Inc.",3,242201.0,Levitate Learning Inc.,2,387613.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -284,8 +276,6 @@ Petroleum & Environmental,3,210593.75,Petroleum & Environmental Services Inc.,5,
 Granicus,3,543251.67,Granicus Canada Holdings ULC,1,203567.77,one name inside the other (often a parent and its subsidiary or branch)
 WOODWARD AVIATION,114,2681046.92,WOODWARD AVIATION SERVICES,10,203449.67,one name inside the other (often a parent and its subsidiary or branch)
 ASL Energy Corporation,5,201261.27,EcoAxis Inc,3,396463.0,"same business number, different names (a parent body's number, or an owner's)"
-CANADIAN PARKS AND WILDERNESS,3,199167.0,Canadian Parks and Wilderness Society,15,1964524.0,one name inside the other (often a parent and its subsidiary or branch)
-CANADIAN PARKS AND WILDERNESS,3,199167.0,Canadian Parks and Wilderness Society Newfoundland and Labrador,5,295124.0,one name inside the other (often a parent and its subsidiary or branch)
 Relyon Nutec Canada Incorporated,3,475822.0,RELYON NUTEC CANADA (NL) INCORPORAT,2,197541.0,one name inside the other (often a parent and its subsidiary or branch)
 N.C.L. Contractors Ltd.,3,907669.0,Westside Asphalt and Concrete Inc.,7,196274.0,"same business number, different names (a parent body's number, or an owner's)"
 UEUSHUK FISHERIES LTD,15,3141738.01,Ueushuk Fisheries Limited Partnership,4,193375.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -303,14 +293,15 @@ Kongsberg Maritime Inc,4,165028.5,Kongsberg Maritime Canada Limited,4,2636775.8,
 Public Legal Education Association of Newfoundland,1,163300.0,Public Legal Education Association of Newfoundland and Labrador,2,326600.0,one name inside the other (often a parent and its subsidiary or branch)
 Illumina,1,161375.2,Illumina Canada,2,400040.43,one name inside the other (often a parent and its subsidiary or branch)
 Instrumentation Laboratory,2,257794.92,Instrumentation Laboratory Canada,2,161133.85,one name inside the other (often a parent and its subsidiary or branch)
-Nunatsiavut Government,242,1870743054.36,Nunatsiavut Government - DHSD,1,160280.0,"same business number, different names (a parent body's number, or an owner's)"
+Nunatsiavut Government,239,1864143476.36,Nunatsiavut Government - DHSD,1,160280.0,"same business number, different names (a parent body's number, or an owner's)"
 Nunatsiavut Government - Department of Health and Social Development (DHSD),2,368056.0,Nunatsiavut Government - DHSD,1,160280.0,"same business number, different names (a parent body's number, or an owner's)"
 Haemonetics,3,310277.0,Haemonetics Canada Ltd,1,157472.0,one name inside the other (often a parent and its subsidiary or branch)
 Fisher Scientific,9,514918.6,Fisher Scientific Company (Canada),9,156427.37,one name inside the other (often a parent and its subsidiary or branch)
 Bell Aliant,8,364001.39,Bell Aliant / Bell Canada,1,152075.0,one name inside the other (often a parent and its subsidiary or branch)
 MI'KMAW CULTURAL FOUNDATION INCORPORATED,13,1169004.0,QALIPU CULTURAL FOUNDATION INCORPORATED,14,151457.0,"same business number, different names (a parent body's number, or an owner's)"
 Lion Max Simms Memorial Camp,7,171704.75,Max Simms Administration Memorial Camp,4,150250.0,"same business number, different names (a parent body's number, or an owner's)"
-Memoral University of Newfoundland,1,150000.0,Memorial University of Newfoundland,702,540165410.12,"a spelling slip apart, with no business number, postal code or review to confirm it"
+Memoral University of Newfoundland,1,150000.0,Memorial University of Newfoundland,703,541082578.12,"a spelling slip apart, with no business number, postal code or review to confirm it"
+NDITIVE Technologies Inc.,6,510000.0,Nditive3D Inc.,3,149705.0,"same business number, different names (a parent body's number, or an owner's)"
 Brenntag,10,145292.38,Brenntag Canada Inc.,81,1673308.28,one name inside the other (often a parent and its subsidiary or branch)
 KJL Mobile Testing Inc.,1,143475.0,KJL Solutions Inc.,8,1049342.0,"same business number, different names (a parent body's number, or an owner's)"
 ENERGY RESEARCH & INNOVATION,2,143049.0,Energy Research and Innovation Newfoundland and Labrador,8,57908129.0,one name inside the other (often a parent and its subsidiary or branch)
@@ -327,10 +318,9 @@ Community Recreation Rebroadcasting,1,117761.0,The Community Recreation Rebroadc
 Makkovimiut Trust Incorporated,2,267192.04,Makkovimuit Trust Inc,1,113880.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Becton DIckenson,1,113165.0,Becton Dickingson,1,677912.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Becton DIckenson,1,113165.0,Becton Dickinson,4,2627012.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
-ASL Energy Corporation,5,201261.27,Composite Mats Canada Incorporated,4,112804.7,"same business number, different names (a parent body's number, or an owner's)"
-Composite Mats Canada Incorporated,4,112804.7,EcoAxis Inc,3,396463.0,"same business number, different names (a parent body's number, or an owner's)"
 80994 Newfoundland & Labrador Inc.,4,112031.0,Milk Moovement Inc.,6,682917.0,"same business number, different names (a parent body's number, or an owner's)"
 Harbour Main-Chapel's Cove-Lakeview,1,111855.0,Town of Harbour Main-Chapel's Cove-Lakeview,7,254479.46,one name inside the other (often a parent and its subsidiary or branch)
+NL Association for Community Living,8,811850.0,Newfoundland Association for Community Living,1,111299.0,one name inside the other (often a parent and its subsidiary or branch)
 Eastern Valve & Control Specialities,4,111168.0,EASTERN VALVE & CONTROL SPECIALTIES,42,1330862.02,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Medtronic,1,110000.0,Medtronic Canada,4,788899.0,one name inside the other (often a parent and its subsidiary or branch)
 Summit Mechanical,2,566401.45,Summit Mechanical Services,3,109795.61,one name inside the other (often a parent and its subsidiary or branch)
@@ -345,9 +335,9 @@ JBM INVESTMENTS INC.,2,102078.63,JCL Investments Inc.,16,118313222.87,"a spellin
 "Allen, Tana-Memorial University of Newfoundland",2,100000.0,"Chen, Bing-Memorial University of Newfoundland",1,250000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Allen, Tana-Memorial University of Newfoundland",2,100000.0,"Dobre, Octavia-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Allen, Tana-Memorial University of Newfoundland",2,100000.0,Fisheries and Marine Institute of Memorial University,11,1009424.0,"same business number, different names (a parent body's number, or an owner's)"
-"Allen, Tana-Memorial University of Newfoundland",2,100000.0,Fisheries & Marine Institute of Memorial University of Nfld.,20,14594248.5,"same business number, different names (a parent body's number, or an owner's)"
+"Allen, Tana-Memorial University of Newfoundland",2,100000.0,Fisheries & Marine Institute of Memorial University of Nfld.,19,3294815.5,"same business number, different names (a parent body's number, or an owner's)"
 "Allen, Tana-Memorial University of Newfoundland",2,100000.0,Memorial University,37,8142666.62,"same business number, different names (a parent body's number, or an owner's)"
-"Allen, Tana-Memorial University of Newfoundland",2,100000.0,Memorial University of Newfoundland,702,540165410.12,"same business number, different names (a parent body's number, or an owner's)"
+"Allen, Tana-Memorial University of Newfoundland",2,100000.0,Memorial University of Newfoundland,703,541082578.12,"same business number, different names (a parent body's number, or an owner's)"
 "Allen, Tana-Memorial University of Newfoundland",2,100000.0,Memorial University of Newfoundland and Labrador,25,753973.5,"same business number, different names (a parent body's number, or an owner's)"
 "Allen, Tana-Memorial University of Newfoundland",2,100000.0,Memorial University of Newfoundland - Faculty of Eng. & Applied Science,7,379000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Allen, Tana-Memorial University of Newfoundland",2,100000.0,MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES,4,5444430.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -380,7 +370,7 @@ Newfoundland Society for the Physically Disabbled,1,96200.0,Newfoundland Society
 ATLANTIC TRAILER & EQUIPMENT LIMITED,20,771436.89,ATLANTIC TRAILER EQUIPMENT LTD.,3,96117.83,one name inside the other (often a parent and its subsidiary or branch)
 Kiwanis Club of Kelligrews Incorporated,6,95591.0,"Kiwanis Club of Kelligrews, Newfoundland",2,134949.61,one name inside the other (often a parent and its subsidiary or branch)
 Industrial Engineering & Automation,2,94402.84,Industrial Engineering & Automation Solutions Ltd.,8,754831.0,one name inside the other (often a parent and its subsidiary or branch)
-St. John's Young Mens and Young Womans Christian Association,1,93950.0,St. John's Young Men's and Young Women's Christian Association,5,615668.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
+St. John's Young Mens and Young Womans Christian Association,1,93950.0,St. John's Young Men's and Young Women's Christian Association,4,416023.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Gary Budden Janitorial Services,6,1662158.49,Gary Buddens Janitorial Services,1,92877.34,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Mobia Technology Innovation,1,92375.0,Mobia Technology Innovations,8,777391.88,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Eagle River Development Association,13,1638265.37,ERDA Complex Building Comm,1,91267.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -397,11 +387,12 @@ NL Kubota Limited,21,936954.34,NEWFOUNDLAND KUBOTA LTD,5,84107.55,one name insid
 BGC BOTWOOD INC.,8,107509.0,Botwood Boys and Girls Club Inc.,5,82589.0,"same business number, different names (a parent body's number, or an owner's)"
 Medtronic,1,110000.0,Medtronic of Canada ULC,1,80559.0,one name inside the other (often a parent and its subsidiary or branch)
 Bell Aliant,8,364001.39,BELL CANADA (Bell Aliant),1,80340.0,one name inside the other (often a parent and its subsidiary or branch)
-Grand Falls Golf Club,6,77112.0,Town of Grand Falls-Windsor,66,57319038.32,"same business number, different names (a parent body's number, or an owner's)"
+Grand Falls Golf Club,6,77112.0,Town of Grand Falls-Windsor,65,43862751.32,"same business number, different names (a parent body's number, or an owner's)"
+ASL Energy Corporation,5,201261.27,Composite Mats Canada Incorporated,3,77104.7,"same business number, different names (a parent body's number, or an owner's)"
+Composite Mats Canada Incorporated,3,77104.7,EcoAxis Inc,3,396463.0,"same business number, different names (a parent body's number, or an owner's)"
 Hoskin Scientific Limited,32,647354.0,Hoskins Scientific,1,76422.1,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Roceh Diagnostics,1,75600.0,Roche Diagnostics,13,9573937.35,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Vision33 Inc,1,119000.0,Vision33 Canada Inc,1,75600.0,one name inside the other (often a parent and its subsidiary or branch)
-Department of Justice and Public Safety,1,2304033.0,"Government of Newfoundland & Labrador, Department of Justice and Public Safety",1,75242.0,one name inside the other (often a parent and its subsidiary or branch)
 "Government of Newfoundland & Labrador, Department of Justice and Public Safety",1,75242.0,NEWFOUNDLAND AND LABRADOR DEPARTMENT OF JUSTICE AND PUBLIC SAFETY,17,46374110.0,one name inside the other (often a parent and its subsidiary or branch)
 "Government of Newfoundland & Labrador, Department of Justice and Public Safety",1,75242.0,Newfoundland & Labrador Justice and Public Safety,1,3100253.27,one name inside the other (often a parent and its subsidiary or branch)
 SALTWIRE NETWORK INC,147,75020.04,SALTWIRE NETWORK INC. - NEWFOUNDLAND,17,581032.0,one name inside the other (often a parent and its subsidiary or branch)
@@ -423,7 +414,6 @@ Summit Imagin INc,1,153803.15,Summit Imaging,1,67842.0,"a spelling slip apart, w
 Newfoundland and Labrador Association of Community Business Development Corporat,61,24922177.0,NEWFOUNDLAND AND LABRADOR ASSOCIATION OF COMMUNITY BUSINESS DEVELOPMENT CORPORATIONS INC.,3,67685.0,"same business number, different names (a parent body's number, or an owner's)"
 Newfoundland & Labrador Association of Community Business Development Corporatio,8,1920768.0,NEWFOUNDLAND AND LABRADOR ASSOCIATION OF COMMUNITY BUSINESS DEVELOPMENT CORPORATIONS INC.,3,67685.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Signal Hill Tattoo Association Inc.,21,1776606.0,"Signal Hill Tattoo Assocociation, Inc.",1,67484.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
-THE SUNDAY HERALD LIMITED,2,67479.68,SUNDAY HERALD LIMITED - THE NEWFOUNDLAND HERALD,2,558145.0,one name inside the other (often a parent and its subsidiary or branch)
 Evoqua Water,1,67270.88,Evoqua Water Technologies,7,579154.91,one name inside the other (often a parent and its subsidiary or branch)
 Concept Control,1,66808.75,Concept Controls,2,109362.84,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Emerald Health Information,1,115712.51,Emerald Health Information Systems,1,65409.72,one name inside the other (often a parent and its subsidiary or branch)
@@ -471,14 +461,12 @@ East Coast Hydraulics,2,50463.0,EAST COAST HYDRAULICS NFLD LTD.,59,1477024.68,on
 Community Council of Woody Point,6,50096.0,Town of Woody Point,8,73387.0,"same business number, different names (a parent body's number, or an owner's)"
 MEMORIAL UNIVERSITY OF NEWFOUNDLAND - MEMORIAL UNIVERSITY PRESS,5,70243.0,MEMORIAL UNIVERSITY PRESS,3,50018.0,one name inside the other (often a parent and its subsidiary or branch)
 BARMAX AUTO LTD.,11,844609.0,PENNEY KIA,7,50000.0,"same business number, different names (a parent body's number, or an owner's)"
-CANADIAN PARKS AND WILDERNESS,3,199167.0,Canadian Parks and Wilderness Society Canada,1,50000.0,one name inside the other (often a parent and its subsidiary or branch)
-Canadian Parks and Wilderness Society,15,1964524.0,Canadian Parks and Wilderness Society Canada,1,50000.0,one name inside the other (often a parent and its subsidiary or branch)
+Canadian Parks and Wilderness Society,14,1924644.0,Canadian Parks and Wilderness Society Canada,1,50000.0,one name inside the other (often a parent and its subsidiary or branch)
 Golf Newfoundland & Labrador,2,50000.0,Golf Newfoundland Labrador Inc.,34,391303.0,one name inside the other (often a parent and its subsidiary or branch)
 East Coast Marine & Indsutrial Limited,2,83350.0,EAST COAST MARINE AND INDUSTRIAL,3,49193.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Youth 2000 Centre Corp,3,48228.0,Youth 2000 Centre (Y2C) Corporation,5,55483.0,"same business number, different names (a parent body's number, or an owner's)"
-BREAKWATER BOOKS LIMITED,37,2855742.48,Breakwater Brooks Limited,1,47730.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
+BREAKWATER BOOKS LIMITED,37,2944520.48,Breakwater Brooks Limited,1,47730.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 CBN (Conception Bay North) Lightning Sports Club,3,46916.0,Conception Bay North Lightning Sports Club,5,63764.0,"same business number, different names (a parent body's number, or an owner's)"
-Northern Peninsula Forest Resource Association Inc.,2,1184036.0,Northern Peninsula Forest Resources Association Inc.,1,46463.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Our Lady of Grace Parish,8,46448.0,Roman Catholic Episcopal Corp. of St. Georges,5,47738.0,"same business number, different names (a parent body's number, or an owner's)"
 Grand Bank 50+ Club,2,45566.0,Reidville 50+ Club,9,87033.0,"same business number, different names (a parent body's number, or an owner's)"
 Goulds Arena Association,7,310431.57,Goulds Lions Arena Association INC.,4,45412.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -503,7 +491,7 @@ FFAW/CAW Fisherman's Resource Centres Inc,1,39269.02,FFAW/CAW Fishermen's Resour
 NF Rugby and Swilers Rugby Football Club,4,61448.0,Swilers Rugby Football Club,3,38949.0,"same business number, different names (a parent body's number, or an owner's)"
 St. John's Amateur Baseball Association,3,38948.0,St. John's Amateur Baseball League,4,70416.0,"same business number, different names (a parent body's number, or an owner's)"
 "Fish, Food and Allied Workers-Unifo",1,439329.1,"Fish, Food and Allied Workers - UNIFOR",4,38895.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
-"Fish, Food and Allied Workers - UNIFOR",4,38895.0,"Fish, Food and Allied Workers Union",12,3290622.51,"a spelling slip apart, with no business number, postal code or review to confirm it"
+"Fish, Food and Allied Workers - UNIFOR",4,38895.0,"Fish, Food and Allied Workers Union",11,2940969.01,"a spelling slip apart, with no business number, postal code or review to confirm it"
 VIVAT COMMUNICATIONS,1,255821.55,VIVID COMMUNICATIONS INC,3,38612.8,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Royal Canadian Legion,8,38431.93,Royal Canadian Legion - Branch 50,4,47409.0,"same business number, different names (a parent body's number, or an owner's)"
 Royal Canadian Legion,8,38431.93,Royal Canadian Legion Branch 32,16,77759.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -525,7 +513,7 @@ Our Lady of Grace Parish,8,46448.0,Roman Catholic Episcopal Corp. of St. Georges
 Roman Catholic Episcopal Corp. of St. Georges,5,47738.0,Roman Catholic Episcopal Corp. of St. Georges (Our Lady of Lourdes Parish),3,36094.0,"same business number, different names (a parent body's number, or an owner's)"
 R.C. Episcopal Corporation of Grand Falls,7,37674.0,Roman Catholic Episcopal Corporation,9,35987.0,"same business number, different names (a parent body's number, or an owner's)"
 Roman Catholic Episcopal Corporation,9,35987.0,Roman Catholic Episcopal Corporation of Grand Falls,9,83030.0,"same business number, different names (a parent body's number, or an owner's)"
-848672606,1,35793.0,Tourism Bell Island Inc.,26,859377.0,"same business number, different names (a parent body's number, or an owner's)"
+848672606,1,35793.0,Tourism Bell Island Inc.,26,873777.0,"same business number, different names (a parent body's number, or an owner's)"
 Our Lady of Grace BC Parish Committee,5,35724.0,Our Lady of Grace Parish,8,46448.0,"same business number, different names (a parent body's number, or an owner's)"
 Our Lady of Grace BC Parish Committee,5,35724.0,Roman Catholic Episcopal Corp. of St. Georges,5,47738.0,"same business number, different names (a parent body's number, or an owner's)"
 Our Lady of Grace BC Parish Committee,5,35724.0,Roman Catholic Episcopal Corp. of St. Georges (Our Lady of Lourdes Parish),3,36094.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -534,7 +522,7 @@ The Governing Council of The Salvation Army,24,107312.0,The Salvation Army,10,35
 The Governing Council of The Salvation Army in Canada,36,456041.0,The Salvation Army,10,35297.72,"same business number, different names (a parent body's number, or an owner's)"
 Roman Catholic Episcopal Corporation,9,35987.0,Roman Catholic Episcopal Corporation St. Peter's,2,35000.0,"same business number, different names (a parent body's number, or an owner's)"
 Memoral University of Newfoundland,1,150000.0,Memorial Universtiy of Newfoundland,1,35000.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
-Memorial University of Newfoundland,702,540165410.12,Memorial Universtiy of Newfoundland,1,35000.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
+Memorial University of Newfoundland,703,541082578.12,Memorial Universtiy of Newfoundland,1,35000.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Mount Pearl Minor Baseball Association Inc.,7,227223.0,Mt. Pearl Minor Baseball Association Inc,1,34906.0,"same business number, different names (a parent body's number, or an owner's)"
 TORRENT RIVER DEVELOPMENT CORPORATION INC.,8,112164.0,Torrent River Development Corp./ Fishway,1,34906.0,"same business number, different names (a parent body's number, or an owner's)"
 Community Council of L'Anse Au Loup,8,34875.0,Town of L'Anse au Loup,6,86033.86,"same business number, different names (a parent body's number, or an owner's)"
@@ -543,7 +531,6 @@ Cathedral Parish of St. John the Baptist,4,381909.0,Parish of All Saints,3,34370
 STRANGEMORE' ELECTRICAL SERVICES LT,2,47621.0,STRANGEMORE'S ELECTRICAL SERVICES LTD,2,34316.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Cathedral Parish of St. John the Baptist,4,381909.0,Diocesan Synod of Eastern Newfoundland and Labrador,6,34168.0,"same business number, different names (a parent body's number, or an owner's)"
 Diocesan Synod of Eastern Newfoundland and Labrador,6,34168.0,Parish of All Saints,3,34370.0,"same business number, different names (a parent body's number, or an owner's)"
-Advanced Non-Destructive Inc.,1,33860.45,"Advanced Thermal Imaging, Inc.",2,41734.0,"same business number, different names (a parent body's number, or an owner's)"
 Glovertown Town Council,6,33689.0,Town of Glovertown,10,2404176.83,"same business number, different names (a parent body's number, or an owner's)"
 Eastern Composite Services Inc.,21,2261647.9,EASTERN COMPOSITES SERVICES,2,33467.3,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Grande Meadows Golf Course Assoc. Inc,4,33458.0,Grande Meadows Golf Course Association Inc.,4,63197.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -616,10 +603,10 @@ Charlottetown Community Council,6,26211.0,TOWN OF CHARLOTTETOWN,6,218527.0,"same
 "Chen, Bing-Memorial University of Newfoundland",1,250000.0,Johnson GEO CENTRE,2,26120.0,"same business number, different names (a parent body's number, or an owner's)"
 "Dobre, Octavia-Memorial University of Newfoundland",1,1400000.0,Johnson GEO CENTRE,2,26120.0,"same business number, different names (a parent body's number, or an owner's)"
 Fisheries and Marine Institute of Memorial University,11,1009424.0,Johnson GEO CENTRE,2,26120.0,"same business number, different names (a parent body's number, or an owner's)"
-Fisheries & Marine Institute of Memorial University of Nfld.,20,14594248.5,Johnson GEO CENTRE,2,26120.0,"same business number, different names (a parent body's number, or an owner's)"
+Fisheries & Marine Institute of Memorial University of Nfld.,19,3294815.5,Johnson GEO CENTRE,2,26120.0,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus, Memorial University of Newfoundland",32,99833.0,Johnson GEO CENTRE,2,26120.0,"same business number, different names (a parent body's number, or an owner's)"
 Johnson GEO CENTRE,2,26120.0,Memorial University,37,8142666.62,"same business number, different names (a parent body's number, or an owner's)"
-Johnson GEO CENTRE,2,26120.0,Memorial University of Newfoundland,702,540165410.12,"same business number, different names (a parent body's number, or an owner's)"
+Johnson GEO CENTRE,2,26120.0,Memorial University of Newfoundland,703,541082578.12,"same business number, different names (a parent body's number, or an owner's)"
 Johnson GEO CENTRE,2,26120.0,Memorial University of Newfoundland and Labrador,25,753973.5,"same business number, different names (a parent body's number, or an owner's)"
 Johnson GEO CENTRE,2,26120.0,Memorial University of Newfoundland - Faculty of Eng. & Applied Science,7,379000.0,"same business number, different names (a parent body's number, or an owner's)"
 Johnson GEO CENTRE,2,26120.0,MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES,4,5444430.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -665,11 +652,11 @@ TOWN OF LARK HARBOUR,10,100759.6,Town of York Harbour,3,22244.04,"a spelling sli
 "Chen, Bing-Memorial University of Newfoundland",1,250000.0,Memorial University of Newfoundland Research Grant and Contract Services,1,22050.0,"same business number, different names (a parent body's number, or an owner's)"
 "Dobre, Octavia-Memorial University of Newfoundland",1,1400000.0,Memorial University of Newfoundland Research Grant and Contract Services,1,22050.0,"same business number, different names (a parent body's number, or an owner's)"
 Fisheries and Marine Institute of Memorial University,11,1009424.0,Memorial University of Newfoundland Research Grant and Contract Services,1,22050.0,"same business number, different names (a parent body's number, or an owner's)"
-Fisheries & Marine Institute of Memorial University of Nfld.,20,14594248.5,Memorial University of Newfoundland Research Grant and Contract Services,1,22050.0,"same business number, different names (a parent body's number, or an owner's)"
+Fisheries & Marine Institute of Memorial University of Nfld.,19,3294815.5,Memorial University of Newfoundland Research Grant and Contract Services,1,22050.0,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus, Memorial University of Newfoundland",32,99833.0,Memorial University of Newfoundland Research Grant and Contract Services,1,22050.0,"same business number, different names (a parent body's number, or an owner's)"
 Johnson GEO CENTRE,2,26120.0,Memorial University of Newfoundland Research Grant and Contract Services,1,22050.0,"same business number, different names (a parent body's number, or an owner's)"
 Memorial University,37,8142666.62,Memorial University of Newfoundland Research Grant and Contract Services,1,22050.0,"same business number, different names (a parent body's number, or an owner's)"
-Memorial University of Newfoundland,702,540165410.12,Memorial University of Newfoundland Research Grant and Contract Services,1,22050.0,"same business number, different names (a parent body's number, or an owner's)"
+Memorial University of Newfoundland,703,541082578.12,Memorial University of Newfoundland Research Grant and Contract Services,1,22050.0,"same business number, different names (a parent body's number, or an owner's)"
 Memorial University of Newfoundland and Labrador,25,753973.5,Memorial University of Newfoundland Research Grant and Contract Services,1,22050.0,"same business number, different names (a parent body's number, or an owner's)"
 Memorial University of Newfoundland - Faculty of Eng. & Applied Science,7,379000.0,Memorial University of Newfoundland Research Grant and Contract Services,1,22050.0,"same business number, different names (a parent body's number, or an owner's)"
 MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES,4,5444430.0,Memorial University of Newfoundland Research Grant and Contract Services,1,22050.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -685,11 +672,11 @@ Memorial University of Newfoundland Research Grant and Contract Services,1,22050
 "Chen, Bing-Memorial University of Newfoundland",1,250000.0,Research Grant and Contract ServiceMemorial University,1,22000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Dobre, Octavia-Memorial University of Newfoundland",1,1400000.0,Research Grant and Contract ServiceMemorial University,1,22000.0,"same business number, different names (a parent body's number, or an owner's)"
 Fisheries and Marine Institute of Memorial University,11,1009424.0,Research Grant and Contract ServiceMemorial University,1,22000.0,"same business number, different names (a parent body's number, or an owner's)"
-Fisheries & Marine Institute of Memorial University of Nfld.,20,14594248.5,Research Grant and Contract ServiceMemorial University,1,22000.0,"same business number, different names (a parent body's number, or an owner's)"
+Fisheries & Marine Institute of Memorial University of Nfld.,19,3294815.5,Research Grant and Contract ServiceMemorial University,1,22000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus, Memorial University of Newfoundland",32,99833.0,Research Grant and Contract ServiceMemorial University,1,22000.0,"same business number, different names (a parent body's number, or an owner's)"
 Johnson GEO CENTRE,2,26120.0,Research Grant and Contract ServiceMemorial University,1,22000.0,"same business number, different names (a parent body's number, or an owner's)"
 Memorial University,37,8142666.62,Research Grant and Contract ServiceMemorial University,1,22000.0,"same business number, different names (a parent body's number, or an owner's)"
-Memorial University of Newfoundland,702,540165410.12,Research Grant and Contract ServiceMemorial University,1,22000.0,"same business number, different names (a parent body's number, or an owner's)"
+Memorial University of Newfoundland,703,541082578.12,Research Grant and Contract ServiceMemorial University,1,22000.0,"same business number, different names (a parent body's number, or an owner's)"
 Memorial University of Newfoundland and Labrador,25,753973.5,Research Grant and Contract ServiceMemorial University,1,22000.0,"same business number, different names (a parent body's number, or an owner's)"
 Memorial University of Newfoundland - Faculty of Eng. & Applied Science,7,379000.0,Research Grant and Contract ServiceMemorial University,1,22000.0,"same business number, different names (a parent body's number, or an owner's)"
 MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES,4,5444430.0,Research Grant and Contract ServiceMemorial University,1,22000.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -725,7 +712,7 @@ The Salvation Army Carbonear Corps,7,28314.0,The Salvation Army Governing Counci
 Wally Drake Trucking,1,20000.0,WALLY DRAKE'S TRUCKING LIMITED,3,96270.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 St. Mary's Bay North RDA,1,19875.0,St. Mary's Bay North Regional Development Association,21,1442698.81,"same business number, different names (a parent body's number, or an owner's)"
 Schneider Electric Canada Inc.,15,535275.6,Schneider Electrical Canada Inc,1,19851.83,"a spelling slip apart, with no business number, postal code or review to confirm it"
-Nickel Independent Film and Video Festival Inc.,4,19838.0,NICKEL INDEPENDENT FILM FESTIVAL INC.,9,94381.0,"same business number, different names (a parent body's number, or an owner's)"
+Nickel Independent Film and Video Festival Inc.,4,19838.0,NICKEL INDEPENDENT FILM FESTIVAL INC.,9,201881.0,"same business number, different names (a parent body's number, or an owner's)"
 Immaculate Conception Parish,5,19767.0,R.C. Episcopal Corporation of Grand Falls,7,37674.0,"same business number, different names (a parent body's number, or an owner's)"
 Immaculate Conception Parish,5,19767.0,Roman Catholic Episcopal Corporation,9,35987.0,"same business number, different names (a parent body's number, or an owner's)"
 Immaculate Conception Parish,5,19767.0,Roman Catholic Episcopal C Immaculate Conception Parish,3,33319.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -775,7 +762,7 @@ BGC Norris Arm Inc.,1,19159.0,Norris Arm Boys and Girls Club Inc.,14,261113.0,"s
 "Grenfell Campus, MemorialUniversity of Newfoundland",1,19152.0,"Ziegler, Susan-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
 Drive Products,4,71908.74,Drive Produts Inc.,1,19025.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 MADSEN DIESEL & TURBINE,362,27654225.75,Madsen Disel & Turbine Inc.,1,18977.5,"a spelling slip apart, with no business number, postal code or review to confirm it"
-Women in Resource Development Inc.,14,7806377.0,WRDC Educational Resource Centre,4,18939.0,"same business number, different names (a parent body's number, or an owner's)"
+Women in Resource Development Inc.,13,4825408.0,WRDC Educational Resource Centre,4,18939.0,"same business number, different names (a parent body's number, or an owner's)"
 Elim Pentecostal Tabernacle,6,43199.0,Evangel Pentecostal Tabernacle,3,18714.0,"same business number, different names (a parent body's number, or an owner's)"
 Evangel Pentecostal Church,8,41470.0,Evangel Pentecostal Tabernacle,3,18714.0,"same business number, different names (a parent body's number, or an owner's)"
 Evangel Pentecostal Tabernacle,3,18714.0,Pentecostal Assemblies of Newfoundland and Labrador Corporation,9,81421.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -786,7 +773,7 @@ St. Mary's Bay North Development Association,1,18533.0,St. Mary's Bay North RDA,
 West Coast Cycling Association Inc.,8,573485.0,West Coast Mountain Bike Assoc,1,18533.0,"same business number, different names (a parent body's number, or an owner's)"
 Exploits Valley SPCA,5,18486.0,Exploits Valley YMCA,5,171198.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Jath Enterprises INC.,2,18469.0,JFT Enterprises Ltd.,1,105876.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
-Qalipu Mi'kmaq First Nation Band,65,21625951.0,Qalipu Mi'maq First Nation Band,1,18267.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
+Qalipu Mi'kmaq First Nation Band,64,18712825.0,Qalipu Mi'maq First Nation Band,1,18267.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Qalipu Mi'kmaq First Nations Band,1,378286.0,Qalipu Mi'maq First Nation Band,1,18267.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 KGS Enterprises Ltd.,3,108100.0,KTM Enterprises Limited,1,18000.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 IMP Solutions,13,664471.1,RFP Solutions Inc.,1,18000.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
@@ -806,7 +793,6 @@ Glovertown Marina Yacht Club Inc.,2,17199.0,Glovertown Yacht Club Inc.,8,574421.
 Saunders Office & School Supply Ltd o/a Saunders Book Company,1,17198.3,SAUNDERS OFFICE & SCHOOL SUPPPLY LTD o/a Saunders Book Company,1,68793.6,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Southern Avalon Tourism Assoc.,1,17185.0,Southern Avalon Tourism Association,1,23882.0,"same business number, different names (a parent body's number, or an owner's)"
 Dover & Area Community Family Coalition,9,110412.0,Family Matters Child Care Center,3,17017.0,"same business number, different names (a parent body's number, or an owner's)"
-Pilley's Island Recreation Commitee,1,17007.0,Town of Pilleys Island,3,96330.0,"same business number, different names (a parent body's number, or an owner's)"
 SPRINGDALE HERITAGE SOCIETY,4,16986.0,Town of Springdale,21,681013.0,"same business number, different names (a parent body's number, or an owner's)"
 Salmonier South 50+ Club,1,25000.0,Salmonier South 50 Plus Social Club,1,16950.0,"same business number, different names (a parent body's number, or an owner's)"
 D F Banres Services Limited,1,16885.0,D.F. Barnes Services Limited,29,10204266.88,"a spelling slip apart, with no business number, postal code or review to confirm it"
@@ -923,13 +909,13 @@ PILLEY'S ISLAND RECREATION,4,13511.0,Town of Pilleys Island,3,96330.0,"same busi
 "Chen, Bing-Memorial University of Newfoundland",1,250000.0,Memorial University - Student Residences and Ancillary Operations,1,13440.0,"same business number, different names (a parent body's number, or an owner's)"
 "Dobre, Octavia-Memorial University of Newfoundland",1,1400000.0,Memorial University - Student Residences and Ancillary Operations,1,13440.0,"same business number, different names (a parent body's number, or an owner's)"
 Fisheries and Marine Institute of Memorial University,11,1009424.0,Memorial University - Student Residences and Ancillary Operations,1,13440.0,"same business number, different names (a parent body's number, or an owner's)"
-Fisheries & Marine Institute of Memorial University of Nfld.,20,14594248.5,Memorial University - Student Residences and Ancillary Operations,1,13440.0,"same business number, different names (a parent body's number, or an owner's)"
+Fisheries & Marine Institute of Memorial University of Nfld.,19,3294815.5,Memorial University - Student Residences and Ancillary Operations,1,13440.0,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus, Memorial University",6,19710.0,Memorial University - Student Residences and Ancillary Operations,1,13440.0,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus, Memorial University of Newfoundland",32,99833.0,Memorial University - Student Residences and Ancillary Operations,1,13440.0,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus, MemorialUniversity of Newfoundland",1,19152.0,Memorial University - Student Residences and Ancillary Operations,1,13440.0,"same business number, different names (a parent body's number, or an owner's)"
 Johnson GEO CENTRE,2,26120.0,Memorial University - Student Residences and Ancillary Operations,1,13440.0,"same business number, different names (a parent body's number, or an owner's)"
 Memorial University,37,8142666.62,Memorial University - Student Residences and Ancillary Operations,1,13440.0,"same business number, different names (a parent body's number, or an owner's)"
-Memorial University of Newfoundland,702,540165410.12,Memorial University - Student Residences and Ancillary Operations,1,13440.0,"same business number, different names (a parent body's number, or an owner's)"
+Memorial University of Newfoundland,703,541082578.12,Memorial University - Student Residences and Ancillary Operations,1,13440.0,"same business number, different names (a parent body's number, or an owner's)"
 Memorial University of Newfoundland and Labrador,25,753973.5,Memorial University - Student Residences and Ancillary Operations,1,13440.0,"same business number, different names (a parent body's number, or an owner's)"
 Memorial University of Newfoundland - Faculty of Eng. & Applied Science,7,379000.0,Memorial University - Student Residences and Ancillary Operations,1,13440.0,"same business number, different names (a parent body's number, or an owner's)"
 MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES,4,5444430.0,Memorial University - Student Residences and Ancillary Operations,1,13440.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -968,7 +954,7 @@ Johnson GEO CENTRE,2,26120.0,"Memorial University of Newfoundland, Department of
 Happy Valley Goose Bay Society For The Prevention of Cruelty to Animals,5,23098.0,Happy Valley-Goose Bay SPCA,3,12919.0,"same business number, different names (a parent body's number, or an owner's)"
 Diligent Canada,3,83828.86,Dilligent Canada,1,12917.35,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Eastern Health,4,1592817.0,"Eastern Health, Sexual Assault Nursing Program",1,12900.0,"same business number, different names (a parent body's number, or an owner's)"
-"Eastern Health, Sexual Assault Nursing Program",1,12900.0,Eastern Regional Health Authority,11,4007350.49,"same business number, different names (a parent body's number, or an owner's)"
+"Eastern Health, Sexual Assault Nursing Program",1,12900.0,Eastern Regional Health Authority,11,4607350.49,"same business number, different names (a parent body's number, or an owner's)"
 "Eastern Health, Sexual Assault Nursing Program",1,12900.0,NEWFOUNDLAND & LABRADOR HEALTH SERVICES,7,1947786.61,"same business number, different names (a parent body's number, or an owner's)"
 "Eastern Health, Sexual Assault Nursing Program",1,12900.0,Provincial Health Authority,5,2256553.0,"same business number, different names (a parent body's number, or an owner's)"
 HARBOUR AUTHORITY OF SOUTH EAST BIG,1,44275.0,Harbour authority of south East Bight,3,12893.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
@@ -996,8 +982,8 @@ HAROLD SNOW SERVICE GROUP,6,218240.82,Harold Snow Service Groups,1,12495.0,"a sp
 LinkedIn Ireland Unlimited Company,3,77850.0,Linkedln Ireland Unlimited Company,1,12480.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Friends of Pippy Park,2,12447.0,The Friends of Pippy Park (FoPP),3,26535.0,"same business number, different names (a parent body's number, or an owner's)"
 St. John's Status of Women Council,4,569658.0,St. John's Status of Women Council/St. John's Women's Centre,2,12271.0,"same business number, different names (a parent body's number, or an owner's)"
-St. John's Status of Women Council/St. John's Women's Centre,2,12271.0,St. John's Women Centre Inc.,3,1654070.0,"same business number, different names (a parent body's number, or an owner's)"
-St. John's Status of Women Council/St. John's Women's Centre,2,12271.0,St. John's Women's Centre,12,2532289.0,"same business number, different names (a parent body's number, or an owner's)"
+St. John's Status of Women Council/St. John's Women's Centre,2,12271.0,St. John's Women Centre Inc.,2,1226270.0,"same business number, different names (a parent body's number, or an owner's)"
+St. John's Status of Women Council/St. John's Women's Centre,2,12271.0,St. John's Women's Centre,11,1916359.0,"same business number, different names (a parent body's number, or an owner's)"
 Provincial Council NFLD and Labrador,1,12220.0,Scouts Canada,4,25905.0,"same business number, different names (a parent body's number, or an owner's)"
 Anglican Cemetery Committee of St. John's and Mt Pearl,11,71316.0,The Anglican Committee of St. John's & Mt. Pearl,2,12220.0,"same business number, different names (a parent body's number, or an owner's)"
 Stephenville Athletics,2,12206.0,Whaleback Senior Citizens Club,5,79546.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -1048,8 +1034,8 @@ Dermot Lee Memorial Royal Canadian Legion,2,19493.0,Royal Canadian Legion Br. 62
 Royal Canadian Legion Br. 62,2,11643.0,Royal Canadian Legion Branch 62,3,53984.0,"same business number, different names (a parent body's number, or an owner's)"
 Town of Winterton,9,579902.0,Town of Winterton Outside Pond RV Park,3,11633.0,"same business number, different names (a parent body's number, or an owner's)"
 St. John's Status of Women Council,4,569658.0,St John's Status of Women/ St. John's Women's Centre,2,11626.0,"same business number, different names (a parent body's number, or an owner's)"
-St John's Status of Women/ St. John's Women's Centre,2,11626.0,St. John's Women Centre Inc.,3,1654070.0,"same business number, different names (a parent body's number, or an owner's)"
-St John's Status of Women/ St. John's Women's Centre,2,11626.0,St. John's Women's Centre,12,2532289.0,"same business number, different names (a parent body's number, or an owner's)"
+St John's Status of Women/ St. John's Women's Centre,2,11626.0,St. John's Women Centre Inc.,2,1226270.0,"same business number, different names (a parent body's number, or an owner's)"
+St John's Status of Women/ St. John's Women's Centre,2,11626.0,St. John's Women's Centre,11,1916359.0,"same business number, different names (a parent body's number, or an owner's)"
 Saltwater Community Association Inc.,5,252466.0,Spirit Riders Therapeutic Association,5,11617.0,"same business number, different names (a parent body's number, or an owner's)"
 Bay de Verde Recreation,3,29467.0,Bay de Verde Recreation Commission,2,11464.0,"same business number, different names (a parent body's number, or an owner's)"
 Bay de Verde Recreation Commission,2,11464.0,Bay de Verde Recreation Committee,3,21834.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -1067,7 +1053,7 @@ Emerald Business Development Corporation,15,5724683.0,Emerald Business Developme
 Christie Lite Sales Ltd,1,10966.5,CHRISTIE LITES SALES LTD,6,343112.84,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Christie Lite Sales Ltd,1,10966.5,Christine Lite Sales Ltd,2,29422.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Theatre Newfoundland Labrador,4,471348.0,TNL - Theatre Newfoundland Labrador,1,10958.0,"same business number, different names (a parent body's number, or an owner's)"
-TNL,24,7735463.0,TNL - Theatre Newfoundland Labrador,1,10958.0,"same business number, different names (a parent body's number, or an owner's)"
+TNL,24,7985463.0,TNL - Theatre Newfoundland Labrador,1,10958.0,"same business number, different names (a parent body's number, or an owner's)"
 Basilica Museum & Archives Inc.,2,12975.0,St. Patrick's Parish,3,10957.0,"same business number, different names (a parent body's number, or an owner's)"
 RC Episcopal Corporation of St. John's,3,11875.0,St. Patrick's Parish,3,10957.0,"same business number, different names (a parent body's number, or an owner's)"
 Roman Catholic Episcopal Corporation,9,35987.0,St. Patrick's Parish,3,10957.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -1099,13 +1085,13 @@ HARBOUR AUTHORITY OF GREEN'S HARBOU,1,41975.0,Harbour Authority of Green's Harbo
 "Chen, Bing-Memorial University of Newfoundland",1,250000.0,"Grenfell Campus, MUN",5,10261.0,"same business number, different names (a parent body's number, or an owner's)"
 "Dobre, Octavia-Memorial University of Newfoundland",1,1400000.0,"Grenfell Campus, MUN",5,10261.0,"same business number, different names (a parent body's number, or an owner's)"
 Fisheries and Marine Institute of Memorial University,11,1009424.0,"Grenfell Campus, MUN",5,10261.0,"same business number, different names (a parent body's number, or an owner's)"
-Fisheries & Marine Institute of Memorial University of Nfld.,20,14594248.5,"Grenfell Campus, MUN",5,10261.0,"same business number, different names (a parent body's number, or an owner's)"
+Fisheries & Marine Institute of Memorial University of Nfld.,19,3294815.5,"Grenfell Campus, MUN",5,10261.0,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus, Memorial University",6,19710.0,"Grenfell Campus, MUN",5,10261.0,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus, Memorial University of Newfoundland",32,99833.0,"Grenfell Campus, MUN",5,10261.0,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus, MemorialUniversity of Newfoundland",1,19152.0,"Grenfell Campus, MUN",5,10261.0,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus, MUN",5,10261.0,Johnson GEO CENTRE,2,26120.0,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus, MUN",5,10261.0,Memorial University,37,8142666.62,"same business number, different names (a parent body's number, or an owner's)"
-"Grenfell Campus, MUN",5,10261.0,Memorial University of Newfoundland,702,540165410.12,"same business number, different names (a parent body's number, or an owner's)"
+"Grenfell Campus, MUN",5,10261.0,Memorial University of Newfoundland,703,541082578.12,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus, MUN",5,10261.0,Memorial University of Newfoundland and Labrador,25,753973.5,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus, MUN",5,10261.0,"Memorial University of Newfoundland, Department of Varsity Athletics (HKR)",1,12936.0,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus, MUN",5,10261.0,Memorial University of Newfoundland - Faculty of Eng. & Applied Science,7,379000.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -1164,9 +1150,7 @@ Dermot Lee Memorial RCLEGION Br 62,1,9973.0,Royal Canadian Legion Br. 62,2,11643
 Dermot Lee Memorial RCLEGION Br 62,1,9973.0,Royal Canadian Legion Branch 62,3,53984.0,"same business number, different names (a parent body's number, or an owner's)"
 Bartlett's Harbour Castor River North & South Fire Department,2,17677.0,"Bartletts Harbour, Castor River North and South Fire Hall",1,9973.0,"same business number, different names (a parent body's number, or an owner's)"
 Baymen Rugby Football Club,6,39128.0,Baymen Rugby Football Club Inc. Baymen Rugby Club Challenge 93,1,9973.0,"same business number, different names (a parent body's number, or an owner's)"
-Benevolent and Protective Order of Elks Corner Brook #505,1,24000.0,CORNER BROOK ELKS CLUB,1,9968.0,"same business number, different names (a parent body's number, or an owner's)"
 Benevolent and Protective Order of Elks Corner Brook #505,1,24000.0,Corner Brook Elks Lodge,1,9968.0,"same business number, different names (a parent body's number, or an owner's)"
-CORNER BROOK ELKS CLUB,1,9968.0,Corner Brook Elks Lodge,1,9968.0,"same business number, different names (a parent body's number, or an owner's)"
 Tilting Historic Foundation,3,9863.0,Tilting Historic Trust Foundation,5,46484.0,"same business number, different names (a parent body's number, or an owner's)"
 Community of Gillams,5,84933.0,TOWN OF GILLAMS,5,9756.0,"same business number, different names (a parent body's number, or an owner's)"
 Gillams Recreation,1,10693.0,TOWN OF GILLAMS,5,9756.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -1210,7 +1194,7 @@ THE DERMOT LEE MEMORIAL BRANCH ROYAL CANADIAN LEGION BRANCH 62,1,8660.0,Dermot L
 THE DERMOT LEE MEMORIAL BRANCH ROYAL CANADIAN LEGION BRANCH 62,1,8660.0,"Dermot Lee Memorial, Royal Canadian Legion Br. 62",3,26599.0,"same business number, different names (a parent body's number, or an owner's)"
 THE DERMOT LEE MEMORIAL BRANCH ROYAL CANADIAN LEGION BRANCH 62,1,8660.0,Royal Canadian Legion Br. 62,2,11643.0,"same business number, different names (a parent body's number, or an owner's)"
 THE DERMOT LEE MEMORIAL BRANCH ROYAL CANADIAN LEGION BRANCH 62,1,8660.0,Royal Canadian Legion Branch 62,3,53984.0,"same business number, different names (a parent body's number, or an owner's)"
-CORNER BROOK ARTS CENTRE ASSOCIATION INC.,17,658356.0,The Rotary Arts Centre,2,8550.0,"same business number, different names (a parent body's number, or an owner's)"
+CORNER BROOK ARTS CENTRE ASSOCIATION INC.,17,699056.0,The Rotary Arts Centre,2,8550.0,"same business number, different names (a parent body's number, or an owner's)"
 Gander Minor Softball Associat,1,8766.0,Gander Minor Softball Association,1,8548.0,"same business number, different names (a parent body's number, or an owner's)"
 DAL ENTERPRISES LTD,6,11753.0,TJL Enterprises Ltd.,2,8514.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 JSL Enterprises Limited o/a All Wheel Drive,2,117216.51,TJL Enterprises Ltd.,2,8514.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
@@ -1348,10 +1332,10 @@ Canadian Forces Base Gander Family Resource Centre,5,52258.0,Gander Military Fam
 BBBS of Eastern Newfoundland Inc,1,6110.0,Big Brothers Big Sisters of Eastern Newfoundland Inc,8,79075.0,"same business number, different names (a parent body's number, or an owner's)"
 Conception Bay Regional Community Centre,4,18939.0,Princess Sheila NaGeira Theatre Board,1,6110.0,"same business number, different names (a parent body's number, or an owner's)"
 Advocate Youth Services,1,6110.0,Advocate Youth Services Cooperative,2,10177.0,"same business number, different names (a parent body's number, or an owner's)"
-Camber Arts,8,509233.3,Gros Morne Summe Music Incorporated,1,6096.0,"same business number, different names (a parent body's number, or an owner's)"
+Camber Arts,8,539233.3,Gros Morne Summe Music Incorporated,1,6096.0,"same business number, different names (a parent body's number, or an owner's)"
 Eastern Health,4,1592817.0,General Hospital Auxiliary,2,6041.0,"same business number, different names (a parent body's number, or an owner's)"
 "Eastern Health, Sexual Assault Nursing Program",1,12900.0,General Hospital Auxiliary,2,6041.0,"same business number, different names (a parent body's number, or an owner's)"
-Eastern Regional Health Authority,11,4007350.49,General Hospital Auxiliary,2,6041.0,"same business number, different names (a parent body's number, or an owner's)"
+Eastern Regional Health Authority,11,4607350.49,General Hospital Auxiliary,2,6041.0,"same business number, different names (a parent body's number, or an owner's)"
 General Hospital Auxiliary,2,6041.0,NEWFOUNDLAND & LABRADOR HEALTH SERVICES,7,1947786.61,"same business number, different names (a parent body's number, or an owner's)"
 General Hospital Auxiliary,2,6041.0,Provincial Health Authority,5,2256553.0,"same business number, different names (a parent body's number, or an owner's)"
 The Heart's Content Mizzen Heritage Society Inc.,15,751621.0,Mizzen Heritage Society,2,6041.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -1438,14 +1422,14 @@ Delta Hotel,37,26928.87,Delta Hotels,10,5288.98,"a spelling slip apart, with no 
 "Chen, Bing-Memorial University of Newfoundland",1,250000.0,"Conference & Event Services, Signal Hill Campus, Memorial University",1,5253.0,"same business number, different names (a parent body's number, or an owner's)"
 "Conference & Event Services, Signal Hill Campus, Memorial University",1,5253.0,"Dobre, Octavia-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Conference & Event Services, Signal Hill Campus, Memorial University",1,5253.0,Fisheries and Marine Institute of Memorial University,11,1009424.0,"same business number, different names (a parent body's number, or an owner's)"
-"Conference & Event Services, Signal Hill Campus, Memorial University",1,5253.0,Fisheries & Marine Institute of Memorial University of Nfld.,20,14594248.5,"same business number, different names (a parent body's number, or an owner's)"
+"Conference & Event Services, Signal Hill Campus, Memorial University",1,5253.0,Fisheries & Marine Institute of Memorial University of Nfld.,19,3294815.5,"same business number, different names (a parent body's number, or an owner's)"
 "Conference & Event Services, Signal Hill Campus, Memorial University",1,5253.0,"Grenfell Campus, Memorial University",6,19710.0,"same business number, different names (a parent body's number, or an owner's)"
 "Conference & Event Services, Signal Hill Campus, Memorial University",1,5253.0,"Grenfell Campus, Memorial University of Newfoundland",32,99833.0,"same business number, different names (a parent body's number, or an owner's)"
 "Conference & Event Services, Signal Hill Campus, Memorial University",1,5253.0,"Grenfell Campus, MemorialUniversity of Newfoundland",1,19152.0,"same business number, different names (a parent body's number, or an owner's)"
 "Conference & Event Services, Signal Hill Campus, Memorial University",1,5253.0,"Grenfell Campus, MUN",5,10261.0,"same business number, different names (a parent body's number, or an owner's)"
 "Conference & Event Services, Signal Hill Campus, Memorial University",1,5253.0,Johnson GEO CENTRE,2,26120.0,"same business number, different names (a parent body's number, or an owner's)"
 "Conference & Event Services, Signal Hill Campus, Memorial University",1,5253.0,Memorial University,37,8142666.62,"same business number, different names (a parent body's number, or an owner's)"
-"Conference & Event Services, Signal Hill Campus, Memorial University",1,5253.0,Memorial University of Newfoundland,702,540165410.12,"same business number, different names (a parent body's number, or an owner's)"
+"Conference & Event Services, Signal Hill Campus, Memorial University",1,5253.0,Memorial University of Newfoundland,703,541082578.12,"same business number, different names (a parent body's number, or an owner's)"
 "Conference & Event Services, Signal Hill Campus, Memorial University",1,5253.0,Memorial University of Newfoundland and Labrador,25,753973.5,"same business number, different names (a parent body's number, or an owner's)"
 "Conference & Event Services, Signal Hill Campus, Memorial University",1,5253.0,"Memorial University of Newfoundland, Department of Varsity Athletics (HKR)",1,12936.0,"same business number, different names (a parent body's number, or an owner's)"
 "Conference & Event Services, Signal Hill Campus, Memorial University",1,5253.0,Memorial University of Newfoundland - Faculty of Eng. & Applied Science,7,379000.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -1701,7 +1685,7 @@ BPHC Ladies Auxilliary Gift Shop,1,5113.0,Burin Health Care Centre Auxilary Gift
 Burin Health Care Centre Auxilary Gift Shop,1,4206.0,Burin Peninsula Health Care Auxiliary,2,5668.0,"same business number, different names (a parent body's number, or an owner's)"
 Burin Health Care Centre Auxilary Gift Shop,1,4206.0,Burin Peninsula Health Care Centre Auxiliary,1,4987.0,"same business number, different names (a parent body's number, or an owner's)"
 Bonavista Horticultural Maintenance Committee,3,12302.0,Bonavista Horticultural Society Inc,1,4206.0,"same business number, different names (a parent body's number, or an owner's)"
-Newfoundland and Labrador,15,65666090.53,Newfoundland & Labrador Amateur Wrestling Association,1,4191.0,"same business number, different names (a parent body's number, or an owner's)"
+Newfoundland and Labrador,14,63704090.53,Newfoundland & Labrador Amateur Wrestling Association,1,4191.0,"same business number, different names (a parent body's number, or an owner's)"
 81351 Newfoundland and Labrador Inc.,2,4164.0,81351 NL & LAB INC,2,4475.0,"same business number, different names (a parent body's number, or an owner's)"
 Forteau Town Council,2,4151.0,TOWN OF FORTEAU,21,356279.72,"same business number, different names (a parent body's number, or an owner's)"
 Spirit of Newfoundland Ltd.,2,4104.0,Spirit of Newfoundland Productions Ltd.,3,130179.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -1887,7 +1871,6 @@ RC Episcopal Corporation of Grand Falls,1,3475.0,Roman Catholic Parish of Brigus
 Supported Employment Deer Lake & Extended Regions,4,21712.0,Supported Employment Deer Lake & Extended Regions - Green Depot,1,3406.0,"same business number, different names (a parent body's number, or an owner's)"
 Supported Employment Deer Lake & Extended Regions - Green Depot,1,3406.0,Supported Employment for Deer Lake & Extended Region Inc,2,10100.0,"same business number, different names (a parent body's number, or an owner's)"
 Exploits Valley Society for the Prevention of Cruelty to Annimals,1,3406.0,Exploits Valley SPCA,5,18486.0,"same business number, different names (a parent body's number, or an owner's)"
-Port Rexton Community Council,4,8073.0,Port Rexton Recreation Commission,1,3406.0,"same business number, different names (a parent body's number, or an owner's)"
 Town of Cow Head,10,131692.0,Town of Crow Head,2,3398.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Forteau Community Council,2,3394.0,Forteau Town Council,2,4151.0,"same business number, different names (a parent body's number, or an owner's)"
 Forteau Community Council,2,3394.0,TOWN OF FORTEAU,21,356279.72,"same business number, different names (a parent body's number, or an owner's)"
@@ -2231,7 +2214,7 @@ Cecil Brown,2,2745.0,Cecil W. Brown,2,3744.0,"same business number, different na
 Blazing Horizon Cottages,1,2736.0,Cecil Brown,2,2745.0,"same business number, different names (a parent body's number, or an owner's)"
 Blazing Horizon Cottages,1,2736.0,Cecil Brown and Barbara Brown,2,170000.0,"same business number, different names (a parent body's number, or an owner's)"
 Blazing Horizon Cottages,1,2736.0,Cecil W. Brown,2,3744.0,"same business number, different names (a parent body's number, or an owner's)"
-EASTERN EDGE ART GALLERY INC.,15,579745.0,Eastern Edge Gallery Inc.,2,2736.0,"same business number, different names (a parent body's number, or an owner's)"
+EASTERN EDGE ART GALLERY INC.,15,622645.0,Eastern Edge Gallery Inc.,2,2736.0,"same business number, different names (a parent body's number, or an owner's)"
 TOWN OF SEAL COVE,10,20358.0,Town of Seal Cove Fortune Bay,1,2735.0,"same business number, different names (a parent body's number, or an owner's)"
 Glenburnie Birchy Head Shoal B,5,33302.0,Glenburnie-Birchy Head-Shoal Brook Community Council,2,2708.0,"same business number, different names (a parent body's number, or an owner's)"
 Glenburnie-Birchy Head-Shoal Brook Community Council,2,2708.0,Town of Glenburnie-Birchy Head-Shoal Brook,8,186087.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -2457,7 +2440,7 @@ FIRE SERVICE TOWN OF POINT MAY,1,2627.0,Town of Point May,1,1386.0,"same busines
 "Conference & Event Services, Signal Hill Campus, Memorial University",1,5253.0,"Signal Hill Campus, Memorial University of NL",1,1368.0,"same business number, different names (a parent body's number, or an owner's)"
 "Dobre, Octavia-Memorial University of Newfoundland",1,1400000.0,"Signal Hill Campus, Memorial University of NL",1,1368.0,"same business number, different names (a parent body's number, or an owner's)"
 Fisheries and Marine Institute of Memorial University,11,1009424.0,"Signal Hill Campus, Memorial University of NL",1,1368.0,"same business number, different names (a parent body's number, or an owner's)"
-Fisheries & Marine Institute of Memorial University of Nfld.,20,14594248.5,"Signal Hill Campus, Memorial University of NL",1,1368.0,"same business number, different names (a parent body's number, or an owner's)"
+Fisheries & Marine Institute of Memorial University of Nfld.,19,3294815.5,"Signal Hill Campus, Memorial University of NL",1,1368.0,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus, Memorial University",6,19710.0,"Signal Hill Campus, Memorial University of NL",1,1368.0,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus, Memorial University of Newfoundland",32,99833.0,"Signal Hill Campus, Memorial University of NL",1,1368.0,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus, MemorialUniversity of Newfoundland",1,19152.0,"Signal Hill Campus, Memorial University of NL",1,1368.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -2467,7 +2450,7 @@ Johnson GEO CENTRE,2,26120.0,"Signal Hill Campus, Memorial University of NL",1,1
 Memorial University,37,8142666.62,"Signal Hill Campus, Memorial University of NL",1,1368.0,"same business number, different names (a parent body's number, or an owner's)"
 "Memorial University, Grenfell Campus",1,2439.0,"Signal Hill Campus, Memorial University of NL",1,1368.0,"same business number, different names (a parent body's number, or an owner's)"
 Memorial University of Newfoudland,1,1784.0,"Signal Hill Campus, Memorial University of NL",1,1368.0,"same business number, different names (a parent body's number, or an owner's)"
-Memorial University of Newfoundland,702,540165410.12,"Signal Hill Campus, Memorial University of NL",1,1368.0,"same business number, different names (a parent body's number, or an owner's)"
+Memorial University of Newfoundland,703,541082578.12,"Signal Hill Campus, Memorial University of NL",1,1368.0,"same business number, different names (a parent body's number, or an owner's)"
 Memorial University of Newfoundland and Labrador,25,753973.5,"Signal Hill Campus, Memorial University of NL",1,1368.0,"same business number, different names (a parent body's number, or an owner's)"
 "Memorial University of Newfoundland, Department of Varsity Athletics (HKR)",1,12936.0,"Signal Hill Campus, Memorial University of NL",1,1368.0,"same business number, different names (a parent body's number, or an owner's)"
 Memorial University of Newfoundland - Faculty of Eng. & Applied Science,7,379000.0,"Signal Hill Campus, Memorial University of NL",1,1368.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -2482,7 +2465,7 @@ Research Grant and Contract ServiceMemorial University,1,22000.0,"Signal Hill Ca
 "Signal Hill Campus, Memorial University of NL",1,1368.0,"Ziegler, Susan-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
 Eastern Health,4,1592817.0,Eastern Health Regional Integrated Health Authority,1,1368.0,"same business number, different names (a parent body's number, or an owner's)"
 Eastern Health Regional Integrated Health Authority,1,1368.0,"Eastern Health, Sexual Assault Nursing Program",1,12900.0,"same business number, different names (a parent body's number, or an owner's)"
-Eastern Health Regional Integrated Health Authority,1,1368.0,Eastern Regional Health Authority,11,4007350.49,"same business number, different names (a parent body's number, or an owner's)"
+Eastern Health Regional Integrated Health Authority,1,1368.0,Eastern Regional Health Authority,11,4607350.49,"same business number, different names (a parent body's number, or an owner's)"
 Eastern Health Regional Integrated Health Authority,1,1368.0,General Hospital Auxiliary,2,6041.0,"same business number, different names (a parent body's number, or an owner's)"
 Eastern Health Regional Integrated Health Authority,1,1368.0,NEWFOUNDLAND & LABRADOR HEALTH SERVICES,7,1947786.61,"same business number, different names (a parent body's number, or an owner's)"
 Eastern Health Regional Integrated Health Authority,1,1368.0,Provincial Health Authority,5,2256553.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -2564,7 +2547,6 @@ Jakeman All Grade School,2,1800.0,MENIHEK HIGH SCHOOL,1,1000.0,"same business nu
 Central Northeast Health Foundation in Partnership with the Notre Dame Bay Memorial Health Centre,1,3125.0,Central Regional Integrated Health Authority,1,1000.0,"same business number, different names (a parent body's number, or an owner's)"
 Advocate Youth,1,1000.0,Advocate Youth Services Cooperative,2,10177.0,"same business number, different names (a parent body's number, or an owner's)"
 Advocate Youth,1,1000.0,Advocate Youth Services Cooperative CYN,1,3696.0,"same business number, different names (a parent body's number, or an owner's)"
-Labrador Grenfell Health,1,450000.0,LABRADOR-GRENFELL RIHA,1,1000.0,"same business number, different names (a parent body's number, or an owner's)"
 LABRADOR-GRENFELL RIHA,1,1000.0,Provinical Health Authority,1,450000.0,"same business number, different names (a parent body's number, or an owner's)"
 Corporal Jamie Brenden Murphy Community Play Park,1,2986.0,Long Range Acadamy,1,771.0,"same business number, different names (a parent body's number, or an owner's)"
 Jakeman All Grade School,2,1800.0,Long Range Acadamy,1,771.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -2642,7 +2624,7 @@ North Altantic,1,3.08,north atlantic,29,650672.21,"a spelling slip apart, with n
 "Conference & Event Services, Signal Hill Campus, Memorial University",1,5253.0,"Grenfell Campus Art Gallery, Grenfell Campus, Memorial University",1,0.0,"same business number, different names (a parent body's number, or an owner's)"
 "Dobre, Octavia-Memorial University of Newfoundland",1,1400000.0,"Grenfell Campus Art Gallery, Grenfell Campus, Memorial University",1,0.0,"same business number, different names (a parent body's number, or an owner's)"
 Fisheries and Marine Institute of Memorial University,11,1009424.0,"Grenfell Campus Art Gallery, Grenfell Campus, Memorial University",1,0.0,"same business number, different names (a parent body's number, or an owner's)"
-Fisheries & Marine Institute of Memorial University of Nfld.,20,14594248.5,"Grenfell Campus Art Gallery, Grenfell Campus, Memorial University",1,0.0,"same business number, different names (a parent body's number, or an owner's)"
+Fisheries & Marine Institute of Memorial University of Nfld.,19,3294815.5,"Grenfell Campus Art Gallery, Grenfell Campus, Memorial University",1,0.0,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus Art Gallery, Grenfell Campus, Memorial University",1,0.0,"Grenfell Campus, Memorial University",6,19710.0,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus Art Gallery, Grenfell Campus, Memorial University",1,0.0,"Grenfell Campus, Memorial University of Newfoundland",32,99833.0,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus Art Gallery, Grenfell Campus, Memorial University",1,0.0,"Grenfell Campus, MemorialUniversity of Newfoundland",1,19152.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -2652,7 +2634,7 @@ Fisheries & Marine Institute of Memorial University of Nfld.,20,14594248.5,"Gren
 "Grenfell Campus Art Gallery, Grenfell Campus, Memorial University",1,0.0,Memorial University,37,8142666.62,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus Art Gallery, Grenfell Campus, Memorial University",1,0.0,"Memorial University, Grenfell Campus",1,2439.0,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus Art Gallery, Grenfell Campus, Memorial University",1,0.0,Memorial University of Newfoudland,1,1784.0,"same business number, different names (a parent body's number, or an owner's)"
-"Grenfell Campus Art Gallery, Grenfell Campus, Memorial University",1,0.0,Memorial University of Newfoundland,702,540165410.12,"same business number, different names (a parent body's number, or an owner's)"
+"Grenfell Campus Art Gallery, Grenfell Campus, Memorial University",1,0.0,Memorial University of Newfoundland,703,541082578.12,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus Art Gallery, Grenfell Campus, Memorial University",1,0.0,Memorial University of Newfoundland and Labrador,25,753973.5,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus Art Gallery, Grenfell Campus, Memorial University",1,0.0,"Memorial University of Newfoundland, Department of Varsity Athletics (HKR)",1,12936.0,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus Art Gallery, Grenfell Campus, Memorial University",1,0.0,Memorial University of Newfoundland - Faculty of Eng. & Applied Science,7,379000.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -2666,7 +2648,7 @@ Fisheries & Marine Institute of Memorial University of Nfld.,20,14594248.5,"Gren
 "Grenfell Campus Art Gallery, Grenfell Campus, Memorial University",1,0.0,"Signal Hill Campus, Memorial University of NL",1,1368.0,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus Art Gallery, Grenfell Campus, Memorial University",1,0.0,"Welch, Nicholas-Memorial University of Newfoundland",1,500000.0,"same business number, different names (a parent body's number, or an owner's)"
 "Grenfell Campus Art Gallery, Grenfell Campus, Memorial University",1,0.0,"Ziegler, Susan-Memorial University of Newfoundland",1,1400000.0,"same business number, different names (a parent body's number, or an owner's)"
-2G Outfitters Ltd.,1,0.0,Clifford Vincent,2,174229.45,"same business number, different names (a parent body's number, or an owner's)"
+2G Outfitters Ltd.,1,0.0,Clifford Vincent,1,64229.45,"same business number, different names (a parent body's number, or an owner's)"
 Fogo Island Shop ¯ A Division of Shorefast Social Enterprises Inc.,1,0.0,Shorefast Social Enterprises Inc.,5,2880000.0,"same business number, different names (a parent body's number, or an owner's)"
 Dildo Island Boat Tours & Adventures Ltd.,7,362340.0,Dildo Island Tours and Adventures inc.,1,0.0,"same business number, different names (a parent body's number, or an owner's)"
 Provincial Council NFLD and Labrador,1,12220.0,Scouts Canada (NL) Properties Inc.,1,0.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -2677,7 +2659,6 @@ STAR OF THE SEA ASSOCIATION(2005) INC,1,0.0,Star Of The Sea Associaton (20050) I
 Central Health - Valley Vista,1,0.0,Central Northeast Health Foundation in Partnership with the Notre Dame Bay Memorial Health Centre,1,3125.0,"same business number, different names (a parent body's number, or an owner's)"
 Central Health - Valley Vista,1,0.0,Central Regional Integrated Health Authority,1,1000.0,"same business number, different names (a parent body's number, or an owner's)"
 Port Rexton Community Council,4,8073.0,Port Rexton Rec Comm chall 92,1,0.0,"same business number, different names (a parent body's number, or an owner's)"
-Port Rexton Rec Comm chall 92,1,0.0,Port Rexton Recreation Commission,1,3406.0,"same business number, different names (a parent body's number, or an owner's)"
 Deer Lake Public Library,6,217205.0,Harmsworth Public Library Board,1,0.0,"same business number, different names (a parent body's number, or an owner's)"
 Harmsworth Public Library Board,1,0.0,Provincial Information and Library Resources Board,22,495710.0,"same business number, different names (a parent body's number, or an owner's)"
 Michelle Ball,2,8918.0,Michelle Ball Janitorial,1,0.0,"same business number, different names (a parent body's number, or an owner's)"
@@ -2692,7 +2673,7 @@ KMJ CONSTUCTION LTD,1,0.0,KMJ OCNSTRUCTION LTD,1,11668.03,"a spelling slip apart
 Coleman Management Services,1,0.0,COLEMANS MANAGEMENT SERVICES LTD,2,46454.51,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Memoral University of Newfoundland,1,150000.0,Memorial University of Newfondland,1,0.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Memorial University of Newfondland,1,0.0,Memorial University of Newfoudland,1,1784.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
-Memorial University of Newfondland,1,0.0,Memorial University of Newfoundland,702,540165410.12,"a spelling slip apart, with no business number, postal code or review to confirm it"
+Memorial University of Newfondland,1,0.0,Memorial University of Newfoundland,703,541082578.12,"a spelling slip apart, with no business number, postal code or review to confirm it"
 Memorial University of Newfondland,1,0.0,Memorial Universtiy of Newfoundland,1,35000.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 EDR Enterprises LTD,1,0.0,EMC Enterprises Inc.,1,15000.0,"a spelling slip apart, with no business number, postal code or review to confirm it"
 EDR Enterprises LTD,1,0.0,FDA Enterprises Ltd,1,10506.0,"a spelling slip apart, with no business number, postal code or review to confirm it"

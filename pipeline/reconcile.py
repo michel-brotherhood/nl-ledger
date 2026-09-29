@@ -114,9 +114,16 @@ def main():
             "spelled two ways.",
             f"- Non-competitive (solicitation code TN): {money(c['non_competitive_value'])}.",
             f"- Grants and contributions to NL recipients: {g['raw_rows']:,} rows worth {money(g['raw_value'])}. One value per "
-            f"agreement (department, agreement number, recipient): latest amendment where the department reports running totals, "
-            f"amendments summed where it reports changes ({', '.join(g.get('delta_departments', []))}): {g['agreements']:,} agreements "
-            f"worth {money(g['dedup_value'])}. Agreement values can span several years.",
+            f"agreement (department, agreement number, recipient; a renamed recipient stays in its agreement): latest amendment where "
+            f"the department reports running totals, amendments summed where it reports changes "
+            f"({', '.join(g.get('delta_departments', []))}): {g['agreements']:,} agreements worth {money(g['dedup_value'])}. "
+            "Agreement values can span several years.",
+            "- Check of the change-reporting departments against Public Accounts transfer payments to NL recipients "
+            "(payments of $100K or more):"]
+    for cr in g.get("change_reporting", {}).values():
+        out.append(f"  - {cr['department']}: rows added up {money(cr['summed'])}; latest row only {money(cr['latest_only'])}; "
+                   f"paid {cr['paid_years']} {money(cr['paid'])}.")
+    out += [
             f"- CanadaBuys award notices with an NL supplier: {fed['canadabuys']['notices']} ({money(fed['canadabuys']['value'])}). "
             "These overlap the contracts disclosure and are never added to totals."]
     mtp = fed["public_accounts"]["mtp_2024_25"]
