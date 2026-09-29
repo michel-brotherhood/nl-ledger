@@ -77,8 +77,8 @@ step "archive verify"
 uv run python archive.py --verify 1
 
 step "baseline"
-uv run python guards.py commit
+uv run python guards.py commit | tee /tmp/baseline.log
+items=$(grep -o '[0-9,]* items' /tmp/baseline.log | head -1)
 
 trap - ERR
-items=$(uv run python -c 'import sqlite3; print(f"{sqlite3.connect(\"../data/build/ledger.db\").execute(\"select count(*) from items\").fetchone()[0]:,}")')
-echo "SUMMARY: ${gathered:-data gathered unknown}; ${items} items; $(grep -o '[0-9,]* rows written' /tmp/d1.log | tail -1 || echo 'D1 unchanged'); commit ${GIT_SHA:-unknown}"
+echo "SUMMARY: ${gathered:-data gathered unknown}; ${items}; $(grep -o '[0-9,]* rows written' /tmp/d1.log | tail -1 || echo 'D1 unchanged'); commit ${GIT_SHA:-unknown}"
