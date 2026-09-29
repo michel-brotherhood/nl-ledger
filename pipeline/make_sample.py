@@ -1,0 +1,72 @@
+"""Write the sample data that lets a fresh clone run the site without the pipeline.
+
+Maintainers run this after a full pipeline run (`./run.sh`); contributors never need to.
+It keeps a random sample of the line items (the same rows every time, seeded), everything
+else in the database as is, and writes:
+
+  sample/ledger.sql.gz    the sample database, as SQL text
+  sample/docs.jsonl.gz    the search documents for those items (the same export the site's D1 index uses)
+  sample/schema.sql, sample/flag_catalog.json
+
+`site/dev.mjs` (`./dev.sh`) loads these into data/build/ when there is no real database.
+"""
+import gzip
+import random
+import shutil
+import sqlite3
+import tempfile
+from pathlib import Path
+
+import export
+from common import BUILD
+
+SAMPLE = Path(__file__).resolve().parent.parent / "sample"
+# How many line items to keep per dataset. Flagged items are kept first so every flag page has examples.
+KEEP = {"ppa": 700, "fed_contract": 500, "canadabuys": 80, "pa_pss": 100, "pa_tp": 200, "fed_grant": 500, "mha": 1800,
+        "minister": 500, "paradise": 500, "stjohns": 100, "sunshine": 900}
+SEED = 20260929
+
+
+def main():
+    SAMPLE.mkdir(exist_ok=True)
+    tmp = Path(tempfile.mkdtemp())
+    db = tmp / "ledger.db"
+    shutil.copy(BUILD / "ledger.db", db)
+    con = sqlite3.connect(db)
+    rng = random.Random(SEED)
+    flagged = {r[0] for r in con.execute("SELECT DISTINCT item_id FROM flags WHERE item_id IS NOT NULL")}
+    keep = set()
+    for ds, n in KEEP.items():
+        ids = sorted(r[0] for r in con.execute("SELECT id FROM items WHERE dataset=?", (ds,)))
+        first = [i for i in ids if i in flagged]
+        rest = [i for i in ids if i not in flagged]
+        rng.shuffle(first)
+        rng.shuffle(rest)
+        keep.update((first[: n // 2] + rest)[:n])
+    con.execute("CREATE TEMP TABLE keep(id TEXT PRIMARY KEY)")
+    con.executemany("INSERT INTO keep VALUES (?)", [(i,) for i in keep])
+    con.execute("DELETE FROM items WHERE id NOT IN (SELECT id FROM keep)")
+    con.execute("DELETE FROM flags WHERE item_id IS NOT NULL AND item_id NOT IN (SELECT id FROM keep)")
+    con.execute("INSERT OR REPLACE INTO facts VALUES ('sample', '1')")
+    con.commit()
+    con.execute("VACUUM")
+    with gzip.open(SAMPLE / "ledger.sql.gz", "wt", encoding="utf-8", compresslevel=9) as fh:
+        for line in con.iterdump():
+            fh.write(line + "\n")
+    con.close()
+
+    # The search documents come from the same export the real index uses, run over the sample database.
+    export.DB = db
+    export.OUT = tmp / "d1"
+    export.main()
+    with open(export.OUT / "docs.jsonl", "rb") as src, gzip.open(SAMPLE / "docs.jsonl.gz", "wb", compresslevel=9) as dst:
+        shutil.copyfileobj(src, dst)
+    shutil.copy(export.OUT / "schema.sql", SAMPLE / "schema.sql")
+    shutil.copy(BUILD / "flag_catalog.json", SAMPLE / "flag_catalog.json")
+    shutil.rmtree(tmp)
+    for f in sorted(SAMPLE.iterdir()):
+        print(f"{f.name}: {f.stat().st_size / 1e6:.2f} MB")
+
+
+if __name__ == "__main__":
+    main()

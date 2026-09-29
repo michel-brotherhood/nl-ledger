@@ -1,0 +1,222 @@
+{
+ "caveat": "The Open Contracting Partnership's guide to red flags puts it this way: a red flag is not evidence that anything wrong happened. It points at something that may be worth a closer look.",
+ "flags": [
+  {
+   "id": "no-competition",
+   "title": "Awarded without competition",
+   "short": "Contracts given to one supplier without an open call for bids.",
+   "why": "Open competition is the default way public bodies buy. Awards made without one are allowed for specific reasons, and people often want to know how much money goes out that way and to whom.",
+   "how": [
+    "Provincial: every award in the Public Procurement Agency reports that cites an exception clause in section 6 of the Public Procurement Act: only one source reasonably available (6(a)(v)), emergency or urgency (6(a)(iv)), pre-qualified supplier (6(a)(vi)), purchase for resale (6(a)(vii)), security (6(a)(ii)) or rates set by the regulator (6(b)).",
+    "Federal: contracts the department coded as non-competitive (solicitation procedure \"TN\").",
+    "Each public body's share is its exception awards divided by all its awards in the same reports."
+   ],
+   "data": [
+    "ppa",
+    "fed_contract"
+   ],
+   "limits": "The provincial reports list limited calls, exceptions and emergency awards, but open-call awards by government departments are posted on MERX and are not in these reports, so a department's share here is of the awards the reports cover, not of everything it bought."
+  },
+  {
+   "id": "emergency",
+   "title": "Emergency awards",
+   "short": "Contracts awarded under the emergency or urgency exception.",
+   "why": "Emergency buying skips competition by design. How often a body uses it, and for what, is a common question.",
+   "how": [
+    "Provincial awards citing clause 6(a)(iv), emergency or situation of urgency."
+   ],
+   "data": [
+    "ppa"
+   ],
+   "limits": "The reports give a short description, not the nature of the emergency."
+  },
+  {
+   "id": "repeat-sole-source",
+   "title": "Same supplier, sole-sourced again and again",
+   "short": "A public body gave the same supplier three or more sole-source awards.",
+   "why": "One sole-source award can be the only sensible choice. A long run of them to the same company is the pattern auditors ask about, because it can mean a supplier never faces competition.",
+   "how": [
+    "Provincial awards citing the only-one-source clause, 6(a)(v).",
+    "Grouped by public body and supplier (supplier names normalised for spelling and legal suffixes).",
+    "Flagged when a pair has three or more such awards across the reports from 2021 on."
+   ],
+   "data": [
+    "ppa"
+   ],
+   "limits": "Software licences, maintenance of installed equipment and parts for existing machines are often genuinely single-source. The flag cannot tell those from anything else."
+  },
+  {
+   "id": "contract-growth",
+   "title": "Contracts that grew well past their award",
+   "short": "Federal contracts whose final value is at least double the original, and at least $25,000 more.",
+   "why": "A contract that doubles after it is signed spends money that was never competed for at that size.",
+   "how": [
+    "Federal contracts over $10,000: final contract value compared with the original value the department reported.",
+    "Flagged when the final value is at least twice the original and the increase is at least $25,000.",
+    "Uses the latest version of each contract, so amendments are counted once."
+   ],
+   "data": [
+    "fed_contract"
+   ],
+   "limits": "Planned option years are sometimes reported as amendments. The provincial reports do not publish change orders at all, so this flag covers federal contracts only."
+  },
+  {
+   "id": "just-under-limit",
+   "title": "Priced just under a limit",
+   "short": "Amounts within 5% below an open-call limit.",
+   "why": "When far more purchases land just below a limit than just above it, people ask whether work is being sized to stay under it.",
+   "how": [
+    "Limits used: the open-call thresholds in section 5 of the Public Procurement Regulations, which depend on the kind of public body. Departments and agencies: $34,700 goods, $139,000 services and public works. Towns, cities, health authorities, school boards, Memorial University and the College of the North Atlantic: $139,000 goods and services, $347,400 public works. Crown corporations such as NL Hydro: $264,200. Leases of space: $100,000 for all. Federal: the $25,000 limit below which the Government Contracts Regulations let a contract be awarded without bids.",
+    "Each award or payment priced from 95% of a limit up to one cent below it is flagged.",
+    "Each source also gets a count of amounts just below each limit against amounts just above it."
+   ],
+   "data": [
+    "ppa",
+    "fed_contract",
+    "paradise"
+   ],
+   "limits": "A payment is not a purchase: one purchase can be paid in parts, and one payment can cover several purchases. Round budgets ($9,500, $49,000) land under limits for ordinary reasons."
+  },
+  {
+   "id": "split-invoices",
+   "title": "Invoices that add up past a limit",
+   "short": "Two or more invoices from one supplier for the same thing, each under a limit, together over it.",
+   "why": "Splitting one purchase into several smaller ones to stay under a limit is the classic way around a tender rule.",
+   "how": [
+    "Town of Paradise: invoices from the same vendor, paid on the same date, with the same description (ignoring numbers and punctuation), each under the town's $139,000 open-call threshold for goods and services and together over it.",
+    "Federal contracts: two or more contracts from the same department to the same vendor within 7 days, with the same description, each under $25,000 and together $25,000 or more. Call-ups against a standing offer are left out, since a standing offer is meant to be drawn on many times, and so are vendors printed as a person's name."
+   ],
+   "data": [
+    "paradise",
+    "fed_contract"
+   ],
+   "limits": "Monthly bills, separate jobs and separate sites are often paid on the same day. The register does not say whether invoices were for one piece of work."
+  },
+  {
+   "id": "year-end",
+   "title": "Year-end spending rush",
+   "short": "Awards and payments bunched in the last month of the fiscal year.",
+   "why": "Unspent budgets lapse at year end. Research on United States federal contracts found spending in the last week of the year ran several times the weekly average, and year-end projects were rated lower quality.",
+   "how": [
+    "Provincial and federal fiscal years end on 31 March; Paradise's year ends on 31 December.",
+    "For each public body with at least 20 dated awards or payments, the last month's share of dollars is compared with an even share (one twelfth).",
+    "Flagged when the last month holds at least three times an even share."
+   ],
+   "data": [
+    "ppa",
+    "fed_contract",
+    "paradise"
+   ],
+   "limits": "Some work is seasonal. Award dates are as printed, and a few printed dates are plainly wrong (see the date check)."
+  },
+  {
+   "id": "dominant-supplier",
+   "title": "One supplier takes most of a body's awards",
+   "short": "A single supplier received half or more of a public body's awarded dollars.",
+   "why": "When one company gets most of a body's business, the body depends on it and prices face less pressure.",
+   "how": [
+    "Provincial awards from 2021 on, grouped by public body.",
+    "Flagged when one supplier holds at least 50% of the body's awarded dollars, the body awarded at least $250,000 in total, and at least three awards are involved."
+   ],
+   "data": [
+    "ppa"
+   ],
+   "limits": "Small bodies with one big contract will show up here for ordinary reasons."
+  },
+  {
+   "id": "late-publication",
+   "title": "Published long after the award",
+   "short": "Awards that appear in a report more than 90 days after the award date.",
+   "why": "Sections 31 and 32 of the Public Procurement Regulations set a 15-day window for reporting an award to the Chief Procurement Officer and another 15 days for publishing it. How long awards actually take to appear is a measure of how current the public record is.",
+   "how": [
+    "Days from the printed award date to the end of the reporting period of the report it appears in.",
+    "Flagged at more than 90 days."
+   ],
+   "data": [
+    "ppa"
+   ],
+   "limits": "Some printed dates are typing errors, which look like very late or future awards. Those are listed under the date check instead."
+  },
+  {
+   "id": "date-check",
+   "title": "Dates that cannot be right",
+   "short": "Award dates printed years before or after the report they appear in.",
+   "why": "A transparency record is only as good as its dates. This is a publishing error, not a spending pattern.",
+   "how": [
+    "Provincial awards whose printed award date is after the report's period, or more than three years before it."
+   ],
+   "data": [
+    "ppa"
+   ],
+   "limits": "Shown as published; the site does not correct dates."
+  },
+  {
+   "id": "possible-duplicate",
+   "title": "Possible duplicate payments",
+   "short": "The same invoice from the same vendor, for the same amount, paid more than once.",
+   "why": "Duplicate payments are the most common error auditors find in payment registers.",
+   "how": [
+    "Town of Paradise: vendor, invoice number and amount all match on two or more lines with different payment numbers."
+   ],
+   "data": [
+    "paradise"
+   ],
+   "limits": "Recurring charges sometimes reuse an invoice number, and a reversed and reissued payment looks the same. The register does not show refunds or reversals."
+  },
+  {
+   "id": "over-allowance",
+   "title": "MHA allowances used past their limit",
+   "short": "Members whose spending in an allowance category passed its published limit for the year.",
+   "why": "Since the Auditor General's 2006 review of constituency allowances, the House of Assembly publishes each member's limit and spending. Spending past a limit is the first thing people check.",
+   "how": [
+    "House of Assembly annual summary reports: each category with a published limit.",
+    "Flagged when spending is more than the limit by more than one dollar."
+   ],
+   "data": [
+    "mha"
+   ],
+   "limits": "Some allowances can be topped up or carried over under the Members' rules, which the report does not show."
+  },
+  {
+   "id": "overtime-over-base",
+   "title": "Overtime bigger than salary",
+   "short": "Jobs where people on the compensation list earned more in overtime than in base salary, counted by employer and job title.",
+   "why": "Very high overtime can mean a unit is short-staffed, or that overtime is not managed. It is one of the most-read parts of any sunshine list.",
+   "how": [
+    "Compensation disclosure lists, 2022 to 2025: people whose overtime was greater than their base salary.",
+    "Shown as counts by employer, job title and year. Names are on the government's lists; this page does not repeat them."
+   ],
+   "data": [
+    "sunshine"
+   ],
+   "limits": "The list only includes people paid over $100,000, rounded to $100 by the publisher."
+  },
+  {
+   "id": "severance",
+   "title": "Severance payments",
+   "short": "Severance paid to people on the compensation list, counted by employer and job title.",
+   "why": "Severance and retirement payouts are a common question about public-sector pay.",
+   "how": [
+    "Compensation disclosure lists, 2022 to 2025: any severance amount above zero.",
+    "Shown as counts and totals by employer, job title and year, without names."
+   ],
+   "data": [
+    "sunshine"
+   ],
+   "limits": "Severance in these lists includes negotiated retirement payouts as well as terminations."
+  },
+  {
+   "id": "vague-description",
+   "title": "Descriptions that say almost nothing",
+   "short": "Awards described in one or two generic words.",
+   "why": "A contract record that does not say what was bought cannot be checked by anyone outside.",
+   "how": [
+    "Provincial awards whose description is two words or fewer, or is a generic word such as \"services\", \"goods\", \"supplies\" or \"consulting\"."
+   ],
+   "data": [
+    "ppa"
+   ],
+   "limits": "This grades the record, not the purchase."
+  }
+ ]
+}

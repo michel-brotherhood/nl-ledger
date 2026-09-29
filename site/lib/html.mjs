@@ -127,6 +127,7 @@ ${head}
 </head>
 <body class="${bodyClass}">
 <a class="skip" href="#main">Skip to content</a>
+${globalThis.process?.env?.NL_SAMPLE ? `<aside class="proto" aria-label="Sample data"><p><strong>Sample data.</strong> This local copy holds a small random sample of the records, so totals, rankings and search results are partial. Run the pipeline for the full data.</p></aside>` : ""}
 <aside class="proto" aria-label="About this prototype"><p><strong>Prototype.</strong> A thought experiment in what public records can show. Figures are gathered and combined by automated scripts and have not been independently vetted. <a href="/about/">What is this?</a></p></aside>
 <header class="mast">
   <div class="mast-in">
