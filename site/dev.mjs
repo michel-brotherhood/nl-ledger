@@ -104,6 +104,23 @@ async function assetsFetch(request) {
 globalThis.caches = { default: { match: async () => undefined, put: async () => {} } };
 const { default: worker } = await import("./worker.mjs");
 const env = { DB: d1, ASSETS: { fetch: (r) => assetsFetch(r instanceof Request ? r : new Request(r)) } };
+// Search by meaning needs Workers AI and Vectorize, so it is off locally. NL_LEDGER_MEANING=1 turns it on
+// through the Cloudflare API with the local `cf` login (a maintainer's machine, after vectorize_sync.py has run).
+if (process.env.NL_LEDGER_MEANING === "1") {
+  const account = process.env.CLOUDFLARE_ACCOUNT_ID || (existsSync(join(HERE, ".env")) ? readFileSync(join(HERE, ".env"), "utf8").match(/^CLOUDFLARE_ACCOUNT_ID=(.+)$/m)?.[1]?.trim() : "");
+  spawnSync("cf", ["auth", "whoami"], { cwd: HERE, stdio: "ignore" }); // renews the login's token
+  const cfg = join(process.env.HOME, process.platform === "darwin" ? "Library/Preferences/cloudflare/config" : ".config/cloudflare/config");
+  const { readdirSync } = await import("node:fs");
+  const token = readdirSync(cfg).filter((f) => f.endsWith(".json")).map((f) => JSON.parse(readFileSync(join(cfg, f), "utf8")).oauth_token).find(Boolean);
+  const api = async (path, body) => {
+    const j = await (await fetch(`https://api.cloudflare.com/client/v4/accounts/${account}${path}`, { method: "POST", headers: { authorization: `Bearer ${token}`, "content-type": "application/json" }, body: JSON.stringify(body) })).json();
+    if (!j.success) throw new Error(JSON.stringify(j.errors));
+    return j.result;
+  };
+  env.AI = { run: (model, input) => api(`/ai/run/${model}`, input) };
+  env.MEANING = { query: (vector, opts) => api("/vectorize/v2/indexes/nl-ledger-meaning/query", { vector, ...opts }) };
+  console.log("Search by meaning: on, through the Cloudflare API.");
+}
 const RUN_FIRST = [/^\/search(\/|$)/, /^\/supplier\//, /^\/item\//, /^\/receipt(\/|$)/, /^\/mcp(\/|$)/, /^\/\.well-known\/ai-catalog\.json$/];
 
 createServer(async (req, res) => {
