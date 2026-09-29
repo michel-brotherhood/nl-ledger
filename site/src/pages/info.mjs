@@ -194,6 +194,8 @@ export function info(D, R) {
     <li>It makes no accusations. The patterns it shows are questions people ask about public spending, counted from the records. Each has its method written down, and none is evidence that anything wrong happened.</li>
     <li>It is not affiliated with any government, party or campaign.</li>
   </ul>
+  <h2>Privacy</h2>
+  <p>Visits are counted with Cloudflare Web Analytics, which sets no cookies and does not track individual visitors. The site has no accounts, no sign-in and no advertising.</p>
   <h2>Status</h2>
   <p>This is a prototype. The name, the scope and the sources will change, and parts of it may be wrong. Mistakes that are found are listed on the <a href="/corrections/">Corrections</a> page. Data was last gathered on ${fmtDate(D.gathered)}.</p>
   <h2>Help build it</h2>
