@@ -16,11 +16,11 @@ Generated 2026-09-29 by `pipeline/suppliers.py`. A supplier page groups every re
 
 ## Counts
 
-- Name keys (names after the same-name step): 14,294.
-- Suppliers after joining: 13,629.
-- Name keys folded into another: 665 (298 business number, 195 same name, 68 bilingual, 43 postal code, 39 unit, 19 reviewed, 3 same award).
-- Names printed more than one way (same name once spelling is set aside): 3,097, listed in `docs/supplier-merges.csv` with their other printings.
-- Close names left apart: 2,783 (`docs/supplier-near-matches.csv`).
+- Name keys (names after the same-name step): 14,299.
+- Suppliers after joining: 13,605.
+- Name keys folded into another: 694 (341 business number, 195 same name, 68 bilingual, 40 unit, 28 postal code, 19 reviewed, 3 same award).
+- Names printed more than one way (same name once spelling is set aside): 3,091, listed in `docs/supplier-merges.csv` with their other printings.
+- Close names left apart: 2,746 (`docs/supplier-near-matches.csv`).
 - Joins stopped by a reviewed "apart" decision: 0.
 
 ## Largest merges by value
@@ -28,7 +28,7 @@ Generated 2026-09-29 by `pipeline/suppliers.py`. A supplier page groups every re
 | Supplier | Names joined | Records | Value | Evidence |
 |---|---|---:|---:|---|
 | Government of Newfoundland and Labrador | Province of Newfoundland and Labrador; Government of Newfoundland and Labrador - Department of Health and Community Services; GOVERNMENT OF NEWFOUNDLAND AND LABRADOR NEWFOUNDLAND EXCHEQUER ACCOUNT; NEWFOUNDLAND EXCHEQUER ACCOUNT; and 11 more | 377 | $1,574,416,940 | bilingual, reviewed, same name, unit |
-| Nunatsiavut Government | Nunatsiavut Government, Department of Health & Social Development; NUNATISIAVUT GOVERNMENT; gouvernement nunatsiavut; gouvernement du nunatsiavut; and 1 more | 249 | $1,234,153,321 | bilingual, postal code, unit |
+| Nunatsiavut Government | Nunatsiavut Government, Department of Health & Social Development; Nunatsiavut Government - Department of Health and Social Development (DHSD); NUNATISIAVUT GOVERNMENT; gouvernement nunatsiavut; and 2 more | 249 | $1,234,153,321 | bilingual, postal code, unit |
 | Memorial University of Newfoundland | Memorial University; Grenfell Campus, Memorial University of Newfoundland; Memorial University of Newfoundland and Labrador; Memorial University of Newfoundland Fisheries and Marine Institute; and 13 more | 836 | $367,960,204 | bilingual, business number, same name, unit |
 | Mushuau Innu First Nation | Mushuau Innu First Nation Innu Band Council | 84 | $294,478,295 | business number |
 | St. John's Dockyard | NEWDOCK - ST. JOHN'S DOCKYARD LTD | 67 | $252,102,485 | reviewed |
@@ -36,7 +36,7 @@ Generated 2026-09-29 by `pipeline/suppliers.py`. A supplier page groups every re
 | Qalipu Mi'kmaq First Nation Band | Qalipu Mi'kmaq First Nation; Qalipu First Nation Band; Qalipu First Nation; Qalipu Mi'kmaq First Nations Band; and 2 more | 154 | $191,451,770 | bilingual, business number, reviewed, same name |
 | Association for New Canadians | association pour les nouveaux canadiens | 162 | $152,996,334 | bilingual |
 | Microsoft Canada Inc. | Microsoft; Microsoft Cooperation | 40 | $140,426,797 | reviewed |
-| CITY OF ST. JOHN'S | City of St. John's Municipal Council; CITY OF ST. JOHNS'S; ville de st johns; ville de st jean de tn | 276 | $125,011,130 | bilingual, business number, reviewed |
+| CITY OF ST. JOHN'S | City of St. John's Municipal Council; CITY OF ST. JOHNS'S; ville de st johns; ville de st jean de tn | 273 | $124,927,657 | bilingual, business number, reviewed |
 | RJG CONSTRUCTION LTD | R.J.G. Construction Limited | 58 | $117,242,308 | same name |
 | Braya Renewable Fuels (Newfoundland) LP | BRAYA RENEWABLES FUELS (NEWFOUNDLAND) LP | 4 | $86,863,420 | postal code |
 | NUNATUKAVUT COMMUNITY COUNCIL INC. | NunatuKavut | 235 | $78,183,837 | business number |
@@ -76,6 +76,7 @@ Generated 2026-09-29 by `pipeline/suppliers.py`. A supplier page groups every re
 | Memorial University ($8,142,667) | MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES ($5,444,430) | same business number, different names (a parent body's number, or an owner's) |
 | Memorial University of Newfoundland ($540,169,119) | MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES ($5,444,430) | same business number, different names (a parent body's number, or an owner's) |
 | Fisheries & Marine Institute of Memorial University of Nfld. ($14,594,248) | Fisheries and Marine Institute of the Memorial University of Newfoundland and Labrador ($5,188,643) | one name inside the other (often a parent and its subsidiary or branch) |
+| Fédération des francophones de Terre-Neuve et du Labrador ($8,260,814) | FÉDÉRATION DES FRANCOPHONES DE TERRE-NEUVE ET DU LABRADOR (LA) ($3,881,154) | one name inside the other (often a parent and its subsidiary or branch) |
 | D F BARNES LIMITED ($3,760,422) | D.F. Barnes Services Limited ($10,204,267) | one name inside the other (often a parent and its subsidiary or branch) |
 | Commissionaires ($3,699,768) | COMMISSIONAIRES NL ($4,760,913) | one name inside the other (often a parent and its subsidiary or branch) |
 | Commissionaires ($3,699,768) | COMMISSIONAIRES OF NFLD ($8,385,847) | one name inside the other (often a parent and its subsidiary or branch) |
@@ -86,6 +87,5 @@ Generated 2026-09-29 by `pipeline/suppliers.py`. A supplier page groups every re
 | The Excite Corporation Inc. ($3,145,609) | Town of Grand Falls-Windsor ($57,319,038) | same business number, different names (a parent body's number, or an owner's) |
 | NEWFOUNDLAND AND LABRADOR DEPARTMENT OF JUSTICE AND PUBLIC SAFETY ($46,374,110) | Newfoundland & Labrador Justice and Public Safety ($3,100,253) | one name inside the other (often a parent and its subsidiary or branch) |
 | Newfoundland & Labrador Justice and Public Safety ($3,100,253) | Province of Newfoundland and Labrador, Department of Justice and Public Safety ($27,253,603) | one name inside the other (often a parent and its subsidiary or branch) |
-| Bluedrop ISM Limited ($3,075,000) | Bluedrop Performance Learning Inc. ($14,278,677) | same business number, different names (a parent body's number, or an owner's) |
 
 Every merge, with its evidence: `docs/supplier-merges.csv`.

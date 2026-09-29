@@ -195,6 +195,27 @@ _TAIL = re.compile(
 )
 
 
+FRENCH = {"de", "du", "des", "la", "le", "les", "et", "pour", "ville", "gouvernement", "premiere", "universite", "college",
+          "societe", "ministere", "conseil", "federation", "reseau", "administration", "portuaire", "autorite"}
+
+
+def looks_french(name: str) -> bool:
+    """A French name has French words: "Association pour les nouveaux Canadiens"."""
+    return bool(set(entity_key(name).split()) & FRENCH)
+
+
+def _acronym_of(words: str, acronym: str) -> bool:
+    """ "(NLDC)" after "Newfoundland and Labrador Dairy Co-operative": the bracket's letters
+    come in order from the name, starting with its first word. "(PEI)" after "Minister of
+    Finance" or "(CANADA)" after "Siemens" does not, and stays part of the name."""
+    letters = re.sub(r"[^a-z]", "", acronym.lower())
+    text = re.sub(r"[^a-z ]", "", words.lower())
+    if not letters or not text or text[0] != letters[0]:
+        return False
+    it = iter(text.replace(" ", ""))
+    return all(c in it for c in letters)
+
+
 def name_forms(name: str | None, bilingual: bool = False) -> list[str]:
     """The names one printed supplier field gives, first the one to show.
 
@@ -209,7 +230,7 @@ def name_forms(name: str | None, bilingual: bool = False) -> list[str]:
     halves = re.split(r"(?<=\w\w)\s*/\s*(?=\w\w)", s)  # never inside o/a, c/o, d/b/a
     if bilingual and "|" in s:
         parts = [p.strip() for p in s.split("|")]
-    elif bilingual and len(halves) == 2 and all(len(p.split()) >= 3 for p in halves):
+    elif bilingual and len(halves) == 2 and all(len(p.split()) >= 3 for p in halves) and looks_french(halves[1]):
         parts = [p.strip() for p in halves]  # "Association for New Canadians/Association pour les nouveaux Canadiens"
     else:
         m = re.fullmatch(r"(.+?) (?:[lI/-]) (.+)", s)
@@ -237,7 +258,9 @@ def entity_key(name: str | None) -> str:
     s = re.sub(r"\blimited partnership\b|\bl\.\s?p\.?(?=\W|$)|\blp\b", " LP ", s, flags=re.I)
     s = s.replace("\u2019", "'").replace("\u2018", "'").replace("`", "'")
     s = _TAIL.sub("", s) or s
-    s = re.sub(r"\s*\([A-Z][A-Z&.\- ]{1,11}\)\s*$", "", s) or s  # a trailing acronym: "(NLDC)", "(SARVAC)"
+    m = re.search(r"\s*\(([A-Z][A-Z&.\- ]{1,11})\)\s*$", s)
+    if m and _acronym_of(s[:m.start()], m.group(1)):  # a trailing acronym of the name: "(NLDC)", "(SARVAC)"
+        s = s[:m.start()]
     s = _AND_CO.sub(" ", s)
     s = re.sub(r"\bco-?op(erative)?\b", "cooperative", s, flags=re.I)  # "Co-operative" is one word, not "Co."
     s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode().lower()

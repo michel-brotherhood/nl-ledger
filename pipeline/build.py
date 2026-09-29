@@ -135,6 +135,8 @@ def main():
             rec["supplier"] = forms[0]
             extra = {**(extra or {}), "supplier_as_printed": norm_space(kw["supplier"])}
         rec["_forms"] = forms
+        if rec.get("city"):
+            rec["city"] = rec["city"].replace("\u2502", "|")
         if "|" in (rec.get("city") or "") or re.search(r" [lI] ", rec.get("city") or ""):
             rec["city"] = name_forms(rec["city"], bilingual=True)[0]
         rec["supplier_name_key"] = entity_key(forms[0]) if forms else None

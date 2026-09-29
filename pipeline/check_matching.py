@@ -53,6 +53,12 @@ CASES = [
     ("the same federal award in two files", [rec("B & R ENTERPRISES LIMITED", "fed_contract", date="2023-09-07", amount=5495116.88),
                                             rec("B & R ENTERPRIES LIMITED", "canadabuys", date="2023-09-07", amount=5495116.88)],
      [("B & R ENTERPRISES LIMITED", "B & R ENTERPRIES LIMITED")], []),
+    ("a '/' before a name that is not French is part of the name", [rec("Black Duck Brook/Winter Houses Recreation Committee"), rec("Black Duck Brook Development Association")],
+     [], [("Black Duck Brook/Winter Houses Recreation Committee", "Black Duck Brook Development Association")]),
+    ("a bracket that is not the name's acronym stays part of it", [rec("Minister of Finance (PEI)", "pa_tp"), rec("Minister of Finance (NS)", "pa_tp")],
+     [], [("Minister of Finance (PEI)", "Minister of Finance (NS)")]),
+    ("a charity's GST account is the same body", [rec("Town of Burin", bn="107512345RT0001"), rec("Town Council of the Town of Burin", bn="107512345RR0001")],
+     [("Town of Burin", "Town Council of the Town of Burin")], []),
     ("close names with no evidence stay apart", [rec("Pittman Enterprises Ltd.", "fed_contract"), rec("Pittman's Enterprises Limited", "fed_contract")],
      [], [("Pittman Enterprises Ltd.", "Pittman's Enterprises Limited")]),
 ]

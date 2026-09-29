@@ -24,7 +24,7 @@ import re
 from collections import Counter, defaultdict
 from datetime import date
 
-from common import ROOT, entity_key
+from common import ROOT, entity_key, looks_french
 
 RULES = ROOT / "pipeline" / "supplier_rules.csv"
 DOCS = ROOT / "docs"
@@ -99,9 +99,8 @@ def typo_apart(a: str, b: str) -> bool:
 
 
 # Some grant records put an operating name or a sub-group after the bar instead of the French
-# name ("Cow Head Tourism Committee|Friends of Garden"); a French half has French words.
-FRENCH = {"de", "du", "des", "la", "le", "les", "et", "pour", "ville", "gouvernement", "premiere", "universite", "college",
-          "societe", "ministere", "conseil", "federation", "reseau", "administration", "portuaire", "autorite"}
+# name ("Cow Head Tourism Committee|Friends of Garden"); a French half has French words
+# (common.looks_french).
 PLACEHOLDER = {"n a", "na", "none", "null", "not applicable", "sans objet", "s o", "unknown", "inconnu"}
 # The province's name alone never identifies a body.
 PLACE = {"newfoundland", "labrador", "and", "of", "the", "nl", "terre", "neuve", "et", "du", "de", "la"}
@@ -211,7 +210,7 @@ def match(records: list[dict]) -> dict:
         if bn := valid_bn(r.get("bn")):
             by_bn[bn[:9]].add(k)
             bns[k].add(bn[:9])
-            if len(bn) > 9:
+            if bn[9:11] == "RR":  # only registered-charity accounts tell branches of one body apart
                 accounts[(k, bn[:9])].add(bn)
         if pc := postal(r.get("postal")):
             by_pc[pc].add(k)
@@ -231,7 +230,7 @@ def match(records: list[dict]) -> dict:
     for a, b, _ in bilingual:
         firsts[b].add(a)
     for a, b, ref in bilingual:
-        if len(firsts[b]) == 1 and len(b) >= 6 and b not in PLACEHOLDER and set(b.split()) & FRENCH:
+        if len(firsts[b]) == 1 and len(b) >= 6 and b not in PLACEHOLDER and looks_french(b):
             g.union(a, b, "bilingual", f"one record prints both ({ref})" if ref else "one record prints both")
 
     rejected = []

@@ -166,14 +166,31 @@ export function aiCatalog() {
   };
 }
 
-// Same normalisation as pipeline/common.py entity_key (pipeline/check_names.py checks they agree).
+// Same normalisation as pipeline/common.py entity_key (pipeline/check_matching.py checks they agree).
+function unescapeHtml(s) {
+  const named = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: "\u00a0" };
+  return s.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m, e) => e[0] === "#"
+    ? String.fromCodePoint(e[1] === "x" || e[1] === "X" ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10))
+    : named[e.toLowerCase()] ?? m);
+}
+// "(NLDC)" after "Newfoundland and Labrador Dairy Co-operative": letters in order from the name, starting with its first word.
+function acronymOf(words, acronym) {
+  const letters = acronym.toLowerCase().replace(/[^a-z]/g, "");
+  const text = words.toLowerCase().replace(/[^a-z ]/g, "");
+  if (!letters || !text || text[0] !== letters[0]) return false;
+  const flat = text.replace(/ /g, "");
+  let i = 0;
+  for (const c of letters) { i = flat.indexOf(c, i); if (i < 0) return false; i++; }
+  return true;
+}
 const TAIL = /(\s*[,(-]?\s*\b(o\/a|o\.a\.|operating as|c\/o|dba|d\/b\/a|doing business as|t\/a|trading as|carrying on business as)\b|\s*[,(-]\s*(care of|formerly|previously|now known as)\b).*$/i;
 const SUFFIX = /\b(incorporated|inc|ltd|limited|corp|corporation|co|company|llc|plc|ulc|ltee|ltée|limitee|limitée|l\.?t\.?d|the)\b\.?/g;
 export function entityKey(name) {
-  let s = String(name || "").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim();
+  let s = unescapeHtml(String(name || "")).replace(/\s+/g, " ").trim();
   s = s.replace(/\blimited partnership\b|\bl\.\s?p\.?(?=\W|$)|\blp\b/gi, " LP ").replace(/[\u2018\u2019`]/g, "'");
   s = s.replace(TAIL, "") || s;
-  s = s.replace(/\s*\([A-Z][A-Z&.\- ]{1,11}\)\s*$/, "") || s;
+  const m = s.match(/\s*\(([A-Z][A-Z&.\- ]{1,11})\)\s*$/);
+  if (m && acronymOf(s.slice(0, m.index), m[1])) s = s.slice(0, m.index);
   s = s.replace(/\s(and|&)\s+(co|company)\b\.?/gi, " ").replace(/\bco-?op(erative)?\b/gi, "cooperative");
   s = s.normalize("NFKD").replace(/[^\x00-\x7f]/g, "").toLowerCase();
   s = s.replace(/'/g, "").replace(/&/g, " and ").replace(/[^a-z0-9 ]+/g, " ");
