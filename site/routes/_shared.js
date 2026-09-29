@@ -33,3 +33,27 @@ export async function cached(ctx, make) {
   if (res.status === 200) ctx.waitUntil(c.put(cacheKey, res.clone()));
   return res;
 }
+
+// What search.mjs's find() needs from the Worker. Bindings that are absent (local dev) switch
+// the matching feature off, and search stays keyword only.
+let vocab = null;
+export function searchIO(ctx) {
+  const env = ctx.env;
+  return {
+    db: env.DB,
+    ai: env.AI,
+    vec: env.MEANING,
+    limiter: env.MEANING_LIMIT,
+    cache: globalThis.caches?.default,
+    waitUntil: ctx.waitUntil,
+    // Words the records contain, for spelling help (build.mjs writes it; about 90 KB compressed, read once per isolate).
+    vocab: async () => {
+      if (!vocab) {
+        const res = await env.ASSETS.fetch(new URL("/data/words.json", ctx.request.url));
+        if (!res.ok) throw new Error("no vocabulary");
+        vocab = await res.json();
+      }
+      return vocab;
+    },
+  };
+}

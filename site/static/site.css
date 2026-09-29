@@ -1287,6 +1287,12 @@ sup.fn a {
   padding: 2rem 0;
   color: var(--ink-2);
 }
+.near {
+  margin-block-start: 2.5rem;
+}
+.near h2 {
+  margin-block-end: 0.3rem;
+}
 
 /* level stack: provincial / federal / municipal share */
 .stack {

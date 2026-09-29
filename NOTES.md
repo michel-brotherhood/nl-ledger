@@ -10,6 +10,7 @@ How the live site is hosted, built, deployed and checked. The README covers what
 | MCP server | https://nlledger.ca/mcp |
 | Worker | `nlledger` (workers.dev address turned off; the domain is the only address) |
 | D1 database | `nl-ledger` (search index, 29,035 documents for 143,133 line items) |
+| Vectorize index | `nl-ledger-meaning` (one vector per search document, for search by meaning; see "Search") |
 
 The Cloudflare account ID and D1 database ID are not in the repository. Deploys and the D1 sync read them from `CLOUDFLARE_ACCOUNT_ID` and `NL_LEDGER_D1_ID`, in the environment or in `site/.env` (ignored by git; see `site/.env.example`). Building and checking the site locally needs neither.
 
@@ -52,6 +53,7 @@ cd pipeline
 ./run.sh                      # fetch (cached), parse, build, flags, reconcile, export
 uv run python d1_sync.py --dry-run   # what would change in D1
 uv run python d1_sync.py             # push only changed search documents
+uv run python vectorize_sync.py --cf-login   # embed only changed documents into the meaning index
 ```
 
 - Downloads are cached; delete a file under `data/cache/` to fetch it again. The federal bulk files and the grants query are replaced in place by their publishers, so they are fetched again once 6 days old; published reports are fetched once.
@@ -74,10 +76,11 @@ Every Monday 09:00 UTC the maintainer's home server runs the whole pipeline in a
 | Deploy (`cf deploy`) | build or `check.sh` fails, or the upload fails |
 | Live check | `https://nlledger.ca/` does not serve the page just built within two minutes |
 | D1 sync | a D1 error, or remote and local counts differ |
+| Meaning index (`vectorize_sync.py`) | a Workers AI or Vectorize error; its `--dry-run` also runs before deploying, so a token without those permissions stops the run before anything changes |
 | Archive verify | one random archived file, fetched back, does not match its hash |
 | Baseline (`guards.py commit`) | this run becomes the one the next run is compared with |
 
-- The job needs `CLOUDFLARE_API_TOKEN` (an account token: Workers edit, D1 edit, account settings read; zone read and Workers routes edit on `nlledger.ca`), `CLOUDFLARE_ACCOUNT_ID`, `NL_LEDGER_D1_ID` and the `NL_LEDGER_S3_*` settings in `archive.py`.
+- The job needs `CLOUDFLARE_API_TOKEN` (an account token: Workers edit, D1 edit, Workers AI read, Vectorize edit, account settings read; zone read and Workers routes edit on `nlledger.ca`), `CLOUDFLARE_ACCOUNT_ID`, `NL_LEDGER_D1_ID` and the `NL_LEDGER_S3_*` settings in `archive.py`.
 - A failure that has been checked and is real (a report withdrawn, a link the publisher broke for good, a better de-duplication) is accepted for one run with `NL_LEDGER_ACCEPT_CHANGES=1`; that run becomes the new baseline.
 - The last lines of a run are `SUMMARY: Data gathered <date>; <items> items; <rows> rows written` or `FAILED at <step>: ...`.
 - Run the same container locally: `docker build -t nl-ledger-pipeline . && docker run --rm --env-file site/.env -v "$PWD/data:/app/data" nl-ledger-pipeline` (it deploys).

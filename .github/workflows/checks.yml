@@ -22,6 +22,9 @@ jobs:
       - name: JavaScript modules parse
         run: |
           find site \( -name '*.mjs' -o -name '*.js' \) -not -path '*/node_modules/*' -not -path '*/dist/*' -print0 | xargs -0 -n1 node --check
+      - name: Search checks on the sample
+        # Spelling help, the meaning list and its fallbacks, with stand-ins for Workers AI and Vectorize.
+        run: node site/check-search.mjs
       - name: Guardrails on site code
         # The full build needs data/build/ledger.db, which only the pipeline creates, and CI does
         # not download every source. So this scans the site code: lib/, routes/, worker.mjs and

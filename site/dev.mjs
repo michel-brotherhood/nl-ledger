@@ -62,7 +62,14 @@ if (!existsSync(searchPath) || statSync(searchPath).mtimeMs < statSync(docsPath)
   const cols = ["rowid", "body", "tags", "doc_id", "dataset", "title", "buyer", "total", "n", "date_min", "date_max", "h", "items"];
   const ins = s.prepare(`INSERT INTO docs (${cols.join(",")}) VALUES (${cols.map(() => "?").join(",")})`);
   s.exec("BEGIN");
-  for (const line of readFileSync(docsPath, "utf8").split("\n")) if (line) ins.run(...cols.map((c) => JSON.parse(line)[c]));
+  // Row ids are 60-bit (export.py) and JSON.parse would round them: read them from the text as BigInt,
+  // so the local copy has the same row ids as D1 and lookups by row id (search by meaning) find them.
+  for (const line of readFileSync(docsPath, "utf8").split("\n")) {
+    if (!line) continue;
+    const d = JSON.parse(line);
+    d.rowid = BigInt(line.match(/"rowid":\s*(\d+)/)[1]);
+    ins.run(...cols.map((c) => d[c]));
+  }
   s.exec("COMMIT");
   s.close();
 }
