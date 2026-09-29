@@ -47,8 +47,14 @@ uv run python guards.py check
 step "d1 budget"
 uv run python d1_sync.py --dry-run
 
-step "deploy"
+step "site build"
+# Wrangler checks that site/dist exists before running its own build command, and a fresh
+# container has none, so build and run the guardrails here first; cf deploy rebuilds the same.
 cd ../site
+node build.mjs
+./check.sh
+
+step "deploy"
 npx cf deploy
 local_hash=$(sha256sum dist/index.html | cut -d' ' -f1)
 gathered=$(grep -o 'Data gathered [^<]*' dist/index.html | head -1 | sed 's/\.$//')
