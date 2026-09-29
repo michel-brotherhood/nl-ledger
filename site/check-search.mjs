@@ -57,8 +57,8 @@ const noAi = await find(io, { q: "ferry" }, { limit: 30 });
 check(noAi.items.length === plain.items.length && noAi.items.length > 0 && noAi.near === null, `no AI bindings: same ${plain.items.length} exact records, no meaning section`);
 const typo = await find(io, { q: "memorail" }, { limit: 30 });
 check(typo.corrected?.q === "memorial" && typo.items.length > 0, `a misspelled search shows the corrected one's ${typo.items.length} records`);
-const long = await find(io, { q: "who repairs the ferry in gander zzqxv" }, { limit: 30 });
-check(long.items.length === 0 && long.suggest.length > 0 && long.suggest.every((s) => !s.includes("who")), `an empty search suggests shorter ones that match: ${long.suggest.join(" | ")}`);
+const long = await find(io, { q: "who fixes the ferry zzqxv" }, { limit: 30 });
+check(long.items.length === 0 && long.suggest.includes("ferry") && long.suggest.every((s) => !s.includes("who")), `an empty search suggests shorter ones that match: ${long.suggest.join(" | ")}`);
 
 // Meaning: stand-ins return the documents whose text holds "snow", as if closest in meaning.
 const snowDocs = docs.filter((d) => /snow/i.test(d.body));
