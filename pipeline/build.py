@@ -135,10 +135,8 @@ def main():
             rec["supplier"] = forms[0]
             extra = {**(extra or {}), "supplier_as_printed": norm_space(kw["supplier"])}
         rec["_forms"] = forms
-        if rec.get("city"):
-            rec["city"] = rec["city"].replace("\u2502", "|")
-        if "|" in (rec.get("city") or "") or re.search(r" [lI] ", rec.get("city") or ""):
-            rec["city"] = name_forms(rec["city"], bilingual=True)[0]
+        if rec.get("city"):  # "St. John's|St. John's", "Rocky Harbour│Rocky Harbour", "Benoit's Cove Benoit's Cove"
+            rec["city"] = name_forms(rec["city"].replace("\u2502", "|"), bilingual=True)[0]
         rec["supplier_name_key"] = entity_key(forms[0]) if forms else None
         rec["fiscal_year"] = rec.get("fiscal_year") or nl_fy(rec.get("date") or "")
         rec["extra"] = json.dumps({k: v for k, v in (extra or {}).items() if v not in (None, "", "None")}) if extra else None
@@ -270,6 +268,13 @@ def main():
                    "note": "Payee and description are one OCR text line; the City prints them side by side."},
             source_url=r["source_url"], source_file=r["source_file"], page=int(r["page"]),
             locator=f"page {r['page']} (OCR)")
+
+    # A name shown on a page is one name, never a list of printings joined by a bar. St. John's
+    # lines are machine-read text shown as read.
+    joined = [(it["dataset"], it.get(f)) for it in items for f in ("supplier", "city")
+              if it["dataset"] != "stjohns" and re.search(r"[|\u2502]", it.get(f) or "")]
+    if joined:
+        raise SystemExit(f"{len(joined)} names shown as a list of printings, for example {joined[:5]}")
 
     # --- Supplier matching, then provincial award repeats (same contract number, supplier and price)
     matched = suppliers.match([{"forms": it["_forms"], "dataset": it["dataset"], "amount": it["amount"], "date": it["date"],
