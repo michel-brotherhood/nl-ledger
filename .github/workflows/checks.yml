@@ -27,3 +27,17 @@ jobs:
         # not download every source. So this scans the site code: lib/, routes/, worker.mjs and
         # static/ (dist is absent).
         run: ./site/check.sh
+
+  reconcile:
+    name: Reconciliation on sample sources
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pdftotext
+        run: sudo apt-get update -q && sudo apt-get install -y -q poppler-utils
+      - uses: astral-sh/setup-uv@v6
+      - name: Parse the sample sources and check them against their printed totals
+        # tests/fixtures holds one real file per source that prints its own totals; see
+        # pipeline/check_fixtures.py for what each check compares.
+        working-directory: pipeline
+        run: uv sync --frozen --no-install-project && uv run --no-sync python check_fixtures.py

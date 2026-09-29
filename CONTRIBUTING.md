@@ -27,14 +27,15 @@ For a method challenge or a mismatch report, the same rule applies in reverse: l
 
 ## Checks on every pull request
 
-Two checks run on each pull request (`.github/workflows/checks.yml`):
+Three checks run on each pull request (`.github/workflows/checks.yml`):
 
 - **Guardrails.** `site/check.sh` scans the site code for the maintainer's name: the site presents the records, not the people who run it. Run after a local build, it also scans the built pages for that name, for an author meta tag and for accusation words such as "waste" or "corrupt" outside the quoted records. The first two fail the check; the third prints for a reviewer to judge. CI has no built pages, so it runs only the code scan.
 - **Syntax.** Every script in `pipeline/` and every module in `site/` must parse.
+- **Reconciliation on sample sources.** `pipeline/check_fixtures.py` parses one real file per source that prints its own totals (a minister's report, an MHA's detail and summary, a year of program spending, an employer's pay disclosure; kept in `tests/fixtures/`) and fails if any parsed figure does not add up to the printed total, or if a parser returns a different number of rows than before. A change that alters those counts on purpose updates `tests/fixtures/expected.json` with `uv run python check_fixtures.py --update` and says why.
 
 To see your change on a running site, `./dev.sh` from a fresh clone needs only Node 22.13 or newer. It loads a small sample of the records, so no download or account is involved (see the [README](README.md#run-it-locally)).
 
-These checks cannot run the full pipeline. Doing so downloads every source, including federal files of several hundred megabytes, and takes minutes. That means CI does not check reconciliation or the built pages. Run them yourself before opening a pull request that touches data or the site:
+These checks cannot run the full pipeline. Doing so downloads every source, including federal files of several hundred megabytes, and takes minutes. So CI checks reconciliation on the sample sources only, and does not check the built pages. Run them yourself before opening a pull request that touches data or the site:
 
 ```sh
 cd pipeline && ./run.sh        # fetch, parse, reconcile

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import subprocess
 import time
@@ -13,9 +14,12 @@ from pathlib import Path
 import requests
 
 ROOT = Path(__file__).resolve().parent.parent
-CACHE = ROOT / "data" / "cache"
-CLEAN = ROOT / "data" / "clean"
-BUILD = ROOT / "data" / "build"
+# NL_LEDGER_DATA points the pipeline at another data folder: check_fixtures.py parses the
+# small source files in tests/fixtures/ there, in CI, without touching data/.
+DATA = Path(os.environ["NL_LEDGER_DATA"]) if os.environ.get("NL_LEDGER_DATA") else ROOT / "data"
+CACHE = DATA / "cache"
+CLEAN = DATA / "clean"
+BUILD = DATA / "build"
 MANIFEST = CACHE / "manifest.json"
 # Downloads that failed during this run (url, file, reason). The weekly job clears it before
 # fetching and fails on any failure the last good run did not already have (guards.py).
