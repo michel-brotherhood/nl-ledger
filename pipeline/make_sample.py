@@ -6,11 +6,12 @@ else in the database as is, and writes:
 
   sample/ledger.sql.gz    the sample database, as SQL text
   sample/docs.jsonl.gz    the search documents for those items (the same export the site's D1 index uses)
-  sample/schema.sql, sample/flag_catalog.json
+  sample/schema.sql, sample/manifest.json, sample/flag_catalog.json
 
 `site/dev.mjs` (`./dev.sh`) loads these into data/build/ when there is no real database.
 """
 import gzip
+import json
 import random
 import shutil
 import sqlite3
@@ -18,7 +19,7 @@ import tempfile
 from pathlib import Path
 
 import export
-from common import BUILD
+from common import BUILD, CACHE
 
 SAMPLE = Path(__file__).resolve().parent.parent / "sample"
 # How many line items to keep per dataset. Flagged items are kept first so every flag page has examples.
@@ -61,6 +62,10 @@ def main():
     export.main()
     with open(export.OUT / "docs.jsonl", "rb") as src, gzip.open(SAMPLE / "docs.jsonl.gz", "wb", compresslevel=9) as dst:
         shutil.copyfileobj(src, dst)
+    # The site only reads the newest fetch date from the download manifest.
+    manifest = json.loads((CACHE / "manifest.json").read_text())
+    newest = max(m.get("fetched_at", "") for m in manifest.values())
+    (SAMPLE / "manifest.json").write_text(json.dumps({"sample": {"fetched_at": newest}}) + "\n")
     shutil.copy(export.OUT / "schema.sql", SAMPLE / "schema.sql")
     shutil.copy(BUILD / "flag_catalog.json", SAMPLE / "flag_catalog.json")
     shutil.rmtree(tmp)

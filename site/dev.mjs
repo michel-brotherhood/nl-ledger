@@ -33,6 +33,8 @@ if (!existsSync(dbPath)) {
   db.close();
   writeFileSync(join(BUILD, "d1", "docs.jsonl"), gunzipSync(readFileSync(join(ROOT, "sample", "docs.jsonl.gz"))));
   for (const f of ["schema.sql"]) writeFileSync(join(BUILD, "d1", f), readFileSync(join(ROOT, "sample", f)));
+  mkdirSync(join(ROOT, "data", "cache"), { recursive: true });
+  if (!existsSync(join(ROOT, "data", "cache", "manifest.json"))) writeFileSync(join(ROOT, "data", "cache", "manifest.json"), readFileSync(join(ROOT, "sample", "manifest.json")));
   writeFileSync(join(BUILD, "flag_catalog.json"), readFileSync(join(ROOT, "sample", "flag_catalog.json")));
   rmSync(join(BUILD, "local-search.db"), { force: true });
 }
