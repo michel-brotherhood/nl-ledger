@@ -283,6 +283,10 @@ def shown(stats, k):
     return stats[k]["printed"].most_common(1)[0][0] if stats[k]["printed"] else k
 
 
+def other_printings(stats, k):
+    return "; ".join(p for p, _ in stats[k]["printed"].most_common() if p != shown(stats, k))
+
+
 def money(v):
     return f"${v:,.0f}"
 
@@ -304,11 +308,18 @@ def write_report(m: dict) -> dict:
             via, ev, detail = how.get(k, (root, "", ""))
             rows.append({"supplier": shown(stats, root), "supplier_key": root, "name_merged": shown(stats, k), "name_key": k,
                          "records": stats[k]["n"], "value": round(stats[k]["value"], 2), "evidence": ev,
-                         "joined_to": shown(stats, via), "detail": detail})
+                         "joined_to": shown(stats, via), "detail": detail, "also_printed": other_printings(stats, k)})
+    # A supplier's main name, and any name printed more than one way, lists its other printings:
+    # those were joined by the same-name rule alone.
+    printings = [{"supplier": shown(stats, key_of[k]), "supplier_key": key_of[k], "name_merged": shown(stats, k), "name_key": k,
+                  "records": stats[k]["n"], "value": round(stats[k]["value"], 2), "evidence": "same name (printings)",
+                  "joined_to": "", "detail": "printed differently: case, punctuation, apostrophes, spacing or legal suffix",
+                  "also_printed": other_printings(stats, k)}
+                 for k in sorted(stats, key=lambda k: -stats[k]["value"]) if key_of[k] == k and len(stats[k]["printed"]) > 1]
     with open(DOCS / "supplier-merges.csv", "w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=list(rows[0]) if rows else ["supplier"])
         w.writeheader()
-        w.writerows(rows)
+        w.writerows(rows + printings)
 
     near = sorted(m["rejected"], key=lambda x: -min(stats[x[0]]["shown"], stats[x[1]]["shown"]))
     with open(DOCS / "supplier-near-matches.csv", "w", newline="") as fh:
@@ -347,6 +358,8 @@ def write_report(m: dict) -> dict:
            f"- Name keys (names after the same-name step): {names_before:,}.",
            f"- Suppliers after joining: {len(groups):,}.",
            f"- Name keys folded into another: {len(rows):,} ({', '.join(f'{v:,} {k}' for k, v in ev_count.most_common())}).",
+           f"- Names printed more than one way (same name once spelling is set aside): {len(printings):,}, listed in "
+           "`docs/supplier-merges.csv` with their other printings.",
            f"- Close names left apart: {len(near):,} (`docs/supplier-near-matches.csv`).",
            f"- Joins stopped by a reviewed \"apart\" decision: {len(m['blocked'])}.",
            "", "## Largest merges by value", "",

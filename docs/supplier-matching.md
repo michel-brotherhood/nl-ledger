@@ -17,6 +17,7 @@ Generated 2026-09-29 by `pipeline/suppliers.py`. A supplier page groups every re
 - Name keys (names after the same-name step): 14,329.
 - Suppliers after joining: 13,273.
 - Name keys folded into another: 1,056 (635 business number, 203 same name, 90 postal code, 73 bilingual, 33 unit, 18 reviewed, 4 same award).
+- Names printed more than one way (same name once spelling is set aside): 3,036, listed in `docs/supplier-merges.csv` with their other printings.
 - Close names left apart: 2,496 (`docs/supplier-near-matches.csv`).
 - Joins stopped by a reviewed "apart" decision: 0.
 
