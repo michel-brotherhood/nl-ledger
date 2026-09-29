@@ -1,9 +1,10 @@
 // Search-engine helpers: titles, descriptions and structured data (JSON-LD) shared by the page builders.
-import { SITE } from "../lib/format.mjs";
+import { SITE, fit } from "../lib/format.mjs";
 
 // Licences of the sources. The site's code is MIT; the data stays under each publisher's licence (README).
 export const LICENSE = {
-  provincial: "https://opendata.gov.nl.ca/",
+  provincial: "https://www.gov.nl.ca/disclaimer/",
+  assembly: "https://www.assembly.nl.ca/CopyrightPrivacyStatement.aspx",
   federal: "https://open.canada.ca/en/open-government-licence-canada",
 };
 
@@ -15,8 +16,8 @@ export function clip(s, n) {
   return s.length <= n ? s : s.slice(0, n).replace(/\s+\S*$/, "") + "…";
 }
 
-// A description of at most about 158 characters.
-export const desc = (s) => clip(s, 158);
+// A share-card description: whole sentences, at most 155 characters, no ellipsis.
+export const desc = (s) => fit(s, 155);
 
 export function siteLd() {
   return [

@@ -64,7 +64,7 @@ export function pay(D, R) {
     const ly = perYear[perYear.length - 1];
     const g = grid.get(e.buyer)[ly];
     out.push([`/pay/${D.slug(e.buyer)}/`, { title: `${clip(e.buyer, 38)} salaries over $100,000, ${ly}`,
-      description: desc(`${num(g.n)} ${e.buyer} employees were paid over $100,000 in ${ly}, ${moneyWords(g.a)} in all. Job titles, average pay, overtime and the highest paid, from the sunshine list.`),
+      description: desc(`${num(g.n)} ${e.buyer} employees paid over $100,000 in ${ly}, ${moneyWords(g.a)} in all. Job titles, overtime and the highest paid, from the sunshine list.`),
       body, notes,
       jsonld: [datasetLd({ name: `${e.buyer}: employees paid over $100,000, ${perYear[0]} to ${ly}`, description: `Public employees of ${e.buyer} paid more than $100,000 in a calendar year, from the compensation disclosure lists.`, path: `/pay/${D.slug(e.buyer)}/`, license: LICENSE.provincial, period: `${perYear[0]}/${ly}`, publishers: src.map((x) => ({ name: `${e.buyer} compensation disclosure, ${x.y}`, url: x.source_url })) })] }]);
   }

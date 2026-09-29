@@ -123,8 +123,12 @@ The code is released under the [MIT licence](LICENSE).
 
 The data is not covered by that licence. Each record stays under the licence of the body that published it:
 
-- Federal records: [Open Government Licence – Canada](https://open.canada.ca/en/open-government-licence-canada).
-- Newfoundland and Labrador records: the province's open government licence, published with the [provincial open data portal](https://opendata.gov.nl.ca/). Where a page carries its own terms, those apply.
-- Municipal records (Paradise, St. John's) and Statistics Canada tables: the terms on each publisher's own site.
+- Federal records (contracts, grants, CanadaBuys, Public Accounts): [Open Government Licence – Canada](https://open.canada.ca/en/open-government-licence-canada). Required wording: "Contains information licensed under the Open Government Licence – Canada."
+- Statistics Canada tables: [Statistics Canada Open Licence](https://www.statcan.gc.ca/en/reference/licence).
+- Province of Newfoundland and Labrador records (awards, minister claims, pay lists, expenditure reports): no open licence is stated on those pages; the province's [copyright notice](https://www.gov.nl.ca/disclaimer/) permits use by the public. The province's Open Government Licence covers its open data portal, which this site does not use.
+- House of Assembly records: the [Copyright & Privacy Statement](https://www.assembly.nl.ca/CopyrightPrivacyStatement.aspx): citation and excerpts with the source acknowledged; commercial use needs the Speaker's approval.
+- Municipal records: [Town of Paradise terms](https://www.paradise.ca/terms-and-conditions/) (non-commercial copying only, otherwise written permission) and the [City of St. John's terms](https://www.stjohns.ca/terms-and-conditions-of-use/) (all rights reserved, no licence stated).
+
+The site's Sources page lists the licence for each source.
 
 Reuse of any figure follows the licence of the source it links to.

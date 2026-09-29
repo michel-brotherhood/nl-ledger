@@ -1,6 +1,6 @@
 import { supplierPage } from "../../lib/views.mjs";
 import { supplierIndexable } from "../../lib/indexing.mjs";
-import { moneyWords, num } from "../../lib/format.mjs";
+import { moneyWords, num, fit } from "../../lib/format.mjs";
 import { assets, page, cached } from "../_shared.js";
 
 const SHARDS = 512;
@@ -21,7 +21,7 @@ export async function onRequestGet(ctx) {
     }
     const v = supplierPage(s, { ...a, hash: h });
     const name = s.name.length > 42 ? s.name.slice(0, 42).replace(/\s+\S*$/, "") + "…" : s.name;
-    const text = `${s.name} appears in ${num(s.n)} government records totalling ${moneyWords(s.total)}: contract awards, grants and payments from provincial, federal and municipal bodies, with sources.`;
-    return page(ctx, a, { title: `${name}: government contracts and payments`, description: text.length > 158 ? text.slice(0, 157).replace(/\s+\S*$/, "") + "…" : text, body: v.body, robots: supplierIndexable(s) ? "" : "noindex,follow" });
+    const text = `${s.name} appears in ${num(s.n)} government records worth ${moneyWords(s.total)}: contracts, grants and payments, each with its source.`;
+    return page(ctx, a, { title: `${name}: government contracts and payments`, description: fit(text), body: v.body, robots: supplierIndexable(s) ? "" : "noindex,follow" });
   });
 }

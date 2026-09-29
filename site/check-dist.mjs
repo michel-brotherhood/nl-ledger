@@ -19,7 +19,17 @@ for (const f of files) {
   }
   const d = h.match(/name="description" content="([^"]*)"/)?.[1];
   if (!d) problems.push(`no description: ${page}`);
-  else if (page !== "/404.html") (descs.get(d) || descs.set(d, []).get(d)).push(page);
+  else {
+    // The share card (og and twitter) must carry the same description, whole and short enough not to be cut off.
+    const text = d.replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+    if (text.length > 155) problems.push(`description over 155 characters (${text.length}): ${page}`);
+    if (/…|\.\.\.$/.test(text)) problems.push(`description cut off with an ellipsis: ${page}`);
+    for (const k of ["og:description", "twitter:description"]) {
+      const c = h.match(new RegExp(`(?:property|name)="${k}" content="([^"]*)"`))?.[1];
+      if (c !== d) problems.push(`${k} missing or different from the description: ${page}`);
+    }
+  }
+  if (d && page !== "/404.html") (descs.get(d) || descs.set(d, []).get(d)).push(page);
   for (const m of h.matchAll(/href="(\/[^"#?]*)/g)) {
     const path = m[1];
     if (RENDERED.test(path) || path === "/") continue;

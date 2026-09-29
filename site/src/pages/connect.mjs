@@ -2,7 +2,7 @@
 import { esc, html, icon, schedule } from "../../lib/html.mjs";
 import { num, SITE } from "../../lib/format.mjs";
 import { TOOLS } from "../../lib/mcp.mjs";
-import { datasetLd, LICENSE } from "../seo.mjs";
+import { desc, datasetLd, LICENSE } from "../seo.mjs";
 import { pagehead, caveat } from "../common.mjs";
 import { MCP_URL, CLIENTS, MORE, QUESTIONS, askClaude, askChatGPT, asked } from "../connect.mjs";
 
@@ -149,6 +149,6 @@ export function connectPage(D, R) {
     </details>
   </div>
 </section>`;
-  return ["/data/", { title: "Ask your AI", description: `Connect Claude, ChatGPT or another AI assistant to ${num(R.itemCount)} Newfoundland and Labrador public spending records and ask it anything. Free, read-only, no sign-in.`, body,
+  return ["/data/", { title: "Ask your AI", description: desc(`Connect Claude, ChatGPT or another AI assistant to ${num(R.itemCount)} Newfoundland and Labrador spending records. Free, read-only, no sign-in.`), body,
     jsonld: [datasetLd({ name: "Newfoundland and Labrador public spending records", description: `${num(R.itemCount)} public spending records (provincial contract awards, minister and MHA expenses, public sector pay over $100,000, department and program spending, federal contracts and grants, municipal payments), each linked to its source, with summary files and an MCP server for AI assistants.`, path: "/data/", license: [LICENSE.provincial, LICENSE.federal], files: ["/data/departments.json", "/data/members.json", "/data/flag_results.json"] })] }];
 }

@@ -94,6 +94,9 @@ const NAV = [
   ["/data/", "Ask AI"],
 ];
 
+// The "Spot an error?" line at the foot of supplier, people and record pages.
+export const spotError = () => `<p class="spot-error small muted"><span>Spot an error?</span> Email <a href="mailto:${SITE.corrections}?subject=Correction%20request">${SITE.corrections}</a>. <a href="/about/#corrections">What to send</a>.</p>`;
+
 // ---- structured data (JSON-LD). Escaped so a record's text can never close the script tag.
 export const ldScript = (obj) => `<script type="application/ld+json">${JSON.stringify(obj).replace(/</g, "\\u003c").replace(/\u2028/g, "\\u2028").replace(/\u2029/g, "\\u2029")}</script>`;
 const plain = (h) => String(h).replace(/<[^>]*>/g, "").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'").trim();
@@ -116,7 +119,7 @@ export function breadcrumbList(body, path) {
 
 export function layout({ title, description, path = "/", body, notes, bodyClass = "", head = "", scripts = "", updated, jsonld = [], robots = "" }) {
   const full = title ? `${title} · ${SITE.name}` : `${SITE.name}: ${SITE.tagline}`;
-  const desc = description || "Every provincial award, federal contract and grant, MHA and minister expense, and public pay record in Newfoundland and Labrador, each linked to its source.";
+  const desc = description || "Every provincial award, federal contract and grant, expense claim and public pay record in Newfoundland and Labrador, each linked to its source.";
   const crumbs = breadcrumbList(body, path);
   const ld = [...(crumbs ? [crumbs] : []), ...jsonld].map(ldScript).join("\n");
   const nav = NAV.map(
@@ -184,6 +187,7 @@ ${notes ? notes.render() : ""}
     <nav class="foot-nav" aria-label="About this site">
       <a href="/about/">What is this?</a><a href="/sources/">Sources and report card</a><a href="/method/">Methods</a><a href="/corrections/">Corrections</a><a href="/data/">Ask your AI</a><a href="/help/">Help build this</a>
     </nav>
+    <p class="foot-meta">Contains information licensed under the Open Government Licence – Canada. Provincial, House of Assembly and municipal records are used under each publisher's own terms, and Statistics Canada figures are adapted from its tables; this does not constitute an endorsement by Statistics Canada of this product. <a href="/sources/#licences">Licences and sources</a>.</p>
     ${updated ? `<p class="foot-meta">Data gathered ${esc(fmtDate(updated))}.</p>` : ""}
   </div>
 </footer>

@@ -72,7 +72,7 @@ writeJSON("data/flag_results.json", flagResultsJSON(D));
 writeJSON("data/members.json", membersJSON(D));
 
 const h = home(D, R);
-write("/", { title: "NL government spending: every contract, expense and salary", description: desc(`Every Newfoundland and Labrador government contract, grant, MHA expense claim and salary over $100,000, in one searchable place. Each figure links to its source. Try the tax receipt.`), body: h.body, notes: h.notes, bodyClass: "home", jsonld: siteLd() });
+write("/", { title: "NL government spending: every contract, expense and salary", description: desc(`Every Newfoundland and Labrador government contract, grant, expense claim and $100,000+ salary in one place. Each figure links to its source.`), body: h.body, notes: h.notes, bodyClass: "home", jsonld: siteLd() });
 
 for (const [path, page] of [
   ...priorities(D, R),

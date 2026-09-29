@@ -113,7 +113,7 @@ ${pagehead({ crumbs: [["/", "Home"], [null, "Priorities"]], title: "Priorities",
   <div>${caveat("Federal transfers to people (Old Age Security, Employment Insurance) are not provincial spending. They are here because they are public money arriving in the province, and are often larger than a whole provincial department.")}</div>
 </div></section>`;
   out.push(["/priorities/", { title: `NL government spending by department, ${fy}`,
-    description: desc(`The Newfoundland and Labrador government spent ${moneyWords(R.total)} in ${fy}. Every department and program, spent against the budget, with the source page for each figure.`),
+    description: desc(`The Newfoundland and Labrador government spent ${moneyWords(R.total)} in ${fy}. Every department and program, actual against budget, with the source page for each figure.`),
     body, notes,
     jsonld: [datasetLd({ name: `Newfoundland and Labrador spending by department and program, ${D.years[0]} to ${fy}`, description: "Gross spending by department and program, actual against amended and original estimates, from the province's Report on the Program Expenditures and Revenues of the Consolidated Revenue Fund.", path: "/priorities/", license: LICENSE.provincial, period: `${D.years[0].slice(0, 4)}/20${fy.slice(-2)}`, files: ["/data/departments.json"], publishers: [{ name: "Report on the Program Expenditures and Revenues of the Consolidated Revenue Fund", url: "https://www.gov.nl.ca/exec/tbs/public-accounts/" }] })] }]);
   return out;
@@ -197,7 +197,7 @@ ${awards.length ? html`<section class="section"><div class="wrap">
     const budgeted = progs.reduce((t, p) => t + (p.c3 || 0), 0);
     const spent = sum ? `${dep.name} spent ${moneyWords(sum.gross)} in ${latest}${budgeted > 0 ? `, against a budget of ${moneyWords(budgeted)}` : ""}.` : `${dep.name}: the ${estYear} budget estimates by program.`;
     out.push([`/department/${slug}/`, { title: `${dep.name} spending, ${latest || estYear}`,
-      description: desc(`${spent} Spending by program, contracts awarded and professional services, with sources.`), body, notes }]);
+      description: desc(`${spent} Spending by program and contracts awarded, with sources.`), body, notes }]);
   }
 
   // estimates overview

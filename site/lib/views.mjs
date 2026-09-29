@@ -1,6 +1,6 @@
 // Views rendered on request by the Worker routes: search results, one record, one supplier.
-import { esc, html, icon, receipt, query, schedule, leaders, bar, pager } from "./html.mjs";
-import { money, moneyWords, num, pct, date as fmtDate, workTime, perPerson, DATASET_LABEL, LEVEL_LABEL } from "./format.mjs";
+import { esc, html, icon, receipt, query, schedule, leaders, bar, pager, spotError } from "./html.mjs";
+import { money, moneyWords, num, pct, date as fmtDate, workTime, perPerson, DATASET_LABEL, LEVEL_LABEL, fit } from "./format.mjs";
 import { DATASETS } from "./search.mjs";
 
 export const slug = (s) =>
@@ -89,7 +89,7 @@ export function itemMeta(it) {
   const label = DATASET_LABEL[it.ds] || "Record";
   const d = String(it.d || "").trim();
   const text = `${label}: ${it.s || it.p || "payee not published"}${amt ? `, ${amt}` : ""}${it.b && !same ? `, ${it.ds === "sunshine" ? "at" : "from"} ${it.b}` : ""}${it.t ? ` on ${fmtDate(it.t)}` : year ? ` in ${year}` : ""}. ${d ? d.replace(/\.$/, "") + ". " : ""}${it.m ? `${it.m}. ` : ""}`.trim();
-  return { title, description: text.length > 158 ? text.slice(0, 157).replace(/\s+\S*$/, "") + "…" : text };
+  return { title, description: fit(text) };
 }
 
 // A link to the page about a public body, only where the build wrote one (links.json lists the slugs of every
@@ -157,7 +157,8 @@ export function itemPage(it, { flags, stats, links }) {
     ${fl.length ? html`<h3 style="margin-block:2rem .6rem">Patterns</h3><ul class="flaglist">${fl.map((f) => html`<li><a class="q" href="/flags/${f.id}/" aria-hidden="true" tabindex="-1">${icon("query")}</a><h3><a href="/flags/${f.id}/">${esc(f.title)}</a></h3><span></span><p>${esc(f.short)} <a href="/method/${f.id}/">Method</a></p></li>`)}</ul>
       <p class="small muted">A flag is a question, not a finding. It is not evidence that anything wrong happened.</p>` : ""}
   </div>
-</div></section>`;
+</div></section>
+<div class="wrap">${spotError()}</div>`;
   return { title, body };
 }
 
@@ -191,6 +192,7 @@ export function supplierPage(s, { flags, stats, hash, links }) {
   <h2 style="margin-block-end:1rem">Largest records</h2>
   <ol class="results">${s.top.map((it) => resultItem({ ...it, s: undefined, k: undefined, fy: undefined }, flags)).join("")}</ol>
   ${s.n > s.top.length ? `<p style="margin-block-start:1.5rem"><a href="/search/?s=${hash}">All ${num(s.n)} records ${icon("arrow")}</a></p>` : ""}
-</div></section>`;
+</div></section>
+<div class="wrap">${spotError()}</div>`;
   return { title: s.name, body };
 }

@@ -38,5 +38,5 @@ ${fed.length ? html`<section class="section"><div class="wrap">
   ${schedule({ compact: true, cols: [{ label: "Fiscal year" }, { label: "Payments", num: true }, { label: "Paid", num: true }], rows: fed.map((r) => ({ cells: [esc(r.y), num(r.n), moneyWords(r.v)] })) })}
   <p><a href="/search/?ds=pa_pss">Search these federal payments</a> · <a href="/search/?q=consulting">Search every record for consulting</a></p>
 </div></section>` : ""}`;
-  return ["/consulting/", { title: "Government consultants and professional services spending", description: desc(`The Newfoundland and Labrador government spent ${moneyWords(latest.v)} on professional services, its account for outside expertise such as consultants, in ${latest.y}. By department, program and year.`), body, notes }];
+  return ["/consulting/", { title: "Government consultants and professional services spending", description: desc(`The Newfoundland and Labrador government spent ${moneyWords(latest.v)} on professional services, its account for consultants and outside experts, in ${latest.y}. By department and program.`), body, notes }];
 }

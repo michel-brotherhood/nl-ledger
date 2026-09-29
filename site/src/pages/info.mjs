@@ -4,7 +4,10 @@ import { money, moneyWords, num, pct, date as fmtDate, workTime, SITE, payrollCo
 import { desc } from "../seo.mjs";
 import { pagehead, caveat, datasetLabel } from "../common.mjs";
 import { connectPage } from "./connect.mjs";
+import { LICENCES, SOURCE_LICENCE } from "../licences.mjs";
 
+
+const REPO = "https://github.com/steveclarke/nl-ledger";
 
 const SOURCES = [
   { ds: "ppa", publisher: "Public Procurement Agency, Government of Newfoundland and Labrador", url: "https://www.gov.nl.ca/ppa/tenders/awarded/", what: "Contract award reports filed every two weeks under sections 31 and 32 of the Public Procurement Regulations: limited calls for bids, exceptions to open calls (sole source, emergency and others) and some open calls, for every public body that must report.", form: "PDF tables, read with a table parser. Where a fortnight was reissued as REVISED, the revised report replaces the original." },
@@ -21,10 +24,10 @@ const SOURCES = [
 ];
 
 const OTHER = [
-  ["Report on the Program Expenditures and Revenues of the Consolidated Revenue Fund, 2019-20 to 2024-25", "https://www.gov.nl.ca/exec/tbs/public-accounts/", "Department and program spending, actual against amended and original estimates."],
-  ["Estimates of the Program Expenditure and Revenue of the Consolidated Revenue Fund, 2026-27", "https://www.gov.nl.ca/budget/2026/", "This year's budget by program."],
-  ["Statistics Canada tables 14-10-0064, 17-10-0009, 98-10-0002, 36-10-0450", "https://www150.statcan.gc.ca/", "Median wage, population, households, provincial revenue and interest."],
-  ["Canada Revenue Agency, Form NL428", "https://www.canada.ca/en/revenue-agency.html", "Provincial income tax brackets for the personal receipt."],
+  ["Report on the Program Expenditures and Revenues of the Consolidated Revenue Fund, 2019-20 to 2024-25", "https://www.gov.nl.ca/exec/tbs/public-accounts/", "Department and program spending, actual against amended and original estimates.", "nl"],
+  ["Estimates of the Program Expenditure and Revenue of the Consolidated Revenue Fund, 2026-27", "https://www.gov.nl.ca/budget/2026/", "This year's budget by program.", "nl"],
+  ["Statistics Canada tables 14-10-0064, 17-10-0009, 98-10-0002, 36-10-0450", "https://www150.statcan.gc.ca/", "Median wage, population, households, provincial revenue and interest.", "statcan"],
+  ["Canada Revenue Agency, Form NL428", "https://www.canada.ca/en/revenue-agency.html", "Provincial income tax brackets, CPP and EI rates for the personal receipt.", "gc"],
 ];
 
 // The receipt's arithmetic for one income, line by line, so a reader can redo it with a calculator.
@@ -84,7 +87,7 @@ export function info(D, R) {
   ];
   out.push(["/sources/", {
     title: "Sources: where every figure comes from",
-    description: desc("Every source behind the records: what each publisher releases, how much is loaded, and a report card on how complete and usable each publisher's records are."),
+    description: desc("What each publisher releases, how much is loaded, the licence each source is under, and a report card on how complete and usable the records are."),
     body: html`${pagehead({ crumbs: [["/", "Home"], [null, "Sources"]], title: "Sources and report card", lede: "Where every figure comes from, what each source covers, and how well each publisher does at publishing it." })}
 <section class="section"><div class="wrap">
   <h2 style="margin-block-end:1.5rem">Line-item sources</h2>
@@ -92,10 +95,19 @@ export function info(D, R) {
     <h3>${esc(datasetLabel(s.ds))}</h3>
     <p class="small muted" style="margin:.3rem 0 .6rem">${esc(s.publisher)} · <a href="${esc(s.url)}">${esc(s.url.replace(/^https?:\/\//, "").slice(0, 60))}</a></p>
     <p>${esc(s.what)}</p><p class="small">${esc(s.form)}</p>
+    <p class="small">Licence: <a href="${esc(LICENCES[SOURCE_LICENCE[s.ds]].url)}">${esc(LICENCES[SOURCE_LICENCE[s.ds]].name)}</a>.</p>
     <p class="small"><strong>${num(c.n || 0)} records${c.a ? `, ${moneyWords(c.a)}` : ""}</strong>${c.d0 ? `, dated ${fmtDate(c.d0)} to ${fmtDate(c.d1)}` : ""}. <a href="/search/?ds=${s.ds}">Search them</a>.</p>
   </article>`; })}
   <h2 style="margin-block:2.5rem 1rem">Other sources</h2>
   ${schedule({ cols: [{ label: "Source" }, { label: "Used for" }], rows: OTHER.map(([t, u, w]) => ({ cells: [`<a href="${u}">${esc(t)}</a>`, esc(w)] })) })}
+</div></section>
+<section class="section" id="licences"><div class="wrap">
+  <div class="section-head"><h2>Licences</h2><p>Each source stays under the terms of the body that published it. The site's own code is under the <a href="${REPO}/blob/main/LICENSE">MIT licence</a>.</p></div>
+  ${schedule({ compact: true, cols: [{ label: "Source" }, { label: "Publisher" }, { label: "Licence" }, { label: "Attribution and conditions" }], rows: [
+    ...SOURCES.map((s) => [datasetLabel(s.ds), s.publisher, LICENCES[SOURCE_LICENCE[s.ds]]]),
+    ...OTHER.map(([t, , , k]) => [t, "", LICENCES[k]]),
+  ].map(([src, pub, l]) => ({ cells: [esc(src), esc(pub), `<a href="${esc(l.url)}">${esc(l.name)}</a>`, esc(l.wording ? `Required wording: "${l.wording}"` : l.note)] })) })}
+  <p class="small">Statistics Canada tables: the required wording is completed with the table's number and reference date, as listed under Other sources. Every record links to the original. Reuse of House of Assembly, Town of Paradise and City of St. John's records follows those publishers' terms, not the federal licence.</p>
 </div></section>
 <section class="section" id="report-card"><div class="wrap">
   <div class="section-head"><h2>Publisher report card</h2><p>How complete, correct and usable each publisher's records are. This grades the publishing, not the spending.</p></div>
@@ -170,7 +182,7 @@ export function info(D, R) {
   <h2>Known errors in the sources</h2>
   <p>Errors found in the government's own files are not corrected here; the figure is shown as published and the error is listed on the <a href="/sources/#report-card">report card</a>.</p>
   <h2>Report an error</h2>
-  <p>Every figure links to its source. If a figure here does not match the source it links to, that is an error on this site and belongs in this log. <a href="/help/#figure">Report it</a>.</p>
+  <p>Every figure links to its source. If a figure here does not match the source it links to, that is an error on this site and belongs in this log. Email <a href="mailto:${SITE.corrections}?subject=Correction%20request">${SITE.corrections}</a> or <a href="/help/#figure">report it on GitHub</a>.</p>
 </div></section>`,
   }]);
 
@@ -198,13 +210,15 @@ export function info(D, R) {
   <p>Visits are counted with Cloudflare Web Analytics, which sets no cookies and does not track individual visitors. The site has no accounts, no sign-in and no advertising.</p>
   <h2>Status</h2>
   <p>This is a prototype. The name, the scope and the sources will change, and parts of it may be wrong. Mistakes that are found are listed on the <a href="/corrections/">Corrections</a> page. Data was last gathered on ${fmtDate(D.gathered)}.</p>
+  <h2 id="corrections">Corrections</h2>
+  <p>To ask for a correction, email <a href="mailto:${SITE.corrections}?subject=Correction%20request">${SITE.corrections}</a>. If you are a person or a company named in a record, say which page and what is wrong. Send the page address, what it shows and what you believe is correct, with a document if you have one.</p>
+  <p>Each record links to the government document it came from. If the record here differs from that document, the error is on this site and will be fixed and logged on the <a href="/corrections/">Corrections</a> page. If the document itself is wrong, only the publisher can change it: contact the department, agency, House of Assembly, town or city named on the record.</p>
   <h2>Help build it</h2>
   <p>Anyone can suggest a source, question a method, report a figure that does not match its source, or ask for records that are not published. Most of that needs no programming. <a href="/help/">Help build this ${icon("arrow")}</a></p>
 </div></section>`,
   }]);
 
   // ---- help build this
-  const REPO = "https://github.com/steveclarke/nl-ledger";
   const WAYS = [
     { id: "source", title: "Add a source", form: "add-source.yml", label: "Suggest a source",
       text: "Know of public spending records this site does not have? A town that publishes its cheque register, a report of awards, a list of payments. Send the link and a sentence about what it holds." },
@@ -218,7 +232,6 @@ export function info(D, R) {
   out.push(["/help/", {
     title: "Help build NL Ledger",
     description: desc("Add a source, challenge a method, report a figure that does not match its document, or request records that are not published. No programming needed."),
-    description: "Anyone can help make NL Ledger more accurate and more complete: add a source, challenge a method, report a figure or request data. No programming needed.",
     body: html`${pagehead({ crumbs: [["/", "Home"], [null, "Help build this"]], title: "Help build this", lede: `${SITE.name} is built in the open, and anyone can help make it more accurate and more complete. Most help needs no programming: a link and a sentence is enough.` })}
 <section class="section"><div class="wrap">
   <div class="section-head"><h2>Four ways in</h2><p>Each one opens a short form on GitHub, where the site's code and records are kept. A free GitHub account is needed to send it.</p></div>

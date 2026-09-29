@@ -1402,6 +1402,13 @@ pre {
 .foot-meta {
   opacity: 0.7;
   font-size: 0.85rem;
+  max-inline-size: 80ch;
+}
+.spot-error {
+  margin-block: 2rem;
+}
+.spot-error span {
+  font-weight: 600;
 }
 
 /* print: it is a book after all */

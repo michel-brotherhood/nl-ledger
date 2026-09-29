@@ -89,7 +89,7 @@ export function flagPages(D, R) {
     const seo = SEARCHED[f.id];
     out.push([`/flags/${f.id}/`, {
       title: seo?.title || f.title,
-      description: desc(seo?.description || `${f.short} ${countLine(D, f)} in the Newfoundland and Labrador records, each linked to its source. A question, not a finding.`),
+      description: desc(seo?.description || `${f.short} ${countLine(D, f)}. Each is linked to its source: a question, not a finding.`),
       body: html`${pagehead({ crumbs: [["/", "Home"], ["/flags/", "Patterns"], [null, f.title]], title: esc(f.title), lede: esc(f.short) })}
 <section class="section"><div class="wrap">
   <div class="grid-2" style="margin-block-end:2.5rem"><div><p>${esc(f.why)}</p>${seo?.note ? `<p>${esc(seo.note)}</p>` : ""}<p><a href="/method/${f.id}/">How this is worked out, and what it cannot tell you ${icon("arrow")}</a></p></div><div>${caveat(esc(cat.caveat))}</div></div>
@@ -100,7 +100,7 @@ export function flagPages(D, R) {
 
     out.push([`/method/${f.id}/`, {
       title: `Method: ${f.title}`,
-      description: desc(`How NL Ledger counts "${f.title.toLowerCase()}": ${f.how[0]}`),
+      description: desc(`Method for "${f.title.toLowerCase()}": how it is counted and what it cannot tell you. ${f.short}`),
       body: html`${pagehead({ crumbs: [["/", "Home"], ["/method/", "Methods"], [null, f.title]], title: `Method: ${esc(f.title)}`, lede: esc(f.short) })}
 <section class="section"><div class="wrap prose">
   <h2>Why people look at this</h2><p>${esc(f.why)}</p>

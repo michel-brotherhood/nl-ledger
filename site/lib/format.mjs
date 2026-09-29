@@ -5,7 +5,27 @@ export const SITE = {
   name: "NL Ledger",
   tagline: "Where Newfoundland and Labrador's public money goes",
   url: "https://nlledger.ca",
+  corrections: "corrections@nlledger.ca",
 };
+
+// A share-card description: whole sentences that fit `max` characters, never cut off with an ellipsis.
+// Too long: keep the leading sentences that fit; if even the first is too long, end it at the last clause break.
+export function fit(text, max = 155) {
+  const s = String(text || "").replace(/\s+/g, " ").trim();
+  if (s.length <= max) return s;
+  const sentences = s.match(/[^.!?]+[.!?]+(?=\s|$)/g) || [];
+  let out = "";
+  for (const x of sentences) {
+    const next = (out + " " + x.trim()).trim();
+    if (next.length > max) break;
+    out = next;
+  }
+  if (out) return out;
+  const cut = s.slice(0, max);
+  const at = Math.max(cut.lastIndexOf(", "), cut.lastIndexOf(": "), cut.lastIndexOf("; "));
+  const head = at > max * 0.5 ? cut.slice(0, at) : cut.replace(/\s+\S*$/, "");
+  return head.replace(/[\s,;:–-]+$/, "") + ".";
+}
 
 const nf0 = new Intl.NumberFormat("en-CA", { maximumFractionDigits: 0 });
 const nf2 = new Intl.NumberFormat("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
