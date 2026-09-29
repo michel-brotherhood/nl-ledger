@@ -144,7 +144,8 @@ export function layout({ title, description, path = "/", body, notes, bodyClass 
 <meta name="twitter:title" content="${esc(full)}">
 <meta name="twitter:description" content="${esc(desc)}">
 <meta name="twitter:image" content="${SITE.url}/og.png">${robots ? `\n<meta name="robots" content="${esc(robots)}">` : ""}
-<meta name="theme-color" content="#1f3c96">
+<meta name="theme-color" content="#1f3c96" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1d377f" media="(prefers-color-scheme: dark)">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="48x48">

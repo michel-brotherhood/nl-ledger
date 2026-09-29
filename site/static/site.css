@@ -66,7 +66,7 @@
     --red: #ff8d84;
     --graphite: #9aa2ab;
     --bar: #5f86ea;
-    --bar-ghost: #37404f;
+    --bar-ghost: #5b6575;
     --lv-provincial: #5f86ea;
     --lv-federal: #c8702e;
     --lv-municipal: #25a882;
@@ -91,7 +91,7 @@
   --red: #ff8d84;
   --graphite: #9aa2ab;
   --bar: #5f86ea;
-  --bar-ghost: #37404f;
+  --bar-ghost: #5b6575;
   --lv-provincial: #5f86ea;
   --lv-federal: #c8702e;
   --lv-municipal: #25a882;
@@ -376,6 +376,14 @@ strong {
 }
 .theme .i-sun {
   display: none;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme .i-sun {
+    display: block;
+  }
+  :root:not([data-theme="light"]) .theme .i-moon {
+    display: none;
+  }
 }
 :root[data-theme="dark"] .theme .i-sun {
   display: block;
@@ -1529,6 +1537,20 @@ select {
     min-inline-size: 0;
     font-size: 0.93rem;
   }
+  /* A name breaks between words, never inside one; the table scrolls sideways instead of crushing the name column. */
+  .sched tbody th a {
+    overflow-wrap: break-word;
+  }
+  .pin-what {
+    display: none;
+  }
+  .fold-jump {
+    position: static;
+    float: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-block-end: 1rem;
+  }
   .sched td.n,
   .sched th.n {
     padding-inline: 0.35rem;
@@ -2074,7 +2096,8 @@ article a,
 .ai-home h2, .ai-home .lede { color: var(--on-blue); }
 .ai-home a { color: var(--on-blue); }
 .ai-home .small.muted { color: var(--on-blue-2); }
-.ai-home .btn { background: var(--paper); color: var(--ink); border-color: var(--paper); }
+/* The band is blue in both schemes, so its main button is a light pill in both. */
+.ai-home .btn { background: #fcfcfa; color: #14171a; border-color: #fcfcfa; }
 .ai-home .btn:hover { background: var(--blue-deep); color: var(--on-blue); }
 .ai-home .btn.ghost { background: transparent; color: var(--on-blue); border: 1.5px solid var(--on-blue); }
 .ai-home .qa { color: var(--ink); }

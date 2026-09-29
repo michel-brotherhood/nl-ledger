@@ -132,7 +132,7 @@ It is paper and ink, not a dashboard. There are no floating cards, gradients or 
 
 **The Red Is Negative Rule.** Red marks a negative figure and nothing else. Flags are graphite, never red.
 
-Dark mode is its own set of steps (night paper `#0f1215`, night ink `#eceeea`, lighter bar and link blues), selected by the reader's system setting or the masthead toggle.
+Dark mode is its own set of steps (night paper `#0f1215`, night ink `#eceeea`, lighter bar and link blues), selected by the reader's system setting or the masthead toggle. Checked 2026-09-29 on every page type, phone and desktop: text meets WCAG AA (4.5:1, 3:1 for large text) in both schemes. The dark "estimate" bar is `#5b6575` (3.2:1 on night paper) so it reads as a graphic, not just a tint. The blue band keeps a light main button in both schemes. The favicon is a blue tile with white letters (readable on any tab colour); the SVG favicon switches to light blue letters in a dark browser.
 
 ## Typography
 

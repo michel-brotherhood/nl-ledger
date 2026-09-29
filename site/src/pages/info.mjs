@@ -290,7 +290,7 @@ function scalePage(D, R) {
     if (at + p.amount > BILLION) break;
     const top = at / PER_PX;
     const h = p.amount / PER_PX;
-    const ltop = Math.max(top, labelAt + 78);
+    const ltop = Math.max(top, labelAt + 132); // room for a label on a phone, where the description is hidden
     labelAt = ltop;
     placed.push({ ...p, top, h, ltop, running: at + p.amount });
     at += p.amount;
@@ -306,7 +306,7 @@ function scalePage(D, R) {
     ${placed.map((p) => html`<span class="fold-blk" style="inset-block-start:${p.top.toFixed(1)}px;block-size:${Math.max(1, p.h).toFixed(1)}px" aria-hidden="true"></span>
     <div class="fold-pin" style="inset-block-start:${p.ltop.toFixed(1)}px">
       ${p.ltop > p.top + 2 ? `<span class="fold-lead" style="block-size:${(p.ltop - p.top).toFixed(1)}px" aria-hidden="true"></span>` : ""}
-      <span class="txt"><b>${moneyWords(p.amount)}</b> · <a href="${esc(p.href)}">${esc(p.label)}</a><br><span class="muted small">${esc(p.detail || "")} · ${workTime(p.amount, S)} at the median wage · ${num(Math.max(1, Math.round(p.h)))} px</span></span>
+      <span class="txt"><b>${moneyWords(p.amount)}</b> · <a href="${esc(p.href)}">${esc(p.label)}</a><br><span class="muted small">${p.detail ? `<span class="pin-what">${esc(p.detail)} · </span>` : ""}${workTime(p.amount, S)} at the median wage · ${num(Math.max(1, Math.round(p.h)))} px</span></span>
     </div>`)}
     ${cf.map((v) => `<div class="fold-cf" id="cf-${v / 1e8}" style="inset-block-start:${v / PER_PX}px"><span>Carried forward ${moneyWords(v)}</span></div><span class="fold-tick" style="inset-block-start:${v / PER_PX}px">${moneyWords(v)}</span>`)}
     <div class="fold-end" id="fold-end"></div>
