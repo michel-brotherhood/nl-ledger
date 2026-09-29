@@ -42,9 +42,43 @@ uv run python d1_sync.py --dry-run   # what would change in D1
 uv run python d1_sync.py             # push only changed search documents
 ```
 
-- Downloads are cached; delete a file under `data/cache/` to fetch it again.
+- Downloads are cached; delete a file under `data/cache/` to fetch it again. The federal bulk files and the grants query are replaced in place by their publishers, so they are fetched again once 6 days old; published reports are fetched once.
+- `./run.sh fetch` and `./run.sh process` run the two halves separately.
 - `d1_sync.py` compares document hashes and writes only what changed. An unchanged re-run writes nothing. It refuses above 90,000 writes (D1 free plan: 100,000 rows written a day). It runs each query through `cf d1 query`, so it needs the `cf` login and no token of its own. It prints the rows D1 reports written.
 - Full pipeline time: about 6 minutes, most of it the MHA PDFs (read word by word with pdfplumber).
+
+## Weekly job
+
+Every Monday 09:00 UTC the maintainer's home server runs the whole pipeline in a container (`Dockerfile`, entrypoint `pipeline/weekly.sh`). A GitHub Action was set aside because government sites may block cloud addresses.
+
+| Step | What stops the run |
+|---|---|
+| Cloudflare token check | token expired or revoked (`/tokens/verify`) |
+| Fetch | a listing page fails after three tries |
+| Archive (`archive.py`) | the archive is unreachable, or a cached file no longer matches its manifest hash |
+| Process | any parse, build, flags, reconcile or export error |
+| Guards (`guards.py check`) | a new download failure, nothing fetched in 8 days, a dataset down over 2% or fewer cached files than the last good run |
+| D1 budget (`d1_sync.py --dry-run`) | the sync would pass 90,000 writes; checked before deploying so the site and the search index stay in step |
+| Deploy (`cf deploy`) | build or `check.sh` fails, or the upload fails |
+| Live check | `https://nlledger.ca/` does not serve the page just built within two minutes |
+| D1 sync | a D1 error, or remote and local counts differ |
+| Archive verify | one random archived file, fetched back, does not match its hash |
+| Baseline (`guards.py commit`) | this run becomes the one the next run is compared with |
+
+- The job needs `CLOUDFLARE_API_TOKEN` (an account token: Workers edit, D1 edit, account settings read; zone read and Workers routes edit on `nlledger.ca`), `CLOUDFLARE_ACCOUNT_ID`, `NL_LEDGER_D1_ID` and the `NL_LEDGER_S3_*` settings in `archive.py`.
+- A drop that has been checked and is real (a report withdrawn, a better de-duplication) is accepted for one run with `NL_LEDGER_ALLOW_DROP=1`.
+- The last lines of a run are `SUMMARY: Data gathered <date>; <items> items; <rows> rows written` or `FAILED at <step>: ...`.
+- Run the same container locally: `docker build -t nl-ledger-pipeline . && docker run --rm --env-file site/.env -v "$PWD/data:/app/data" nl-ledger-pipeline` (it deploys).
+
+## Source archive
+
+`archive.py` keeps every version of every downloaded file in S3-compatible storage (Garage on the home server, bucket `nl-ledger-sources`), so any figure can be traced to the exact file it came from after the publisher changes or removes it.
+
+- Key: `<cache path>/<fetch date>_<sha256 first 16>`, for example `ppa/Contract-Awards-June-2025.pdf/2026-09-29_3fa1c2d4e5b6a7c8`. CSV, JSON and HTML are gzipped (`.gz`, `Content-Encoding: gzip`); PDFs, spreadsheets and zips are stored as they are.
+- Metadata on each object: `source-url` (the government's address), `sha256`, `fetched-at`. The site's receipt links still point at the government's own address.
+- A file is uploaded only when its hash is new for that path. A copy of `manifest.json` is kept per run under `_manifests/`.
+- Without the `NL_LEDGER_S3_*` settings (a local run) the archive step is skipped with a message.
+- `uv run python archive.py --verify 3` fetches three random files back and checks their hashes.
 
 ## Build and deploy the site
 
