@@ -129,7 +129,7 @@ def grants() -> None:
     groups: dict[tuple, list] = defaultdict(list)
     for r in rows:
         agr = (r.get("agreement_number") or "").strip() or f"ref:{r['ref_number']}"
-        who = entity_key(name_forms(r.get("recipient_legal_name") or r.get("recipient_operating_name"))[0])
+        who = entity_key(name_forms(r.get("recipient_legal_name") or r.get("recipient_operating_name"), bilingual=True)[0])
         groups[(r["owner_org"], agr, who)].append(r)
     out = []
     for (org, agr, _), rs in groups.items():

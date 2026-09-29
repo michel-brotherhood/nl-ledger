@@ -165,7 +165,7 @@ export function itemPage(it, { flags, stats, links }) {
 
 // The printed names a supplier page combines, each linking to its own records.
 function combinedNames(s, hash) {
-  return html`<div class="combined small"><p>This page combines ${num(s.combined.length)} printed names that the records show are one supplier:</p>
+  return html`<div class="combined small"><p>This page combines ${num(s.combined.length)} printed names, joined on the evidence described in the method:</p>
   <ul>${s.combined.map((c) => html`<li><a href="/search/?s=${hash}&amp;n=${c.h}">${esc(c.t)}</a> <span>${num(c.n)} ${c.n === 1 ? "record" : "records"}</span></li>`)}</ul>
   <p><a href="/method/suppliers/">How names are matched</a> · <a href="https://github.com/steveclarke/nl-ledger/issues/new?template=challenge-method.yml">Question this match</a></p></div>`;
 }

@@ -94,6 +94,7 @@ CREATE TABLE programs (
   source_url TEXT, source_file TEXT, page INTEGER
 );
 CREATE TABLE facts (key TEXT PRIMARY KEY, value TEXT);
+CREATE TABLE buyers (buyer_key TEXT PRIMARY KEY, buyer TEXT);
 CREATE TABLE dept_summary (fiscal_year TEXT, department TEXT, account TEXT, gross REAL, parsed REAL, ok INTEGER,
   source_url TEXT, source_file TEXT, page INTEGER);
 CREATE TABLE publisher_issues (source TEXT, listed_on TEXT, url TEXT, issue TEXT);
@@ -129,13 +130,13 @@ def main():
         rec["buyer_key"] = buyer_key(rec.get("buyer") or "") if rec.get("buyer") else None
         # supplier_name_key is the printed name's own key; supplier_key is set to its group's
         # key once every record is loaded (suppliers.match).
-        forms = name_forms(rec.get("supplier"))
+        forms = name_forms(rec.get("supplier"), bilingual=dataset == "fed_grant")
         if forms and forms[0] != norm_space(rec["supplier"]):
             rec["supplier"] = forms[0]
             extra = {**(extra or {}), "supplier_as_printed": norm_space(kw["supplier"])}
         rec["_forms"] = forms
         if "|" in (rec.get("city") or "") or re.search(r" [lI] ", rec.get("city") or ""):
-            rec["city"] = name_forms(rec["city"])[0]
+            rec["city"] = name_forms(rec["city"], bilingual=True)[0]
         rec["supplier_name_key"] = entity_key(forms[0]) if forms else None
         rec["fiscal_year"] = rec.get("fiscal_year") or nl_fy(rec.get("date") or "")
         rec["extra"] = json.dumps({k: v for k, v in (extra or {}).items() if v not in (None, "", "None")}) if extra else None
@@ -304,6 +305,12 @@ def main():
         ids.add(it["id"])
         clean.append(tuple(it.get(c) for c in cols))
     con.executemany(f"INSERT INTO items ({','.join(cols)}) VALUES ({','.join('?' * len(cols))})", clean)
+
+    # One name per public body (its most common printing), so its page address never depends on
+    # which printing a query happens to return.
+    con.execute("""INSERT INTO buyers SELECT buyer_key, buyer FROM (
+        SELECT buyer_key, buyer, row_number() OVER (PARTITION BY buyer_key ORDER BY count(*) DESC, buyer) r
+        FROM items WHERE buyer_key IS NOT NULL GROUP BY buyer_key, buyer) WHERE r = 1""")
 
     # --- programs
     prog = rows("program_lines.csv")

@@ -172,8 +172,8 @@ def norm_space(s: str | None) -> str:
 
 
 _SUFFIX = re.compile(
-    r"\b(incorporated|inc|ltd|limited|corp|corporation|co|company|llc|lp|llp|plc|ulc|partnership|"
-    r"ltee|ltée|l\.?t\.?d|the)\b\.?",
+    r"\b(incorporated|inc|ltd|limited|corp|corporation|co|company|llc|plc|ulc|"
+    r"ltee|ltée|limitee|limitée|l\.?t\.?d|the)\b\.?",
     re.I,
 )
 # The province's name in its short forms. "NL" and "N.L." are the same words as
@@ -189,27 +189,34 @@ _PROVINCE = [(re.compile(r"\bn l\b|\bnl\b"), "newfoundland and labrador"), (re.c
 # before it. Operating names are never used to join records, because franchise names (a hotel
 # brand, a pharmacy chain) are shared by different owners.
 _TAIL = re.compile(
-    r"\s*[,(-]?\s*\b(o/a|o\.a\.|operating as|c/o|care of|dba|d/b/a|doing business as|t/a|trading as|"
-    r"carrying on business as|formerly|previously|now known as)\b.*$",
+    r"(\s*[,(-]?\s*\b(o/a|o\.a\.|operating as|c/o|dba|d/b/a|doing business as|t/a|trading as|carrying on business as)\b"
+    r"|\s*[,(-]\s*(care of|formerly|previously|now known as)\b).*$",
     re.I,
 )
 
 
-def name_forms(name: str | None) -> list[str]:
+def name_forms(name: str | None, bilingual: bool = False) -> list[str]:
     """The names one printed supplier field gives, first the one to show.
 
-    Federal grants print the recipient as "English name|French name" (often the same name
-    twice), and a few rows have the bar read as "l" or "I" ("X l X"). Both halves name the
-    same recipient on the same record.
+    Federal grants (bilingual=True) print the recipient as "English name|French name" (often
+    the same name twice), sometimes with "/" between them. Both halves name the same
+    recipient on the same record. In any source, a name printed twice ("X l X", "Vish
+    Limited Vish Limitée") is one name.
     """
     s = norm_space(name)
     if not s:
         return []
-    if "|" in s:
+    halves = re.split(r"(?<=\w\w)\s*/\s*(?=\w\w)", s)  # never inside o/a, c/o, d/b/a
+    if bilingual and "|" in s:
         parts = [p.strip() for p in s.split("|")]
+    elif bilingual and len(halves) == 2 and all(len(p.split()) >= 3 for p in halves):
+        parts = [p.strip() for p in halves]  # "Association for New Canadians/Association pour les nouveaux Canadiens"
     else:
         m = re.fullmatch(r"(.+?) (?:[lI/-]) (.+)", s)
         parts = [m.group(1), m.group(2)] if m and entity_key(m.group(1)) == entity_key(m.group(2)) else [s]
+        w = s.split()
+        if len(parts) == 1 and len(w) % 2 == 0 and len(w) >= 4 and entity_key(" ".join(w[:len(w) // 2])) == entity_key(" ".join(w[len(w) // 2:])):
+            parts = [" ".join(w[:len(w) // 2])]  # "Vish Limited Vish Limitée"
     out = []
     for p in parts:
         if p and entity_key(p) and entity_key(p) not in {entity_key(o) for o in out}:
@@ -226,9 +233,13 @@ def entity_key(name: str | None) -> str:
     that differ in words. pipeline/suppliers.py joins names on stronger evidence;
     site/lib/mcp.mjs entityKey must stay the same as this function.
     """
-    s = norm_space(name).replace("\u2019", "'").replace("\u2018", "'").replace("`", "'")
+    s = norm_space(name)
+    s = re.sub(r"\blimited partnership\b|\bl\.\s?p\.?(?=\W|$)|\blp\b", " LP ", s, flags=re.I)
+    s = s.replace("\u2019", "'").replace("\u2018", "'").replace("`", "'")
     s = _TAIL.sub("", s) or s
+    s = re.sub(r"\s*\([A-Z][A-Z&.\- ]{1,11}\)\s*$", "", s) or s  # a trailing acronym: "(NLDC)", "(SARVAC)"
     s = _AND_CO.sub(" ", s)
+    s = re.sub(r"\bco-?op(erative)?\b", "cooperative", s, flags=re.I)  # "Co-operative" is one word, not "Co."
     s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode().lower()
     s = s.replace("'", "").replace("&", " and ")
     s = re.sub(r"[^a-z0-9 ]+", " ", s)

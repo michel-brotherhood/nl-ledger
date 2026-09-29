@@ -111,7 +111,7 @@ cf deploy --dry-run            # build and checks only
   - 58,521 MHA lines: every category adds to its printed Period Activity; detail total equals the summary reports' total exactly.
   - Program spending: 173 of 175 department totals match the summary statements (one small 2019-20 gap; one department whose detail pages the 2024-25 report prints empty).
   - Federal contracts: $11.89B as published, $2.63B once each contract is counted once (grouped by purchase order and cleaned vendor name across departments; an earlier grouping gave $2.83B before those two corrections).
-  - Federal grants: $11.68B as published, $8.52B as 29,297 agreements (latest amendment where a department reports running totals, summed where it reports changes; a recipient printed in English only on one amendment and "English|French" on the next is one recipient). Method and the one disagreement with the reviewer are in `docs/review-notes.md`; the correction from $8.67B is on `/corrections/`.
+  - Federal grants: $11.68B as published, $8.51B as 29,294 agreements (latest amendment where a department reports running totals, summed where it reports changes; a recipient printed in English only on one amendment and "English|French" on the next is one recipient). Method and the one disagreement with the reviewer are in `docs/review-notes.md`; the correction from $8.67B is on `/corrections/`.
 - Supplier pages add up to the records: `site/src/shards.mjs` stops the build when the pages' records, totals or overlap differ from the database.
 - A random sample of line items traced back to source files and pages (`docs/trace-sample.md`, results in `docs/review-notes.md`).
 - A separate reviewer checked figures, wording, privacy and broken links (`docs/review-notes.md`).

@@ -181,10 +181,10 @@ export function info(D, R) {
 <section class="section"><div class="wrap prose">
   <h2>When names are joined</h2>
   <ul>
-    <li><strong>Same name.</strong> Case, accents, apostrophes, punctuation, spacing and legal suffixes (Inc., Ltd., Limited, Corp., LP, Ltée) are set aside, and NL and Nfld are read as the province's name. Anything after "o/a", "c/o" or "formerly" is dropped: the record belongs to the legal name before it.</li>
+    <li><strong>Same name.</strong> Case, accents, apostrophes, punctuation, spacing and legal suffixes (Inc., Ltd., Limited, Corp., Ltée) are set aside, and NL and Nfld are read as the province's name. Anything after "o/a", "c/o" or "formerly" is dropped: the record belongs to the legal name before it.</li>
     <li><strong>Bilingual.</strong> Federal grant records print a recipient as "English name|French name". Both halves are the same recipient.</li>
-    <li><strong>Business number.</strong> Federal grant records with the same valid business number are joined when the names are a spelling slip apart or one name is inside the other. Department placeholders (000000000, 1000xxxxx) fail the number's check digit and are ignored.</li>
-    <li><strong>Postal code.</strong> Federal records with the same postal code are joined when the names are a spelling slip apart.</li>
+    <li><strong>Business number.</strong> Federal grant records with the same valid business number are joined when the names are a spelling slip apart, or one name is inside the other and adds only words such as Inc., Association or Council. Department placeholders (000000000, 1000xxxxx) fail the number's check digit and are ignored. Where the full account is printed it must match too: one church or club body can hold a separate charity account for each congregation or branch.</li>
+    <li><strong>Postal code.</strong> Federal records with the same postal code are joined when the names are a spelling slip apart with the same initials, and no different business numbers are printed with them.</li>
     <li><strong>Same award.</strong> A federal contract and a CanadaBuys notice with the same award date and the same value to the cent are one award, so their close names are one supplier.</li>
     <li><strong>Department or campus.</strong> A department, faculty or campus printed after its body's name ("Government of Newfoundland and Labrador, Department of Education") is part of that body.</li>
     <li><strong>Reviewed.</strong> A short list of decisions, each with its reason, for matches the rules above cannot make: a renamed body, a misprint in a provincial report, a trading name.</li>
@@ -193,7 +193,8 @@ export function info(D, R) {
   <ul>
     <li>Close names with no evidence. Two different companies shown as one is worse than one company shown twice.</li>
     <li>Operating names. "Cavendish Hotel LP o/a Sheraton" is not joined to other Sheraton records: franchise names are shared by different owners.</li>
-    <li>A parent and its subsidiary, unless the records show otherwise.</li>
+    <li>A company and its limited partnership, and a parent and its subsidiary, unless a reviewed decision gives the reason.</li>
+    <li>A French name printed with more than one English name, or a placeholder such as N/A.</li>
     <li>Names that share a business number but not a name: a parent body's number can cover separate branches.</li>
   </ul>
   <h2>Totals</h2>

@@ -15,8 +15,9 @@ export async function onRequestGet(ctx) {
       const res = await ctx.env.ASSETS.fetch(new URL(`/data/s/${n}.json`, ctx.request.url));
       if (res.ok) s = (await res.json())[h] || null;
     }
-    // A name this supplier is also printed under: its page is the supplier's.
-    if (s?.to) return Response.redirect(new URL(`/supplier/${s.to}/`, ctx.request.url), 301);
+    // A name this supplier is also printed under: its page is the supplier's. Temporary (302):
+    // which name leads a group can change when the data is rebuilt.
+    if (s?.to) return Response.redirect(new URL(`/supplier/${s.to}/`, ctx.request.url), 302);
     if (!s) {
       const body = `<header class="pagehead"><div class="wrap"><h1>No such supplier</h1><p class="lede">Nothing on record under that link. <a href="/search/">Search</a> for the name instead.</p></div></header>`;
       return page(ctx, a, { title: "Not found", body, status: 404, maxAge: 300 });

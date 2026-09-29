@@ -166,13 +166,15 @@ export function aiCatalog() {
   };
 }
 
-// Same normalisation as pipeline/common.py entity_key (tests/test_names.py checks they agree).
-const TAIL = /\s*[,(-]?\s*\b(o\/a|o\.a\.|operating as|c\/o|care of|dba|d\/b\/a|doing business as|t\/a|trading as|carrying on business as|formerly|previously|now known as)\b.*$/i;
-const SUFFIX = /\b(incorporated|inc|ltd|limited|corp|corporation|co|company|llc|lp|llp|plc|ulc|partnership|ltee|ltée|l\.?t\.?d|the)\b\.?/g;
+// Same normalisation as pipeline/common.py entity_key (pipeline/check_names.py checks they agree).
+const TAIL = /(\s*[,(-]?\s*\b(o\/a|o\.a\.|operating as|c\/o|dba|d\/b\/a|doing business as|t\/a|trading as|carrying on business as)\b|\s*[,(-]\s*(care of|formerly|previously|now known as)\b).*$/i;
+const SUFFIX = /\b(incorporated|inc|ltd|limited|corp|corporation|co|company|llc|plc|ulc|ltee|ltée|limitee|limitée|l\.?t\.?d|the)\b\.?/g;
 export function entityKey(name) {
-  let s = String(name || "").replace(/\s+/g, " ").trim().replace(/[\u2018\u2019`]/g, "'");
+  let s = String(name || "").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim();
+  s = s.replace(/\blimited partnership\b|\bl\.\s?p\.?(?=\W|$)|\blp\b/gi, " LP ").replace(/[\u2018\u2019`]/g, "'");
   s = s.replace(TAIL, "") || s;
-  s = s.replace(/\s(and|&)\s+(co|company)\b\.?/gi, " ");
+  s = s.replace(/\s*\([A-Z][A-Z&.\- ]{1,11}\)\s*$/, "") || s;
+  s = s.replace(/\s(and|&)\s+(co|company)\b\.?/gi, " ").replace(/\bco-?op(erative)?\b/gi, "cooperative");
   s = s.normalize("NFKD").replace(/[^\x00-\x7f]/g, "").toLowerCase();
   s = s.replace(/'/g, "").replace(/&/g, " and ").replace(/[^a-z0-9 ]+/g, " ");
   s = s.replace(/\s+/g, " ").trim().replace(/\s(l td|limit ed|limite d|limi ted|lim ited|inc orporated)$/, "");

@@ -2,7 +2,7 @@
 import { esc, html, icon, Notes, leaders, bar, receipt, schedule } from "../../lib/html.mjs";
 import { money, moneyWords, num, pct, perPerson, workTime } from "../../lib/format.mjs";
 import { desc, datasetLd, LICENSE } from "../seo.mjs";
-import { pagehead, itemRow, ITEM_COLS, caveat } from "../common.mjs";
+import { pagehead, itemRow, ITEM_COLS, caveat, bodyHref } from "../common.mjs";
 import { bodyKeysFor } from "../receiptdata.mjs";
 
 function progTotals(D, fy, kind, dept) {
@@ -192,7 +192,7 @@ ${awards.length ? html`<section class="section"><div class="wrap">
   <div class="section-head"><h2>Contracts awarded</h2>
   <p>${num(awards.length)} awards in the Public Procurement Agency reports since 2021, ${moneyWords(awardTotal)} in all; ${num(noComp.length)} of them (${moneyWords(noComp.reduce((s, a) => s + (a.amount || 0), 0))}) without an open competition. Open-call awards by departments are posted on MERX instead and are not in these reports.</p></div>
   ${schedule({ cols: ITEM_COLS, rows: awards.slice(0, 60).map((a) => itemRow(D, a, { showBuyer: false })) })}
-  ${awards.length > 60 ? `<p><a href="/body/${D.slug(awards[0].buyer)}/">All ${num(awards.length)} awards</a></p>` : ""}
+  ${awards.length > 60 ? `<p><a href="${bodyHref(D, awards[0].buyer)}">All ${num(awards.length)} awards</a></p>` : ""}
 </div></section>` : ""}`;
     const budgeted = progs.reduce((t, p) => t + (p.c3 || 0), 0);
     const spent = sum ? `${dep.name} spent ${moneyWords(sum.gross)} in ${latest}${budgeted > 0 ? `, against a budget of ${moneyWords(budgeted)}` : ""}.` : `${dep.name}: the ${estYear} budget estimates by program.`;

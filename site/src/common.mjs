@@ -6,8 +6,12 @@ export function supplierHref(D, supplierKey) {
   return supplierKey ? `/supplier/${D.keyHash(supplierKey)}/` : null;
 }
 
+// A public body's page is named after its most common printing (the buyers table), so any
+// printing of its name links to the one page.
+let bodyNames = null;
 export function bodyHref(D, name) {
-  return `/body/${D.slug(name)}/`;
+  bodyNames ||= new Map(D.q(`SELECT DISTINCT i.buyer, b.buyer canon FROM items i JOIN buyers b USING (buyer_key)`).map((r) => [r.buyer, r.canon]));
+  return `/body/${D.slug(bodyNames.get(name) || name)}/`;
 }
 
 // The same query bodies.mjs uses, so a link is written exactly when that page is.
@@ -15,9 +19,9 @@ export function bodyHref(D, name) {
 // under a spelling that has no page of its own).
 let bodySlugs = null;
 export function bodyAnchor(D, name) {
-  bodySlugs ||= new Set(D.q(`SELECT buyer, buyer_key, level, count(*) n, sum(amount) amount, group_concat(DISTINCT dataset) ds
-      FROM items WHERE dataset IN ('ppa','fed_contract','fed_grant','canadabuys','paradise','stjohns') AND buyer IS NOT NULL GROUP BY buyer_key ORDER BY amount DESC`).map((r) => D.slug(r.buyer)));
-  return bodySlugs.has(D.slug(name)) ? `<a href="${bodyHref(D, name)}">${esc(name)}</a>` : esc(name);
+  bodySlugs ||= new Set(D.q(`SELECT (SELECT buyer FROM buyers WHERE buyers.buyer_key = items.buyer_key) buyer
+      FROM items WHERE dataset IN ('ppa','fed_contract','fed_grant','canadabuys','paradise','stjohns') AND buyer IS NOT NULL GROUP BY buyer_key`).map((r) => `/body/${D.slug(r.buyer)}/`));
+  return bodySlugs.has(bodyHref(D, name)) ? `<a href="${bodyHref(D, name)}">${esc(name)}</a>` : esc(name);
 }
 
 // One line item as a schedule row: [who/what, date, amount, source]

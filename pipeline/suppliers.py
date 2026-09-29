@@ -33,19 +33,24 @@ OVERLAP = {"pa_pss", "pa_tp", "canadabuys"}
 
 
 def valid_bn(bn: str | None) -> str | None:
-    """The 9-digit root of a Canada Revenue Agency business number, or None.
+    """A Canada Revenue Agency business number, or None.
 
     Some departments fill the field with their own placeholders (000000000, 1000xxxxx); a real
-    business number passes the Luhn check digit.
+    business number's 9-digit root passes the Luhn check digit. Where the full account is
+    printed (107833394RR0083), the whole account is the key: one umbrella body can hold a
+    separate charity account for each congregation or branch under one root.
     """
-    d = re.sub(r"\D", "", bn or "")[:9]
-    if len(d) != 9 or len(set(d)) == 1 or d.startswith("1000"):
+    full = re.sub(r"[^0-9A-Z]", "", (bn or "").upper())
+    d = full[:9]
+    if len(d) != 9 or not d.isdigit() or len(set(d)) == 1 or d.startswith("1000"):
         return None
     total = 0
     for i, c in enumerate(reversed(d)):
         n = int(c) * (2 if i % 2 else 1)
         total += n - 9 if n > 9 else n
-    return d if total % 10 == 0 else None
+    if total % 10:
+        return None
+    return full if re.fullmatch(r"\d{9}[A-Z]{2}\d{4}", full) else d
 
 
 def postal(pc: str | None) -> str | None:
@@ -82,8 +87,9 @@ def edits(a: str, b: str, limit: int = 2) -> int:
 
 
 def typo_apart(a: str, b: str) -> bool:
-    """Names a spelling slip apart: same numbers, at most 2 edits (1 below 12 letters)."""
-    if digits(a) != digits(b):
+    """Names a spelling slip apart: same numbers, the same initials and short words ("H & S"
+    and "J & W" are different firms), at most 2 edits (1 below 12 letters)."""
+    if digits(a) != digits(b) or [t for t in a.split() if len(t) <= 2] != [t for t in b.split() if len(t) <= 2]:
         return False
     ca, cb = compact(a), compact(b)
     if ca == cb:
@@ -92,10 +98,18 @@ def typo_apart(a: str, b: str) -> bool:
     return n >= 8 and edits(ca, cb) <= (2 if n >= 12 else 1)
 
 
+# Some grant records put an operating name or a sub-group after the bar instead of the French
+# name ("Cow Head Tourism Committee|Friends of Garden"); a French half has French words.
+FRENCH = {"de", "du", "des", "la", "le", "les", "et", "pour", "ville", "gouvernement", "premiere", "universite", "college",
+          "societe", "ministere", "conseil", "federation", "reseau", "administration", "portuaire", "autorite"}
+PLACEHOLDER = {"n a", "na", "none", "null", "not applicable", "sans objet", "s o", "unknown", "inconnu"}
 # The province's name alone never identifies a body.
 PLACE = {"newfoundland", "labrador", "and", "of", "the", "nl", "terre", "neuve", "et", "du", "de", "la"}
 # Words that name a part of a larger body.
 UNIT = {"department", "dept", "ministere", "faculty", "school", "campus", "institute", "division", "branch", "secretariat"}
+# Words a company adds to its name without becoming another company.
+KIND = {"solutions", "systems", "technologies", "technology", "enterprises", "holdings", "industries", "union",
+        "incorporated", "society", "association", "services", "group", "organization"}
 # Words that say what kind of body a name is, or where, but not which one.
 GENERIC = set("""newfoundland labrador nl and of the for de du la le les et des st saint johns canada canadian
     government gouvernement province provincial department ministere town ville city cite municipality council
@@ -112,7 +126,10 @@ def contained(a: str, b: str) -> bool:
     small, big = (ta, tb) if len(ta) <= len(tb) else (tb, ta)
     if digits(a) != digits(b) or not set(small) <= set(big):
         return False
-    return any(len(t) >= 4 and t not in GENERIC for t in small)
+    # The longer name may only add words that say what kind of body it is: "Clarenville
+    # Pentecostal Tabernacle" names one congregation, not "Pentecostal Tabernacle".
+    extra = set(big) - set(small)
+    return any(len(t) >= 4 and t not in GENERIC for t in small) and extra <= GENERIC | KIND
 
 
 def unit_of(a: str, b: str) -> bool:
@@ -173,6 +190,8 @@ def match(records: list[dict]) -> dict:
     and optional bn, postal, ref. Returns {name key: group key} plus the report data."""
     stats = defaultdict(lambda: {"n": 0, "value": 0.0, "shown": 0.0, "printed": Counter(), "ds": Counter()})
     by_bn, by_pc = defaultdict(set), defaultdict(set)
+    bns = defaultdict(set)  # name key -> valid business numbers printed with it
+    accounts = defaultdict(set)  # (name key, 9-digit root) -> full accounts printed with it
     awards = defaultdict(lambda: defaultdict(set))  # (date, amount) -> dataset -> name keys
     bilingual = []
     for r in records:
@@ -190,7 +209,10 @@ def match(records: list[dict]) -> dict:
             stats[other]  # the other language's name is a key of its own
             bilingual.append((k, other, r.get("ref", "")))
         if bn := valid_bn(r.get("bn")):
-            by_bn[bn].add(k)
+            by_bn[bn[:9]].add(k)
+            bns[k].add(bn[:9])
+            if len(bn) > 9:
+                accounts[(k, bn[:9])].add(bn)
         if pc := postal(r.get("postal")):
             by_pc[pc].add(k)
         if r["dataset"] in ("fed_contract", "canadabuys") and r.get("date") and a:
@@ -204,8 +226,13 @@ def match(records: list[dict]) -> dict:
     for ks in by_compact.values():
         for other in ks[1:]:
             g.union(ks[0], other, "same name", "the same words, spaced differently or without \"of\"")
+    # A French half joins only when it names one English name, reads as French, and is a real name (not "N/A").
+    firsts = defaultdict(set)
+    for a, b, _ in bilingual:
+        firsts[b].add(a)
     for a, b, ref in bilingual:
-        g.union(a, b, "bilingual", f"one record prints both ({ref})" if ref else "one record prints both")
+        if len(firsts[b]) == 1 and len(b) >= 6 and b not in PLACEHOLDER and set(b.split()) & FRENCH:
+            g.union(a, b, "bilingual", f"one record prints both ({ref})" if ref else "one record prints both")
 
     rejected = []
     for evidence, index, close in (("business number", by_bn, lambda a, b: typo_apart(a, b) or contained(a, b)),
@@ -214,7 +241,15 @@ def match(records: list[dict]) -> dict:
             keys = sorted(keys)
             for i, a in enumerate(keys):
                 for b in keys[i + 1:]:
-                    if close(a, b):
+                    if evidence == "business number":
+                        # One umbrella body holds a charity account per congregation or branch.
+                        conflict = accounts[(a, code)] and accounts[(b, code)] and not accounts[(a, code)] & accounts[(b, code)]
+                    else:
+                        conflict = bns[a] and bns[b] and not bns[a] & bns[b]
+                    if close(a, b) and conflict:
+                        rejected.append((a, b, "same business number, different accounts under it" if evidence == "business number"
+                                            else "same postal code, different business numbers"))
+                    elif close(a, b):
                         g.union(a, b, evidence, "federal records share one" if evidence == "postal code" else "federal grant records share one")
                     elif evidence == "business number":
                         rejected.append((a, b, "same business number, different names (a parent body's number, or an owner's)"))
@@ -343,14 +378,18 @@ def write_report(m: dict) -> dict:
            "- **Bilingual.** Federal grant records print the recipient as \"English name|French name\"; both halves are the "
            "same recipient.",
            "- **Business number.** Federal grant records with the same valid business number (Luhn check digit; department "
-           "placeholders such as 000000000 and 1000xxxxx are ignored) are joined when the names are a spelling slip apart or "
-           "one name is inside the other.",
-           "- **Postal code.** Federal records with the same postal code are joined when the names are a spelling slip apart.",
+           "placeholders such as 000000000 and 1000xxxxx are ignored; the full account where printed, since an umbrella body "
+           "holds a charity account per branch) are joined when the names are a spelling slip apart, or one name is inside "
+           "the other and adds only words such as Inc., Association or Council.",
+           "- **Postal code.** Federal records with the same postal code are joined when the names are a spelling slip apart "
+           "(initials must match) and no different business numbers are printed with them.",
+           "- **Same award.** A federal contract and a CanadaBuys notice with the same award date and value to the cent.",
+           "- **Department or campus.** A department, faculty or campus printed after its body's name.",
            "- **Reviewed.** Decisions in `pipeline/supplier_rules.csv`, each with its reason: merges the evidence above cannot "
            "make (a typo in a provincial report, which prints no business number), and pairs kept apart.",
            "- **Never joined:** operating names (\"Cavendish Hotel LP o/a Sheraton\" is not joined to other Sheraton records: "
-           "franchise names are shared by different owners), a parent and its subsidiary (Microsoft Corporation and Microsoft "
-           "Canada Inc. are different companies unless a record shows otherwise), and close names with no evidence.",
+           "franchise names are shared by different owners), a company and its limited partnership, a parent and its "
+           "subsidiary unless a reviewed decision says why, and close names with no evidence.",
            "- Totals: a supplier's headline total counts contract awards, grant agreements and payments once. Public Accounts "
            "payment lines and CanadaBuys notices repeat money already counted and stay out of it, whichever name they were "
            "printed under.", "",
