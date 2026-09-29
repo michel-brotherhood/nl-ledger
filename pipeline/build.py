@@ -18,7 +18,8 @@ import sqlite3
 from collections import defaultdict
 
 from bodies import canonical_body
-from common import BUILD, CLEAN, entity_key, key_hash, norm_space
+import suppliers
+from common import BUILD, CLEAN, entity_key, key_hash, name_forms, norm_space
 
 DB = BUILD / "ledger.db"
 
@@ -73,7 +74,7 @@ CREATE TABLE items (
   dataset TEXT NOT NULL,
   level TEXT NOT NULL,
   buyer TEXT, buyer_key TEXT,
-  supplier TEXT, supplier_key TEXT,
+  supplier TEXT, supplier_key TEXT, supplier_name_key TEXT,
   person TEXT,
   description TEXT,
   amount REAL, currency TEXT, amount_original REAL,
@@ -126,7 +127,16 @@ def main():
         rec = {"dataset": dataset, "level": level, "currency": "CAD", "amount_original": None, "person": None,
                "method": None, "city": None, "province": None, "page": None, **kw}
         rec["buyer_key"] = buyer_key(rec.get("buyer") or "") if rec.get("buyer") else None
-        rec["supplier_key"] = entity_key(rec.get("supplier")) if rec.get("supplier") else None
+        # supplier_name_key is the printed name's own key; supplier_key is set to its group's
+        # key once every record is loaded (suppliers.match).
+        forms = name_forms(rec.get("supplier"))
+        if forms and forms[0] != norm_space(rec["supplier"]):
+            rec["supplier"] = forms[0]
+            extra = {**(extra or {}), "supplier_as_printed": norm_space(kw["supplier"])}
+        rec["_forms"] = forms
+        if "|" in (rec.get("city") or "") or re.search(r" [lI] ", rec.get("city") or ""):
+            rec["city"] = name_forms(rec["city"])[0]
+        rec["supplier_name_key"] = entity_key(forms[0]) if forms else None
         rec["fiscal_year"] = rec.get("fiscal_year") or nl_fy(rec.get("date") or "")
         rec["extra"] = json.dumps({k: v for k, v in (extra or {}).items() if v not in (None, "", "None")}) if extra else None
         items.append(rec)
@@ -134,18 +144,10 @@ def main():
     # --- Provincial contract awards. A few awards are printed again in a later report
     # (same contract number, supplier and price); only the first printing is loaded and
     # the repeat is listed as a publisher issue.
-    seen_awards = {}
-    ppa_repeats = []
+    # Repeats are found after supplier matching, so a repeat printed under another spelling of
+    # the supplier's name is caught too.
     for r in rows("ppa_awards.csv"):
-        cno = re.sub(r"\s+", "", r["contract_no"] or "").upper()
-        if cno and cno not in ("N/A", "NA", "-") and r["amount"]:
-            k = (cno, entity_key(r["supplier"]), r["amount"])
-            if k in seen_awards:
-                ppa_repeats.append((r, seen_awards[k]))
-                continue
-            seen_awards[k] = r
-
-        add("ppa", id=iid("ppa", r["source_file"], r["page"], r["row"]),
+        add("ppa", _row=r, id=iid("ppa", r["source_file"], r["page"], r["row"]),
             buyer=canonical_body(buyer_name(r["public_body"])), supplier=norm_space(r["supplier"]),
             description=r["description"], amount=f(r["amount"]), currency=r["currency"] or "CAD",
             amount_original=f(r["amount_original"]), date=r["award_date"] or r["period_end"],
@@ -197,6 +199,7 @@ def main():
             buyer=r["department"], supplier=r["vendor"], description=r["description"] or r["comments"],
             amount=f(r["amount"]), date=r["contract_date"],
             method="Non-competitive" if r["non_competitive"] == "1" else (r["solicitation"] or "Not stated"),
+            _postal=r["postal_code"], _ref=r["reference_number"],
             extra={"original_value": f(r["original_value"]), "amendment_value": f(r["amendment_value"]),
                    "limited_reason": r["limited_reason"], "comments": r["comments"], "reference_number": r["reference_number"],
                    "procurement_id": r["procurement_id"], "versions": r["versions"], "postal_code": r["postal_code"],
@@ -210,6 +213,7 @@ def main():
         add("fed_grant", id=iid("fed_grant", r["owner_org"], r["agreement_number"] or r["ref_number"], r["recipient"].lower()),
             buyer=r["department"], supplier=r["recipient"], description=r["title"] or r["program"],
             amount=f(r["amount"]), date=r["start"], city=r["city"], method=r["program"],
+            _bn=r.get("business_number"), _postal=r.get("postal_code"), _ref=r["ref_number"],
             extra={"program": r["program"], "riding": r["riding"], "end": r["end"], "ref_number": r["ref_number"],
                    "agreement_number": r["agreement_number"], "rows": r["rows"], "how_counted": r["how"],
                    "amendment_number": r["amendment_number"], "agreement_type": r["agreement_type"],
@@ -264,7 +268,30 @@ def main():
             source_url=r["source_url"], source_file=r["source_file"], page=int(r["page"]),
             locator=f"page {r['page']} (OCR)")
 
-    cols = ["id", "dataset", "level", "buyer", "buyer_key", "supplier", "supplier_key", "person", "description",
+    # --- Supplier matching, then provincial award repeats (same contract number, supplier and price)
+    matched = suppliers.match([{"forms": it["_forms"], "dataset": it["dataset"], "amount": it["amount"], "date": it["date"],
+                                "bn": it.get("_bn"), "postal": it.get("_postal"), "ref": it.get("_ref")}
+                               for it in items if it["_forms"]])
+    for it in items:
+        it["supplier_key"] = matched["key_of"][it["supplier_name_key"]] if it["supplier_name_key"] else None
+    seen_awards = {}
+    ppa_repeats = []
+    kept = []
+    for it in items:
+        r = it.get("_row")
+        if r is not None:
+            cno = re.sub(r"\s+", "", r["contract_no"] or "").upper()
+            if cno and cno not in ("N/A", "NA", "-") and r["amount"]:
+                k = (cno, it["supplier_key"], r["amount"])
+                if k in seen_awards:
+                    ppa_repeats.append((r, seen_awards[k]))
+                    continue
+                seen_awards[k] = r
+        kept.append(it)
+    items = kept
+    matching = suppliers.write_report(matched)
+
+    cols = ["id", "dataset", "level", "buyer", "buyer_key", "supplier", "supplier_key", "supplier_name_key", "person", "description",
             "amount", "currency", "amount_original", "date", "fiscal_year", "method", "city", "province", "extra",
             "source_url", "source_file", "page", "locator"]
     ids = set()
@@ -312,6 +339,7 @@ def main():
     stats = json.loads((CLEAN / "stats.json").read_text())
     fed = json.loads((CLEAN / "federal_report.json").read_text())
     con.executemany("INSERT INTO facts VALUES (?,?)", [("stats", json.dumps(stats)), ("federal_report", json.dumps(fed)),
+                                                       ("supplier_matching", json.dumps(matching)),
                                                        ("datasets", json.dumps(DATASETS))])
     con.commit()
 

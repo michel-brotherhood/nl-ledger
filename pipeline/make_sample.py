@@ -49,6 +49,10 @@ def main():
         row = con.execute("SELECT id FROM items WHERE buyer_key=? AND dataset IN ('ppa','fed_contract','fed_grant','canadabuys','paradise','stjohns') ORDER BY amount DESC LIMIT 1", (key,)).fetchone()
         if row:
             keep.add(row[0])
+    # A few suppliers that combine several printed names keep every record, so a supplier page shows its names.
+    for (key,) in con.execute("SELECT supplier_key FROM items WHERE supplier_key IS NOT NULL GROUP BY supplier_key "
+                              "HAVING count(DISTINCT supplier_name_key) > 1 AND count(*) <= 60 ORDER BY sum(amount) DESC LIMIT 3").fetchall():
+        keep.update(r[0] for r in con.execute("SELECT id FROM items WHERE supplier_key=?", (key,)))
     con.execute("CREATE TEMP TABLE keep(id TEXT PRIMARY KEY)")
     con.executemany("INSERT INTO keep VALUES (?)", [(i,) for i in keep])
     con.execute("DELETE FROM items WHERE id NOT IN (SELECT id FROM keep)")

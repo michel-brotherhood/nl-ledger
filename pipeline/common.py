@@ -172,23 +172,74 @@ def norm_space(s: str | None) -> str:
 
 
 _SUFFIX = re.compile(
-    r"\b(incorporated|inc|ltd|limited|corp|corporation|co|company|llc|lp|llp|plc|ulc|"
+    r"\b(incorporated|inc|ltd|limited|corp|corporation|co|company|llc|lp|llp|plc|ulc|partnership|"
     r"ltee|ltée|l\.?t\.?d|the)\b\.?",
     re.I,
 )
+# The province's name in its short forms. "NL" and "N.L." are the same words as
+# "Newfoundland and Labrador"; "Nfld" is "Newfoundland". Numbered companies use all three.
+# Legal suffixes broken where a PDF table wraps a cell ("LIMITE D", "L TD"), or cut off where
+# the federal contracts file stops a vendor name at 35 characters ("... ENGINEERING LIMIT").
+_WRAPPED_SUFFIX = re.compile(r"\s(l td|limit ed|limite d|limi ted|lim ited|inc orporated)$")
+_CUT_SUFFIX = re.compile(r"\s(limite|limit|limi|lim|lt|incorp|incorpor|incorporat|corporat)$")
+_AND_CO = re.compile(r"\s(and|&)\s+(co|company)\b\.?", re.I)
+_PROVINCE = [(re.compile(r"\bn l\b|\bnl\b"), "newfoundland and labrador"), (re.compile(r"\bnfld\b"), "newfoundland")]
+# Everything after "o/a", "c/o", "dba" or "(formerly ...)" names something other than the
+# payee: an operating name, a mailing address or an old name. The record belongs to the name
+# before it. Operating names are never used to join records, because franchise names (a hotel
+# brand, a pharmacy chain) are shared by different owners.
+_TAIL = re.compile(
+    r"\s*[,(-]?\s*\b(o/a|o\.a\.|operating as|c/o|care of|dba|d/b/a|doing business as|t/a|trading as|"
+    r"carrying on business as|formerly|previously|now known as)\b.*$",
+    re.I,
+)
+
+
+def name_forms(name: str | None) -> list[str]:
+    """The names one printed supplier field gives, first the one to show.
+
+    Federal grants print the recipient as "English name|French name" (often the same name
+    twice), and a few rows have the bar read as "l" or "I" ("X l X"). Both halves name the
+    same recipient on the same record.
+    """
+    s = norm_space(name)
+    if not s:
+        return []
+    if "|" in s:
+        parts = [p.strip() for p in s.split("|")]
+    else:
+        m = re.fullmatch(r"(.+?) (?:[lI/-]) (.+)", s)
+        parts = [m.group(1), m.group(2)] if m and entity_key(m.group(1)) == entity_key(m.group(2)) else [s]
+    out = []
+    for p in parts:
+        if p and entity_key(p) and entity_key(p) not in {entity_key(o) for o in out}:
+            out.append(p)
+    return out or [s]
 
 
 def entity_key(name: str | None) -> str:
     """Normalised supplier/recipient key for matching across sources.
 
-    Lower-case, accents stripped, punctuation and legal suffixes removed.
-    Deliberately conservative: it never merges names that differ in words.
+    Lower-case, accents stripped, apostrophes dropped ("Bishop's" and "Bishop’s" are one
+    name), other punctuation and legal suffixes removed, "NL" and "Nfld" written out, and
+    anything after "o/a" or "c/o" dropped. Deliberately conservative: it never merges names
+    that differ in words. pipeline/suppliers.py joins names on stronger evidence;
+    site/lib/mcp.mjs entityKey must stay the same as this function.
     """
-    s = unicodedata.normalize("NFKD", name or "").encode("ascii", "ignore").decode().lower()
-    s = s.replace("&", " and ")
+    s = norm_space(name).replace("\u2019", "'").replace("\u2018", "'").replace("`", "'")
+    s = _TAIL.sub("", s) or s
+    s = _AND_CO.sub(" ", s)
+    s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode().lower()
+    s = s.replace("'", "").replace("&", " and ")
     s = re.sub(r"[^a-z0-9 ]+", " ", s)
+    s = re.sub(r"\s+", " ", s).strip()
+    s = _WRAPPED_SUFFIX.sub("", s)
+    if len(name or "") >= 33:
+        s = _CUT_SUFFIX.sub("", s)
     s = _SUFFIX.sub(" ", s)
     s = re.sub(r"\s+", " ", s).strip()
+    for pat, full in _PROVINCE:
+        s = pat.sub(full, s)
     return s
 
 

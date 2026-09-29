@@ -9,10 +9,10 @@ Generated 2026-09-29 by `pipeline/reconcile.py` from `data/build/ledger.db`.
 |---|---:|---:|
 | mha | 58,521 | $7,057,632.94 |
 | sunshine | 34,493 | $4,406,623,501.22 |
-| fed_grant | 29,465 | $8,674,146,639.49 |
+| fed_grant | 29,297 | $8,515,817,579.02 |
 | paradise | 17,916 | $119,578,978.41 |
-| fed_contract | 8,537 | $2,631,274,651.55 |
-| ppa | 6,328 | $1,358,382,018.08 |
+| fed_contract | 8,536 | $2,631,253,175.29 |
+| ppa | 6,326 | $1,358,279,875.68 |
 | minister | 2,585 | $3,424,682.22 |
 | pa_tp | 2,484 | $11,889,648,933.00 |
 | stjohns | 640 | $19,311,414.77 |
@@ -80,9 +80,9 @@ Superseded issues (original dropped, revised kept):
 ## Federal contracts, grants and notices
 
 - Contracts over $10K to suppliers with an NL postal code: 9,882 rows worth $11,888,299,441.12 as published.
-- Each amendment repeats the whole contract. Grouped by (procurement id, cleaned vendor name) across departments, latest kept: 8,537 contracts worth $2,631,274,651.55. An earlier grouping by department and raw vendor name gave about $2.83B; it counted a purchase order twice when two departments reported it or the vendor was spelled two ways.
-- Non-competitive (solicitation code TN): $210,931,868.78.
-- Grants and contributions to NL recipients: 35,876 rows worth $11,680,096,859.79. One value per agreement (department, agreement number, recipient): latest amendment where the department reports running totals, amendments summed where it reports changes (aandc-aadnc, isc-sac): 29,465 agreements worth $8,674,146,639.49. Agreement values can span several years.
+- Each amendment repeats the whole contract. Grouped by (procurement id, cleaned vendor name) across departments, latest kept: 8,536 contracts worth $2,631,253,175.29. An earlier grouping by department and raw vendor name gave about $2.83B; it counted a purchase order twice when two departments reported it or the vendor was spelled two ways.
+- Non-competitive (solicitation code TN): $210,910,392.52.
+- Grants and contributions to NL recipients: 35,876 rows worth $11,680,096,859.79. One value per agreement (department, agreement number, recipient): latest amendment where the department reports running totals, amendments summed where it reports changes (aandc-aadnc, isc-sac): 29,297 agreements worth $8,515,817,579.02. Agreement values can span several years.
 - CanadaBuys award notices with an NL supplier: 538 ($855,968,652.83). These overlap the contracts disclosure and are never added to totals.
 
 Major federal transfers to NL, 2024-25 (Public Accounts, $ millions as published):

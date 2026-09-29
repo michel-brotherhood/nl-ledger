@@ -54,7 +54,7 @@ CATALOG = [
         "why": "One sole-source award can be the only sensible choice. A long run of them to the same company is the "
                "pattern auditors ask about, because it can mean a supplier never faces competition.",
         "how": ["Provincial awards citing the only-one-source clause, 6(a)(v).",
-                "Grouped by public body and supplier (supplier names normalised for spelling and legal suffixes).",
+                "Grouped by public body and supplier (supplier names matched across spellings as on the supplier pages).",
                 "Flagged when a pair has three or more such awards across the reports from 2021 on."],
         "data": ["ppa"],
         "limits": "Software licences, maintenance of installed equipment and parts for existing machines are often "

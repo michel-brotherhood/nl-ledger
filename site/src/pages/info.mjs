@@ -131,6 +131,7 @@ export function info(D, R) {
   </ul>
   <h2>The personal receipt</h2><p><a href="/method/receipt/">How the receipt is worked out</a>.</p>
   <h2>Federal amendments</h2><p><a href="/method/federal/">How amended federal contracts and grants are counted once</a>.</p>
+  <h2>Supplier names</h2><p><a href="/method/suppliers/">How names printed different ways are matched to one supplier</a>.</p>
   <h2>Totals and checks</h2><p>Every total on this site is a sum of line items loaded from the sources. Where a source prints its own totals, the sum is compared with them; the results are on the <a href="/sources/#report-card">report card</a>.</p>
   <h2>Patterns</h2><ul>${D.catalog.flags.map((f) => `<li><a href="/method/${f.id}/">${esc(f.title)}</a></li>`)}</ul>
 </div></section>`,
@@ -166,8 +167,43 @@ export function info(D, R) {
   <li>Keep the latest row in each group (by reporting period, then contract date). Its contract value is the running total after all amendments.</li></ol>
   <p>As published: ${num(F.contracts.raw_rows)} rows, ${money(F.contracts.raw_value)}. Counted once: ${num(F.contracts.procurements)} contracts, ${money(F.contracts.dedup_value)}. "Non-competitive" means the department coded the solicitation procedure TN.</p>
   <h2>Grants and contributions</h2>
-  <p>Departments report amendments two ways. Most re-report the agreement's whole value under a new reference number each time; for those the latest amendment is kept. Indigenous Services Canada and Crown-Indigenous Relations report each amendment as the change in value (their files include negative amounts); for those the amendments are added up. Agreements are grouped by department, agreement number and recipient. Values are agreement values and can span several years. As published: ${num(F.grants.raw_rows)} rows, ${money(F.grants.raw_value)}. Counted once: ${num(F.grants.agreements)} agreements, ${money(F.grants.dedup_value)}.</p>
+  <p>Departments report amendments two ways. Most re-report the agreement's whole value under a new reference number each time; for those the latest amendment is kept. Indigenous Services Canada and Crown-Indigenous Relations report each amendment as the change in value (their files include negative amounts); for those the amendments are added up. Agreements are grouped by department, agreement number and recipient; a recipient printed in English on one amendment and as "English name|French name" on another is one recipient. Values are agreement values and can span several years. As published: ${num(F.grants.raw_rows)} rows, ${money(F.grants.raw_value)}. Counted once: ${num(F.grants.agreements)} agreements, ${money(F.grants.dedup_value)}.</p>
   <h2>CanadaBuys award notices</h2><p>Grouped by reference number and supplier, latest amendment kept. The same contract can appear here and in the contracts disclosure, so notices are shown and searchable but never added to a total.</p>
+</div></section>`,
+  }]);
+
+  const M = D.matching;
+  const GH = "https://github.com/steveclarke/nl-ledger";
+  out.push(["/method/suppliers/", {
+    title: "Method: matching supplier names",
+    description: desc("How NL Ledger decides that names printed different ways across provincial, federal and municipal records are one supplier, and which close names it keeps apart."),
+    body: html`${pagehead({ crumbs: [["/", "Home"], ["/method/", "Methods"], [null, "Supplier names"]], title: "Method: supplier names", lede: "Each source prints a supplier's name its own way. A supplier page combines the names the records show are one supplier, and no others." })}
+<section class="section"><div class="wrap prose">
+  <h2>When names are joined</h2>
+  <ul>
+    <li><strong>Same name.</strong> Case, accents, apostrophes, punctuation, spacing and legal suffixes (Inc., Ltd., Limited, Corp., LP, Ltée) are set aside, and NL and Nfld are read as the province's name. Anything after "o/a", "c/o" or "formerly" is dropped: the record belongs to the legal name before it.</li>
+    <li><strong>Bilingual.</strong> Federal grant records print a recipient as "English name|French name". Both halves are the same recipient.</li>
+    <li><strong>Business number.</strong> Federal grant records with the same valid business number are joined when the names are a spelling slip apart or one name is inside the other. Department placeholders (000000000, 1000xxxxx) fail the number's check digit and are ignored.</li>
+    <li><strong>Postal code.</strong> Federal records with the same postal code are joined when the names are a spelling slip apart.</li>
+    <li><strong>Same award.</strong> A federal contract and a CanadaBuys notice with the same award date and the same value to the cent are one award, so their close names are one supplier.</li>
+    <li><strong>Department or campus.</strong> A department, faculty or campus printed after its body's name ("Government of Newfoundland and Labrador, Department of Education") is part of that body.</li>
+    <li><strong>Reviewed.</strong> A short list of decisions, each with its reason, for matches the rules above cannot make: a renamed body, a misprint in a provincial report, a trading name.</li>
+  </ul>
+  <h2>When names are kept apart</h2>
+  <ul>
+    <li>Close names with no evidence. Two different companies shown as one is worse than one company shown twice.</li>
+    <li>Operating names. "Cavendish Hotel LP o/a Sheraton" is not joined to other Sheraton records: franchise names are shared by different owners.</li>
+    <li>A parent and its subsidiary, unless the records show otherwise.</li>
+    <li>Names that share a business number but not a name: a parent body's number can cover separate branches.</li>
+  </ul>
+  <h2>Totals</h2>
+  <p>A supplier's total counts each contract award, grant agreement and payment once, whichever name it was printed under. Public Accounts payment lines and CanadaBuys notices repeat money already counted, so they are listed on the supplier's page but left out of its total.</p>
+  <h2>The numbers</h2>
+  <p>${num(M.name_keys)} distinct names become ${num(M.suppliers)} suppliers: ${num(M.folded)} names are joined to another on the evidence above. ${num(M.near)} close names are kept apart.</p>
+  ${schedule({ compact: true, caption: "Largest suppliers that combine several names", cols: [{ label: "Supplier" }, { label: "Names", num: true }, { label: "Records", num: true }, { label: "Value", num: true }], rows: M.largest.map((g) => ({ cells: [esc(g.name), num(g.names), num(g.records), moneyWords(g.value)] })) })}
+  ${schedule({ compact: true, caption: "Largest close names kept apart", cols: [{ label: "Name" }, { label: "Other name" }, { label: "Why not joined" }], rows: M.near_sample.map((r) => ({ cells: [esc(r.a), esc(r.b), esc(r.why)] })) })}
+  <h2>Every match, and how to question one</h2>
+  <p>Every joined name, with the evidence that joined it, is in <a href="${GH}/blob/main/docs/supplier-merges.csv">supplier-merges.csv</a>; close names kept apart are in <a href="${GH}/blob/main/docs/supplier-near-matches.csv">supplier-near-matches.csv</a>, and the reviewed decisions in <a href="${GH}/blob/main/pipeline/supplier_rules.csv">supplier_rules.csv</a>. Each supplier page lists the names it combines, each linking to its own records. To question a match, or to show that two names are one supplier, <a href="${GH}/issues/new?template=challenge-method.yml">challenge the method</a>.</p>
 </div></section>`,
   }]);
 
@@ -178,7 +214,11 @@ export function info(D, R) {
     body: html`${pagehead({ crumbs: [["/", "Home"], [null, "Corrections"]], title: "Corrections", lede: "Every change to a published figure is logged here with the date and the reason." })}
 <section class="section"><div class="wrap prose">
   <h2>Log</h2>
-  <p>No published figure has been corrected yet. This prototype was first published on ${fmtDate(D.gathered)}.</p>
+  <ul>
+    <li><strong>29 September 2026. Federal grants: $8.67 billion corrected to ${moneyWords(D.federal.grants.dedup_value)}.</strong> Some grant agreements were counted twice. A department that reports each amendment as the agreement's new total sometimes printed the recipient's name in English only and sometimes as "English name|French name", and those rows were treated as two agreements. They are now one agreement, counted at its latest amendment (for example, an Association for New Canadians agreement reported twelve times). <a href="/method/federal/">Method</a>.</li>
+    <li><strong>29 September 2026. Supplier pages combine names printed different ways.</strong> A supplier's page now includes records printed under other spellings of its name where the records show they are one supplier, so its total can be higher than before. <a href="/method/suppliers/">Method</a>.</li>
+  </ul>
+  <p>This prototype was first published on ${fmtDate(D.gathered)}.</p>
   <h2>Known errors in the sources</h2>
   <p>Errors found in the government's own files are not corrected here; the figure is shown as published and the error is listed on the <a href="/sources/#report-card">report card</a>.</p>
   <h2>Report an error</h2>

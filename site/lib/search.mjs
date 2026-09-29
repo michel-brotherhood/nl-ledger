@@ -11,6 +11,7 @@ const TAG = {
   f: (v) => "zf" + v.replace(/-/g, ""),
   b: (v) => "zb" + v,
   s: (v) => "zs" + v,
+  n: (v) => "zn" + v,
   p: (v) => "zp" + v,
   i: (v) => "zi" + v,
 };
@@ -34,7 +35,7 @@ export function queryWords(q) {
 
 export function clean(params) {
   const out = {};
-  for (const k of ["q", "ds", "lv", "y", "f", "b", "s", "p", "i"]) {
+  for (const k of ["q", "ds", "lv", "y", "f", "b", "s", "n", "p", "i"]) {
     const v = (params[k] ?? "").toString().trim();
     if (!v) continue;
     if (k === "q") out.q = v.slice(0, 120);
@@ -45,7 +46,7 @@ export function clean(params) {
 
 export function buildMatch(p) {
   const parts = queryWords(p.q).map((w) => `body:"${w}"*`);
-  for (const k of ["ds", "lv", "y", "f", "b", "s", "p", "i"]) if (p[k]) parts.push(`tags:${TAG[k](p[k])}`);
+  for (const k of ["ds", "lv", "y", "f", "b", "s", "n", "p", "i"]) if (p[k]) parts.push(`tags:${TAG[k](p[k])}`);
   return parts.join(" AND ");
 }
 
@@ -77,6 +78,7 @@ export async function search(db, params, { limit = 40, page = 1, order = "rank" 
     const body = JSON.parse(doc.items);
     for (const it of body.it) {
       if (p.s && it.k !== p.s) continue;
+      if (p.n && it.n !== p.n) continue;
       if (p.f && !(it.f || []).includes(p.f)) continue;
       if (p.i && it.i !== p.i) continue;
       if (p.y && !String(it.t || it.fy || "").includes(p.y)) continue;

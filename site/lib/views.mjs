@@ -44,7 +44,7 @@ export function searchPage({ params, result, flags, page }) {
   for (let y = 2026; y >= 2009; y--) years.push([String(y), String(y)]);
   const flagOpts = Object.values(flags).map((f) => [f.id, f.title]);
   const base = "/search/?" + new URLSearchParams(Object.entries(p).filter(([, v]) => v)).toString();
-  const active = ["s", "b", "p", "i"].filter((k) => p[k]);
+  const active = ["s", "n", "b", "p", "i"].filter((k) => p[k]);
   const items = result?.items || [];
   const sorted = [...items].sort((a, b) => (b.a || 0) - (a.a || 0));
   const total = sorted.reduce((s, it) => s + (it.a || 0), 0);
@@ -63,7 +63,7 @@ export function searchPage({ params, result, flags, page }) {
       ${active.map((k) => `<input type="hidden" name="${k}" value="${esc(p[k])}">`).join("")}
       <button class="btn solo" type="submit">Apply</button>
     </div>
-    ${active.length ? `<p class="small">Filtered to one ${active.includes("s") ? "supplier" : active.includes("b") ? "public body" : "person"}. <a href="/search/?${new URLSearchParams(Object.entries(p).filter(([k, v]) => v && !active.includes(k))).toString()}">Remove</a></p>` : ""}
+    ${active.length ? `<p class="small">Filtered to one ${active.includes("n") ? "printed name of a supplier" : active.includes("s") ? "supplier" : active.includes("b") ? "public body" : "person"}. <a href="/search/?${new URLSearchParams(Object.entries(p).filter(([k, v]) => v && !active.includes(k))).toString()}">Remove</a></p>` : ""}
   </form>
 </div></header>
 <section class="section" style="padding-block-start:2rem"><div class="wrap">
@@ -105,6 +105,7 @@ export function itemPage(it, { flags, stats, links }) {
   const x = it.x || {};
   const facts = [
     it.s ? { label: it.ds === "mha" ? "Paid to" : it.ds === "fed_grant" || it.ds === "pa_tp" ? "Recipient" : "Supplier", value: who(it) } : null,
+    x.supplier_as_printed ? { label: "Name as printed", value: esc(x.supplier_as_printed) } : null,
     it.p ? { label: it.ds === "sunshine" ? "Name as published" : it.ds === "mha" ? "Member" : "Minister", value: esc(it.p) } : null,
     it.b ? { label: it.ds === "sunshine" ? "Employer" : "Public body", value: bodyLink(it.b, links, { sunshine: it.ds === "sunshine" }) } : null,
     { label: it.ds === "fed_grant" ? "Agreement start" : it.ds === "canadabuys" ? "Award date" : it.ds === "sunshine" ? "Year" : "Date", value: esc(it.ds === "sunshine" ? String(it.t || "").slice(0, 4) : fmtDate(it.t) || it.fy || "not printed") },
@@ -162,6 +163,13 @@ export function itemPage(it, { flags, stats, links }) {
   return { title, body };
 }
 
+// The printed names a supplier page combines, each linking to its own records.
+function combinedNames(s, hash) {
+  return html`<div class="combined small"><p>This page combines ${num(s.combined.length)} printed names that the records show are one supplier:</p>
+  <ul>${s.combined.map((c) => html`<li><a href="/search/?s=${hash}&amp;n=${c.h}">${esc(c.t)}</a> <span>${num(c.n)} ${c.n === 1 ? "record" : "records"}</span></li>`)}</ul>
+  <p><a href="/method/suppliers/">How names are matched</a> · <a href="https://github.com/steveclarke/nl-ledger/issues/new?template=challenge-method.yml">Question this match</a></p></div>`;
+}
+
 export function supplierPage(s, { flags, stats, hash, links }) {
   const dsRows = Object.entries(s.byDs).sort((a, b) => b[1][1] - a[1][1]);
   const years = Object.entries(s.byYear).sort();
@@ -172,6 +180,7 @@ export function supplierPage(s, { flags, stats, hash, links }) {
   <p class="crumbs"><a href="/">Home</a> / <a href="/search/">Search</a> / Supplier</p>
   <h1>${esc(s.name)}</h1>
   <p class="lede">${num(s.n)} records across provincial, federal and municipal sources: ${moneyWords(s.total)} in contract awards, grant agreements and payments${s.overlap ? `, plus ${moneyWords(s.overlap)} in federal payment and notice records that repeat money already counted` : ""}${s.city ? `. Listed in ${esc(s.city)}` : ""}.${s.names ? ` Also printed as: ${s.names.filter((n) => n !== s.name).map(esc).join("; ")}.` : ""}</p>
+  ${s.combined ? combinedNames(s, hash) : ""}
 </div></header>
 <section class="section"><div class="wrap">
   <div class="figs">
