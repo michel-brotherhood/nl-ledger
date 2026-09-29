@@ -5,9 +5,9 @@ holding the running total. Rows are grouped by (owner_org, procurement_id, vendo
 and only the latest is kept. Rows without a procurement_id fall back to their
 reference_number, so they are never merged with another contract.
 
-Grants and contributions: grouped by (department, agreement number, recipient). The latest
-amendment is kept where a department reports running totals; amendments are summed where it
-reports changes.
+Grants and contributions: one row per agreement (see grants()). The latest amendment is kept
+where a department reports running totals; amendments are summed where it reports changes
+(CHANGE_REPORTING).
 
 CanadaBuys award notices overlap the contracts disclosure (the same contract can
 appear in both), so they are searchable but never added to federal totals.
@@ -113,29 +113,104 @@ def contracts() -> None:
     assert 2.0e9 < tot < 4.0e9, f"NL contracts total {tot:,.0f} outside the expected $2B to $4B: amendment de-duplication failed"
 
 
+# Departments whose amendment rows carry the change in value, not the agreement's new total.
+# The data dictionary asks for the total ("not the change in agreement value"); these four
+# report changes anyway. The evidence is in their own rows (checked against the file of
+# 2026-09-29); federal_report.json also sets each one's total beside what Public Accounts
+# shows it paid NL recipients (PA_NAME), which the latest rows alone fall far short of.
+CHANGE_REPORTING = {
+    "isc-sac": "Negative amendment rows. Late amendments are noted \"Funding of $X actually awarded\", where X is the row's own value. "
+               "The 2024-25 child and family services agreement with the province adds to $54,115,591 across four rows, "
+               "the amount Public Accounts shows paid that year.",
+    "aandc-aadnc": "Negative rows noted \"The total award value of $X reported in a previous quarter has been reduced by this Amendment\". "
+                   "Late amendments are noted \"Funding of $X actually awarded\", where X is the row's own value.",
+    "pch": "Every row is amendment 0 under a new reference number. The 2020-2024 official languages agreement with the province "
+           "(1337983) has rows of $12.7M, $8.7M and $0.4M; their sum matches the $21.7M paid to the province in 2021-22 to 2023-24.",
+    "phac-aspc": "Late amendments are noted \"Funding of $X actually awarded\", where X is the row's own value. Extensions add half "
+                 "the original value (1718-HQ-000283: $1,672,840, then $836,420 when two years were added).",
+}
+PA_NAME = {  # as Public Accounts prints them; a department renamed in a later file needs its new name here
+    "isc-sac": "Department of Indigenous Services",
+    "aandc-aadnc": "Department of Crown-Indigenous Relations and Northern Affairs",
+    "pch": "Department of Canadian Heritage",
+    "phac-aspc": "Public Health Agency of Canada",
+}
+# Running-total departments say so in their notes: ACOA "the previous value was $X" (X is the
+# prior row in 1,514 of 1,519 cases), Health Canada "The total agreement value previously
+# disclosed has been updated", NRC "The total amended value is -$X" (the row is the original
+# plus X), Industry Canada "value changed from X to Y".
+
+
+def _norm(s: str | None) -> str:
+    return re.sub(r"[^a-z0-9]", "", (s or "").split("|")[0].lower())
+
+
 def grants() -> None:
     """One row per agreement.
 
-    Departments report amendments two ways. Most re-report the agreement's whole value
-    under a new reference number each time (Health Canada gives each amendment its own
-    ref_number); those keep the latest amendment. Indigenous Services and CIRNAC report
-    each amendment as the change in value (their files carry negative amounts); those
-    are summed. Agreements are grouped by department, agreement number and cleaned
-    recipient name.
+    Rows are grouped into agreements by department, agreement number and cleaned recipient
+    name, then:
+    - A recipient renamed on an amendment (a novation, a new legal name, a respelling) stays
+      the same agreement, when the number has one original recipient. Rows under another
+      name that differ in both program and start date are a different agreement that shares
+      the number.
+    - Rows without an agreement number are one agreement per reference number, except where
+      a department re-reports an amendment under a new reference number (Infrastructure
+      Canada, Veterans Affairs): those join on recipient, start date, program and title.
+    Where the department reports running totals the latest amendment is the agreement's
+    value; where it reports changes (CHANGE_REPORTING) the amendments are added up.
     """
     rows = [json.loads(line) for line in open(FED / "grants_NL.jsonl")]
     raw_value = sum(money(r.get("agreement_value")) or 0 for r in rows)
-    delta_orgs = {r["owner_org"] for r in rows if (money(r.get("agreement_value")) or 0) < 0}
+    negative = {r["owner_org"] for r in rows if (money(r.get("agreement_value")) or 0) < 0}
+    assert negative <= CHANGE_REPORTING.keys(), f"negative grant values from {sorted(negative - CHANGE_REPORTING.keys())}: check how they report amendments"
+
+    def who(r):
+        return entity_key(name_forms(r.get("recipient_legal_name") or r.get("recipient_operating_name"), bilingual=True)[0])
+
+    def unnumbered(r):
+        return (r["owner_org"], who(r), r.get("agreement_start_date"), _norm(r.get("prog_name_en")),
+                re.sub(r"dba$", "", _norm(r.get("agreement_title_en"))))
+
+    def amended(r):
+        return int(r.get("amendment_number") or 0) > 0
+
+    reissued = {unnumbered(r) for r in rows if not (r.get("agreement_number") or "").strip() and amended(r)}
     groups: dict[tuple, list] = defaultdict(list)
     for r in rows:
-        agr = (r.get("agreement_number") or "").strip() or f"ref:{r['ref_number']}"
-        who = entity_key(name_forms(r.get("recipient_legal_name") or r.get("recipient_operating_name"), bilingual=True)[0])
-        groups[(r["owner_org"], agr, who)].append(r)
+        agr = (r.get("agreement_number") or "").strip()
+        if agr:
+            groups[(r["owner_org"], agr, who(r))].append(r)
+        elif unnumbered(r) in reissued:
+            groups[(r["owner_org"], "", *unnumbered(r)[1:])].append(r)
+        else:
+            groups[(r["owner_org"], f"ref:{r['ref_number']}", who(r))].append(r)
+    by_number = defaultdict(list)
+    for k in groups:
+        if k[1] and not k[1].startswith("ref:"):
+            by_number[k[:2]].append(k)
+    for keys in by_number.values():
+        originals = [k for k in keys if any(not amended(r) for r in groups[k])]
+        if len(keys) < 2 or len(originals) > 1:
+            continue
+        home = originals[0] if originals else keys[0]
+        starts = {r.get("agreement_start_date") for r in groups[home]}
+        progs = {_norm(r.get("prog_name_en"))[:15] for r in groups[home]}
+
+        def same(r):  # a blank program matches any
+            p = _norm(r.get("prog_name_en"))[:15]
+            return r.get("agreement_start_date") in starts or p in progs or not p or "" in progs
+
+        for k in keys:
+            if k != home and any(same(r) for r in groups[k]):
+                groups[home] += groups.pop(k)
     out = []
-    for (org, agr, _), rs in groups.items():
+    latest_only = Counter()  # what a change-reporting department would come to if its rows were read as totals
+    for (org, agr, *_), rs in groups.items():
         rs.sort(key=lambda r: (int(r.get("amendment_number") or 0), r.get("amendment_date") or "", r["ref_number"]))
         last = rs[-1]
-        if org in delta_orgs:
+        latest_only[org] += money(last.get("agreement_value")) or 0
+        if org in CHANGE_REPORTING:
             value = sum(money(r.get("agreement_value")) or 0 for r in rs)
             how = f"sum of {len(rs)} amendment rows (department reports changes)"
         else:
@@ -167,7 +242,11 @@ def grants() -> None:
     write("fed_grants.csv", out)
     tot = sum(r["amount"] or 0 for r in out)
     REPORT["grants"] = {"raw_rows": len(rows), "raw_value": round(raw_value, 2), "agreements": len(out), "dedup_value": round(tot, 2),
-                        "delta_departments": sorted(delta_orgs),
+                        "delta_departments": sorted(CHANGE_REPORTING),
+                        "change_reporting": {org: {"department": next(r["department"] for r in out if r["owner_org"] == org),
+                                                   "evidence": ev, "summed": round(sum(r["amount"] or 0 for r in out if r["owner_org"] == org)),
+                                                   "latest_only": round(latest_only[org])}
+                                             for org, ev in CHANGE_REPORTING.items()},
                         "by_department": dict(Counter({k: round(v) for k, v in _by(out, lambda r: r["department"]).items()}).most_common(8))}
     print("grants", REPORT["grants"])
     assert 5.0e9 < tot < 9.0e9, f"grants total {tot:,.0f} outside the expected range"
@@ -278,6 +357,14 @@ def main() -> None:
     grants()
     canadabuys()
     public_accounts()
+    tp = list(csv.DictReader(open(CLEAN / "pa_tp_nl.csv")))
+    years = sorted({r["fiscal_year"] for r in tp})
+    for org, c in REPORT["grants"]["change_reporting"].items():
+        c["paid"] = round(sum(money(r["amount"]) or 0 for r in tp if r["department"] == PA_NAME[org]))
+        c["paid_years"] = f"{years[0][:4]}-{years[0][7:]} to {years[-1][:4]}-{years[-1][7:]}"
+    for org in ("isc-sac", "aandc-aadnc"):  # four years' payments alone exceed the latest rows read as totals
+        c = REPORT["grants"]["change_reporting"][org]
+        assert c["latest_only"] < c["paid"] < c["summed"], f"{org}: Public Accounts check no longer separates the two readings: {c}"
     (CLEAN / "federal_report.json").write_text(json.dumps(REPORT, indent=1))
 
 
