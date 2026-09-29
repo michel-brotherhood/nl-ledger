@@ -1,6 +1,7 @@
 // Sources and report card, methods, corrections, about, data access, the fold-out scale, 404.
 import { esc, html, icon, Notes, schedule, leaders } from "../../lib/html.mjs";
 import { money, moneyWords, num, pct, date as fmtDate, workTime, SITE, payrollContributions, nlIncomeTax } from "../../lib/format.mjs";
+import { desc } from "../seo.mjs";
 import { pagehead, caveat, datasetLabel } from "../common.mjs";
 import { connectPage } from "./connect.mjs";
 
@@ -82,7 +83,8 @@ export function info(D, R) {
     { body: "City of St. John's", grade: ["Every payment published weekly", "Published as scanned images, so it cannot be searched or copied without OCR"] },
   ];
   out.push(["/sources/", {
-    title: "Sources and report card",
+    title: "Sources: where every figure comes from",
+    description: desc("Every source behind the records: what each publisher releases, how much is loaded, and a report card on how complete and usable each publisher's records are."),
     body: html`${pagehead({ crumbs: [["/", "Home"], [null, "Sources"]], title: "Sources and report card", lede: "Where every figure comes from, what each source covers, and how well each publisher does at publishing it." })}
 <section class="section"><div class="wrap">
   <h2 style="margin-block-end:1.5rem">Line-item sources</h2>
@@ -105,7 +107,8 @@ export function info(D, R) {
 
   // ---- methods index + receipt + federal + scale
   out.push(["/method/", {
-    title: "Methods",
+    title: "Methods: how each figure is worked out",
+    description: desc("How every figure and pattern on NL Ledger is counted, what it leaves out and what it cannot tell you: the tax receipt, federal amendments and each pattern."),
     body: html`${pagehead({ crumbs: [["/", "Home"], [null, "Methods"]], title: "Methods", lede: "How each figure on this site is worked out." })}
 <section class="section"><div class="wrap prose">
   <h2>Human scale</h2>
@@ -122,7 +125,8 @@ export function info(D, R) {
   }]);
   const S = D.stats;
   out.push(["/method/receipt/", {
-    title: "Method: the personal receipt",
+    title: "Method: the personal tax receipt",
+    description: desc("How the tax receipt works out provincial income tax from form NL428 with CPP and EI credits, spreads it across departments, and a worked example at the median wage."),
     body: html`${pagehead({ crumbs: [["/", "Home"], ["/method/", "Methods"], [null, "The receipt"]], title: "Method: the personal receipt", lede: "What the receipt computes, and what it leaves out." })}
 <section class="section"><div class="wrap prose">
   <ol>
@@ -140,7 +144,8 @@ export function info(D, R) {
   }]);
   const F = D.federal;
   out.push(["/method/federal/", {
-    title: "Method: federal amendments",
+    title: "Method: counting federal contracts once",
+    description: desc("Federal disclosure files repeat a contract every time it is amended. How NL Ledger counts each contract and grant once, and the totals before and after."),
     body: html`${pagehead({ crumbs: [["/", "Home"], ["/method/", "Methods"], [null, "Federal amendments"]], title: "Method: federal amendments", lede: "The federal disclosure files repeat a contract every time it changes. Added up as published, they count the same money many times." })}
 <section class="section"><div class="wrap prose">
   <h2>Contracts over $10,000</h2>
@@ -156,7 +161,8 @@ export function info(D, R) {
 
   // ---- corrections
   out.push(["/corrections/", {
-    title: "Corrections",
+    title: "Corrections to published figures",
+    description: desc("Every change to a published figure on NL Ledger, logged with the date and the reason, and how to report a figure that does not match its source."),
     body: html`${pagehead({ crumbs: [["/", "Home"], [null, "Corrections"]], title: "Corrections", lede: "Every change to a published figure is logged here with the date and the reason." })}
 <section class="section"><div class="wrap prose">
   <h2>Log</h2>
@@ -170,7 +176,8 @@ export function info(D, R) {
 
   // ---- about
   out.push(["/about/", {
-    title: "What is this?",
+    title: "What is NL Ledger?",
+    description: desc("NL Ledger is an independent prototype that gathers Newfoundland and Labrador public spending records in one searchable place, each linked to its source."),
     body: html`${pagehead({ crumbs: [["/", "Home"], [null, "What is this?"]], title: "What is this?", lede: `${SITE.name} is a thought experiment: what could an ordinary citizen learn about Newfoundland and Labrador public spending from the records governments already publish?` })}
 <section class="section"><div class="wrap prose">
   <p>Governments publish a great deal of spending data, but it is scattered across hundreds of PDFs, spreadsheets and web pages that few people have time to read. This prototype gathers ${num(R.itemCount)} of those records in one place and tries to make the amounts easier to picture. It gathers provincial contract awards, minister and MHA expenses, public sector pay over $100,000, department and program spending, federal contracts, grants and transfers in the province, and the payment registers two municipalities publish.</p>
@@ -207,7 +214,8 @@ export function info(D, R) {
       text: "Want records that are not published anywhere? Describe them and who holds them. A good request can become an access to information request, and the answer can be added here." },
   ];
   out.push(["/help/", {
-    title: "Help build this",
+    title: "Help build NL Ledger",
+    description: desc("Add a source, challenge a method, report a figure that does not match its document, or request records that are not published. No programming needed."),
     description: "Anyone can help make NL Ledger more accurate and more complete: add a source, challenge a method, report a figure or request data. No programming needed.",
     body: html`${pagehead({ crumbs: [["/", "Home"], [null, "Help build this"]], title: "Help build this", lede: `${SITE.name} is built in the open, and anyone can help make it more accurate and more complete. Most help needs no programming: a link and a sentence is enough.` })}
 <section class="section"><div class="wrap">
@@ -239,7 +247,7 @@ export function info(D, R) {
   out.push(scalePage(D, R));
 
   // ---- 404
-  out.push(["/404.html", { title: "Page not found", body: html`${pagehead({ title: "Not in the ledger", lede: "That page does not exist. Try a search." })}<section class="section"><div class="wrap"><form class="field" action="/search/" style="max-inline-size:30rem"><label for="nq">Search every payment</label><div class="field-row"><input id="nq" name="q" type="search"><button class="btn" type="submit">Search</button></div></form></div></section>` }]);
+  out.push(["/404.html", { title: "Page not found", robots: "noindex", body: html`${pagehead({ title: "Not in the ledger", lede: "That page does not exist. Try a search." })}<section class="section"><div class="wrap"><form class="field" action="/search/" style="max-inline-size:30rem"><label for="nq">Search every payment</label><div class="field-row"><input id="nq" name="q" type="search"><button class="btn" type="submit">Search</button></div></form></div></section>` }]);
   return out;
 }
 
@@ -305,5 +313,5 @@ function scalePage(D, R) {
   </div>
   <div style="padding-block:2rem 0"><h2>$1,000,000,000</h2><p class="lede">${workTime(BILLION, S)} of work at the median wage. The gold above adds up to ${moneyWords(at)}. The province spent $1 billion about every ${Math.round(BILLION / (R.total / 365))} days in ${fy}.</p></div>
 </div></section>`;
-  return ["/scale/", { title: "$1 billion, folded out", body, notes }];
+  return ["/scale/", { title: "How big is $1 billion? Folded out", description: desc(`One pixel is ${money(PER_PX)}. A scrolling column that shows what $1 billion is next to a median wage, and how often the province spends it.`), body, notes }];
 }

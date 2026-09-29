@@ -1,0 +1,42 @@
+// Checks on the built pages (run by check.sh when dist/ exists): internal links land on a page, every JSON-LD
+// block parses, every page has a unique description, and the sitemap lists no record or search pages.
+import { readFileSync, readdirSync, existsSync } from "node:fs";
+import { join } from "node:path";
+
+const DIST = join(import.meta.dirname, "dist");
+const RENDERED = /^\/(search|supplier|item|receipt|mcp|data|\.well-known)(\/|$)/; // rendered on request or data files, not in dist as pages
+const files = [];
+(function walk(d) { for (const e of readdirSync(d, { withFileTypes: true })) { const p = join(d, e.name); e.isDirectory() ? walk(p) : p.endsWith(".html") && files.push(p); } })(DIST);
+
+const problems = [];
+const descs = new Map();
+const linked = new Map();
+for (const f of files) {
+  const h = readFileSync(f, "utf8");
+  const page = f.slice(DIST.length);
+  for (const m of h.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)) {
+    try { JSON.parse(m[1]); } catch { problems.push(`bad JSON-LD in ${page}`); }
+  }
+  const d = h.match(/name="description" content="([^"]*)"/)?.[1];
+  if (!d) problems.push(`no description: ${page}`);
+  else if (page !== "/404.html") (descs.get(d) || descs.set(d, []).get(d)).push(page);
+  for (const m of h.matchAll(/href="(\/[^"#?]*)/g)) {
+    const path = m[1];
+    if (RENDERED.test(path) || path === "/") continue;
+    const ok = existsSync(join(DIST, path)) && !path.endsWith("/") ? true : existsSync(join(DIST, path, "index.html"));
+    if (!ok) (linked.get(path) || linked.set(path, []).get(path)).push(page);
+  }
+}
+for (const [d, pages] of descs) if (pages.length > 1) problems.push(`same description on ${pages.length} pages (${pages.slice(0, 3).join(", ")}): ${d.slice(0, 60)}`);
+for (const [path, pages] of linked) problems.push(`broken link ${path} from ${pages[0]}${pages.length > 1 ? ` and ${pages.length - 1} more` : ""}`);
+if (existsSync(join(DIST, "sitemap.xml"))) {
+  const sm = readFileSync(join(DIST, "sitemap.xml"), "utf8");
+  if (/<loc>[^<]*\/(item|search)\//.test(sm)) problems.push("sitemap lists record or search pages");
+  if (/404\.html/.test(sm)) problems.push("sitemap lists 404.html");
+} else problems.push("no sitemap.xml");
+if (!existsSync(join(DIST, "robots.txt"))) problems.push("no robots.txt");
+else if (!/^Sitemap: /m.test(readFileSync(join(DIST, "robots.txt"), "utf8"))) problems.push("robots.txt has no Sitemap line");
+
+for (const p of problems) console.log(`FAIL: ${p}`);
+console.log(`page checks: ${files.length} pages, ${problems.length ? problems.length + " problems" : "pass"}`);
+process.exit(problems.length ? 1 : 0);

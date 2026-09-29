@@ -77,13 +77,36 @@ export function searchPage({ params, result, flags, page }) {
   return body;
 }
 
-export function itemPage(it, { flags, stats }) {
+// Title and description for a record page, built from its own fields so no two records read alike.
+export function itemMeta(it) {
+  const who = it.s || it.p || it.d || "Record";
+  const name = who.length > 34 ? who.slice(0, 34).replace(/\s+\S*$/, "") + "…" : who;
+  const year = String(it.t || "").slice(0, 4) || String(it.fy || "").slice(-4);
+  const same = it.b && who.toLowerCase().slice(0, 10) === it.b.toLowerCase().slice(0, 10);
+  const buyer = it.b && !same ? (it.b.length > 30 ? it.b.slice(0, 30).replace(/\s+\S*$/, "") + "…" : it.b) : "";
+  const amt = it.a != null ? money(it.a, { cents: Math.round(it.a * 100) % 100 !== 0 }) : "";
+  const title = [name, amt, buyer, /^\d{4}$/.test(year) ? year : ""].filter(Boolean).join(", ");
+  const label = DATASET_LABEL[it.ds] || "Record";
+  const d = String(it.d || "").trim();
+  const text = `${label}: ${it.s || it.p || "payee not published"}${amt ? `, ${amt}` : ""}${it.b && !same ? `, ${it.ds === "sunshine" ? "at" : "from"} ${it.b}` : ""}${it.t ? ` on ${fmtDate(it.t)}` : year ? ` in ${year}` : ""}. ${d ? d.replace(/\.$/, "") + ". " : ""}${it.m ? `${it.m}. ` : ""}`.trim();
+  return { title, description: text.length > 158 ? text.slice(0, 157).replace(/\s+\S*$/, "") + "…" : text };
+}
+
+// A link to the page about a public body, only where the build wrote one (links.json lists the slugs of every
+// /body/, /pay/ and /department/ page). Anything else is plain text, never a link that ends in a 404.
+export function bodyLink(name, links, { sunshine = false } = {}) {
+  const sl = slug(name);
+  const href = links?.body?.includes(sl) ? `/body/${sl}/` : sunshine && links?.pay?.includes(sl) ? `/pay/${sl}/` : links?.department?.includes(sl) ? `/department/${sl}/` : null;
+  return href ? `<a href="${href}">${esc(name)}</a>` : esc(name);
+}
+
+export function itemPage(it, { flags, stats, links }) {
   const fl = (it.f || []).map((f) => flags[f]).filter(Boolean);
   const x = it.x || {};
   const facts = [
     it.s ? { label: it.ds === "mha" ? "Paid to" : it.ds === "fed_grant" || it.ds === "pa_tp" ? "Recipient" : "Supplier", value: who(it) } : null,
     it.p ? { label: it.ds === "sunshine" ? "Name as published" : it.ds === "mha" ? "Member" : "Minister", value: esc(it.p) } : null,
-    it.b ? { label: it.ds === "sunshine" ? "Employer" : "Public body", value: `<a href="/body/${slug(it.b)}/">${esc(it.b)}</a>` } : null,
+    it.b ? { label: it.ds === "sunshine" ? "Employer" : "Public body", value: bodyLink(it.b, links, { sunshine: it.ds === "sunshine" }) } : null,
     { label: it.ds === "fed_grant" ? "Agreement start" : it.ds === "canadabuys" ? "Award date" : it.ds === "sunshine" ? "Year" : "Date", value: esc(it.ds === "sunshine" ? String(it.t || "").slice(0, 4) : fmtDate(it.t) || it.fy || "not printed") },
     it.m ? { label: it.ds === "mha" ? "Allowance" : it.ds === "fed_grant" ? "Program" : "Method", value: esc(it.m) } : null,
     x.clause ? { label: "Clause cited", value: esc(x.clause) } : null,
@@ -138,7 +161,7 @@ export function itemPage(it, { flags, stats }) {
   return { title, body };
 }
 
-export function supplierPage(s, { flags, stats, hash }) {
+export function supplierPage(s, { flags, stats, hash, links }) {
   const dsRows = Object.entries(s.byDs).sort((a, b) => b[1][1] - a[1][1]);
   const years = Object.entries(s.byYear).sort();
   const ymax = Math.max(...years.map(([, v]) => v), 1);
@@ -157,7 +180,7 @@ export function supplierPage(s, { flags, stats, hash }) {
   </div>
   <div class="grid-2">
     <div>${schedule({ compact: true, caption: "By source", cols: [{ label: "Source" }, { label: "Records", num: true }, { label: "Value", num: true }], rows: dsRows.map(([d, [n, a]]) => ({ cells: [esc(DATASET_LABEL[d] || d) + (["pa_pss", "pa_tp", "canadabuys"].includes(d) ? '<span class="meta">repeats money counted above; not in the total</span>' : ""), num(n), moneyWords(a)] })) })}
-      ${s.buyers?.length ? schedule({ compact: true, caption: "Paid by", cols: [{ label: "Public body" }, { label: "Level" }, { label: "Records", num: true }, { label: "Value", num: true }], rows: s.buyers.map((b) => ({ cells: [`<a href="/body/${slug(b.name)}/">${esc(b.name)}</a>`, esc(LEVEL_LABEL[b.level] || ""), num(b.n), moneyWords(b.amount)] })) }) : ""}
+      ${s.buyers?.length ? schedule({ compact: true, caption: "Paid by", cols: [{ label: "Public body" }, { label: "Level" }, { label: "Records", num: true }, { label: "Value", num: true }], rows: s.buyers.map((b) => ({ cells: [bodyLink(b.name, links), esc(LEVEL_LABEL[b.level] || ""), num(b.n), moneyWords(b.amount)] })) }) : ""}
     </div>
     <div>${years.length > 1 ? schedule({ compact: true, caption: "By year", cols: [{ label: "Year" }, { label: "", w: "55%" }, { label: "Value", num: true }], rows: years.map(([y, v]) => ({ cells: [y, bar(v, ymax), moneyWords(v)] })) }) : ""}
       ${flagRows.length ? html`<h3 style="margin-block:1.5rem .6rem">Patterns</h3><ul class="flaglist">${flagRows.map((x) => html`<li><a class="q" href="/flags/${x.f.id}/" aria-hidden="true" tabindex="-1">${icon("query")}</a><h3><a href="/flags/${x.f.id}/">${esc(x.f.title)}</a></h3><span class="count">${num(x.n)}</span><p>${esc(x.f.short)}</p></li>`)}</ul><p class="small muted">A flag is a question, not a finding.</p>` : ""}

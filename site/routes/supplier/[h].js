@@ -1,4 +1,6 @@
 import { supplierPage } from "../../lib/views.mjs";
+import { supplierIndexable } from "../../lib/indexing.mjs";
+import { moneyWords, num } from "../../lib/format.mjs";
 import { assets, page, cached } from "../_shared.js";
 
 const SHARDS = 512;
@@ -18,6 +20,8 @@ export async function onRequestGet(ctx) {
       return page(ctx, a, { title: "Not found", body, status: 404, maxAge: 300 });
     }
     const v = supplierPage(s, { ...a, hash: h });
-    return page(ctx, a, { title: v.title, description: `Everything ${v.title} received from provincial, federal and municipal governments in Newfoundland and Labrador, with sources.`, body: v.body });
+    const name = s.name.length > 42 ? s.name.slice(0, 42).replace(/\s+\S*$/, "") + "…" : s.name;
+    const text = `${s.name} appears in ${num(s.n)} government records totalling ${moneyWords(s.total)}: contract awards, grants and payments from provincial, federal and municipal bodies, with sources.`;
+    return page(ctx, a, { title: `${name}: government contracts and payments`, description: text.length > 158 ? text.slice(0, 157).replace(/\s+\S*$/, "") + "…" : text, body: v.body, robots: supplierIndexable(s) ? "" : "noindex,follow" });
   });
 }

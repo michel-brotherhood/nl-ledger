@@ -2,6 +2,7 @@
 // No page per person: the lists are shown the way the government publishes them.
 import { esc, html, icon, Notes, schedule, receipt, bar, leaders } from "../../lib/html.mjs";
 import { money, moneyWords, num, pct } from "../../lib/format.mjs";
+import { desc, clip, datasetLd, LICENSE } from "../seo.mjs";
 import { pagehead, caveat } from "../common.mjs";
 
 export function pay(D, R) {
@@ -19,7 +20,7 @@ export function pay(D, R) {
   const sevPeople = grp("severance").reduce((s, x) => s + x.people, 0);
   const sevAmt = grp("severance").reduce((s, x) => s + x.severance, 0);
   const broken = D.issues.filter((i) => i.source === "Compensation disclosure");
-  const idx = html`${pagehead({ crumbs: [["/", "Home"], [null, "Pay over $100,000"]], title: "Public sector pay over $100,000", lede: "Every public employee paid more than $100,000 in a calendar year, as the Public Sector Compensation Transparency Act requires each employer to publish. Amounts are rounded to $100 by the publisher." })}
+  const idx = html`${pagehead({ crumbs: [["/", "Home"], [null, "Pay over $100,000"]], title: "Public sector salaries over $100,000: the sunshine list", lede: "Often called the sunshine list: every public employee paid more than $100,000 in a calendar year, salary, overtime and other pay together, as the Public Sector Compensation Transparency Act requires each employer to publish. Amounts are rounded to $100 by the publisher." })}
 <section class="section"><div class="wrap">
   <div class="figs">
     <div><span class="big">${num(grid.size ? [...grid.values()].reduce((s, g) => s + (g[latest]?.n || 0), 0) : 0)}</span><span class="what">people on the ${latest} lists</span></div>
@@ -32,7 +33,11 @@ export function pay(D, R) {
   ${schedule({ cols: [{ label: "Employer" }, ...years.map((y) => ({ label: y, num: true }))],
     rows: emp.map((e) => ({ cells: [`<a href="/pay/${D.slug(e.buyer)}/">${esc(e.buyer)}</a>`, ...years.map((y) => { const g = grid.get(e.buyer)?.[y]; return g ? `${num(g.n)}<span class="meta">${moneyWords(g.a)}</span>` : "<span class=\"muted\">not available</span>"; })] })) })}
 </div></section>`;
-  out.push(["/pay/", { title: "Pay over $100,000", body: idx }]);
+  const latestN = [...grid.values()].reduce((t, g) => t + (g[latest]?.n || 0), 0);
+  out.push(["/pay/", { title: "NL sunshine list: public sector pay over $100,000",
+    description: desc(`Newfoundland and Labrador's sunshine list for ${latest}: ${num(latestN)} public employees paid over $100,000, by employer, with job titles, overtime and severance.`),
+    body: idx,
+    jsonld: [datasetLd({ name: "Newfoundland and Labrador public sector compensation over $100,000 (sunshine list)", description: "Every public employee paid more than $100,000 in a calendar year, by employer, as disclosed under the Public Sector Compensation Transparency Act.", path: "/pay/", license: LICENSE.provincial, period: `${years[0]}/${latest}`, publishers: [{ name: "Compensation disclosure, Treasury Board Secretariat", url: "https://www.gov.nl.ca/exec/tbs/home/publications/compensation-disclosure/" }] })] }]);
 
   for (const e of emp) {
     const notes = new Notes();
@@ -56,7 +61,12 @@ export function pay(D, R) {
     }) })}
   <p><a href="/search/?ds=sunshine&b=${bh}">Search everyone on ${esc(e.buyer)}'s lists ${icon("arrow")}</a></p>
 </div></section>`;
-    out.push([`/pay/${D.slug(e.buyer)}/`, { title: `Pay over $100,000: ${e.buyer}`, body, notes }]);
+    const ly = perYear[perYear.length - 1];
+    const g = grid.get(e.buyer)[ly];
+    out.push([`/pay/${D.slug(e.buyer)}/`, { title: `${clip(e.buyer, 38)} salaries over $100,000, ${ly}`,
+      description: desc(`${num(g.n)} ${e.buyer} employees were paid over $100,000 in ${ly}, ${moneyWords(g.a)} in all. Job titles, average pay, overtime and the highest paid, from the sunshine list.`),
+      body, notes,
+      jsonld: [datasetLd({ name: `${e.buyer}: employees paid over $100,000, ${perYear[0]} to ${ly}`, description: `Public employees of ${e.buyer} paid more than $100,000 in a calendar year, from the compensation disclosure lists.`, path: `/pay/${D.slug(e.buyer)}/`, license: LICENSE.provincial, period: `${perYear[0]}/${ly}`, publishers: src.map((x) => ({ name: `${e.buyer} compensation disclosure, ${x.y}`, url: x.source_url })) })] }]);
   }
   return out;
 }

@@ -153,7 +153,7 @@ export function home(D, R) {
     <div>
       <div class="section-head">
         <h2 id="wh-h">Where it went</h2>
-        <p class="lede">${num(R.itemCount)} line items from provincial, federal and municipal records: contract awards, grants, expense claims, pay over $100,000, every payment the Town of Paradise publishes and a sample from the City of St. John's.</p>
+        <p class="lede">${num(R.itemCount)} line items from provincial, federal and municipal records: contract awards (including sole-source), grants, MHA and minister expense claims, salaries over $100,000 (the sunshine list), every payment the Town of Paradise publishes and a sample from the City of St. John's.</p>
       </div>
       <form class="field" action="/search/" method="get" role="search" style="max-inline-size:30rem">
         <label for="wq">Search every record</label>
@@ -180,7 +180,7 @@ export function home(D, R) {
   <div class="wrap">
     <div class="section-head">
       <h2 id="fl-h">Patterns people ask about</h2>
-      <p class="lede">Sole-source deals, contracts that grew, purchases just under a limit, year-end rushes, overtime bigger than salary. Each is counted from the records, with its method written down.</p>
+      <p class="lede">Sole-source contracts and other awards without competition, contracts that grew, purchases just under a limit, year-end rushes, overtime bigger than salary. Each is counted from the records, with its method written down.</p>
     </div>
     ${caveat(esc(D.catalog.caveat))}
     <ul class="flaglist" style="margin-block-start:1rem">${D.catalog.flags.slice(0, 8).map((f) => {

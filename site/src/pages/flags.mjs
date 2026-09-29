@@ -1,7 +1,14 @@
 // Patterns: an index, a results page per flag, and a method page per flag.
 import { esc, html, icon, Notes, schedule, receipt, bar } from "../../lib/html.mjs";
 import { money, moneyWords, num, pct, date as fmtDate } from "../../lib/format.mjs";
+import { desc } from "../seo.mjs";
 import { pagehead, itemRow, ITEM_COLS, caveat, datasetLabel } from "../common.mjs";
+
+// Words people search with. The pattern titles come from the pipeline; these keep the site's own wording alongside them.
+const SEARCHED = {
+  "no-competition": { note: "Sole-source awards, where the reports say only one supplier was reasonably available (clause 6(a)(v)), are the largest group here. The rest are emergency, pre-qualified supplier, purchase-for-resale, security and regulated-rate exceptions.", title: "Contracts awarded without competition: sole-source", description: "Newfoundland and Labrador contracts awarded without an open call: sole-source awards (only one supplier reasonably available), emergencies and other exceptions, by public body." },
+  "repeat-sole-source": { title: "Repeat sole-source contracts to one supplier" },
+};
 
 function countLine(D, f) {
   const s = D.flagSummary[f.id] || {};
@@ -15,7 +22,8 @@ export function flagPages(D, R) {
   const cat = D.catalog;
 
   out.push(["/flags/", {
-    title: "Patterns people ask about",
+    title: "Sole-source contracts and other spending patterns",
+    description: desc(`${cat.flags.length} patterns people ask about in Newfoundland and Labrador spending, counted from the records: sole-source contracts, emergency awards, contracts that grew, overtime bigger than salary and more.`),
     body: html`${pagehead({ crumbs: [["/", "Home"], [null, "Patterns"]], title: "Patterns people ask about", lede: "Patterns in the records that people often ask about: deals made without competition, contracts that grew, amounts just under a limit, spending bunched at year end, and more. Each is counted from the records with its method written down. None is a finding of wrongdoing." })}
 <section class="section"><div class="wrap">
   ${caveat(esc(cat.caveat))}
@@ -78,12 +86,13 @@ export function flagPages(D, R) {
       if (itemIds.length > 120) results += `<p><a href="/search/?f=${f.id}">All ${num(itemIds.length)} in search</a></p>`;
     }
 
+    const seo = SEARCHED[f.id];
     out.push([`/flags/${f.id}/`, {
-      title: f.title,
-      description: f.short,
+      title: seo?.title || f.title,
+      description: desc(seo?.description || `${f.short} ${countLine(D, f)} in the Newfoundland and Labrador records, each linked to its source. A question, not a finding.`),
       body: html`${pagehead({ crumbs: [["/", "Home"], ["/flags/", "Patterns"], [null, f.title]], title: esc(f.title), lede: esc(f.short) })}
 <section class="section"><div class="wrap">
-  <div class="grid-2" style="margin-block-end:2.5rem"><div><p>${esc(f.why)}</p><p><a href="/method/${f.id}/">How this is worked out, and what it cannot tell you ${icon("arrow")}</a></p></div><div>${caveat(esc(cat.caveat))}</div></div>
+  <div class="grid-2" style="margin-block-end:2.5rem"><div><p>${esc(f.why)}</p>${seo?.note ? `<p>${esc(seo.note)}</p>` : ""}<p><a href="/method/${f.id}/">How this is worked out, and what it cannot tell you ${icon("arrow")}</a></p></div><div>${caveat(esc(cat.caveat))}</div></div>
   ${results}
 </div></section>`,
       notes,
@@ -91,6 +100,7 @@ export function flagPages(D, R) {
 
     out.push([`/method/${f.id}/`, {
       title: `Method: ${f.title}`,
+      description: desc(`How NL Ledger counts "${f.title.toLowerCase()}": ${f.how[0]}`),
       body: html`${pagehead({ crumbs: [["/", "Home"], ["/method/", "Methods"], [null, f.title]], title: `Method: ${esc(f.title)}`, lede: esc(f.short) })}
 <section class="section"><div class="wrap prose">
   <h2>Why people look at this</h2><p>${esc(f.why)}</p>

@@ -1,6 +1,7 @@
 // Priorities (department and program spending, planned against actual) and one page per department.
 import { esc, html, icon, Notes, leaders, bar, receipt, schedule } from "../../lib/html.mjs";
 import { money, moneyWords, num, pct, perPerson, workTime } from "../../lib/format.mjs";
+import { desc, datasetLd, LICENSE } from "../seo.mjs";
 import { pagehead, itemRow, ITEM_COLS, caveat } from "../common.mjs";
 import { bodyKeysFor } from "../receiptdata.mjs";
 
@@ -87,7 +88,7 @@ ${pagehead({ crumbs: [["/", "Home"], [null, "Priorities"]], title: "Priorities",
 
 <section class="section"><div class="wrap">
   <div class="section-head"><h2>Professional services by program, ${fy}</h2>
-  <p>"Professional services" is the account governments use for outside expertise. In health it is mostly doctors paid fee-for-service under the Medical Care Plan, so read the program name before reading the figure. Total across government: ${moneyWords(profTotal)}.</p></div>
+  <p>"Professional services" is the account governments use for outside expertise such as consultants. In health it is mostly doctors paid fee-for-service under the Medical Care Plan, so read the program name before reading the figure. Total across government: ${moneyWords(profTotal)}. <a href="/consulting/">Consultants and professional services, by year and department</a>.</p></div>
   ${schedule({
     cols: [{ label: "Program" }, { label: "Department" }, { label: "Professional services", num: true }, { label: "Source", num: true }],
     rows: prof.map((p) => ({ cells: [esc(p.program), esc(D.pretty(p.department)), moneyWords(p.v), receipt(p.source_url, p.page)] })),
@@ -111,7 +112,10 @@ ${pagehead({ crumbs: [["/", "Home"], [null, "Priorities"]], title: "Priorities",
   <p style="margin-block-start:1rem"><a href="/federal/">Federal contracts and grants in the province ${icon("arrow")}</a></p></div>
   <div>${caveat("Federal transfers to people (Old Age Security, Employment Insurance) are not provincial spending. They are here because they are public money arriving in the province, and are often larger than a whole provincial department.")}</div>
 </div></section>`;
-  out.push(["/priorities/", { title: "Priorities", description: `Newfoundland and Labrador spending by department, ${fy}, against the budget.`, body, notes }]);
+  out.push(["/priorities/", { title: `NL government spending by department, ${fy}`,
+    description: desc(`The Newfoundland and Labrador government spent ${moneyWords(R.total)} in ${fy}. Every department and program, spent against the budget, with the source page for each figure.`),
+    body, notes,
+    jsonld: [datasetLd({ name: `Newfoundland and Labrador spending by department and program, ${D.years[0]} to ${fy}`, description: "Gross spending by department and program, actual against amended and original estimates, from the province's Report on the Program Expenditures and Revenues of the Consolidated Revenue Fund.", path: "/priorities/", license: LICENSE.provincial, period: `${D.years[0].slice(0, 4)}/20${fy.slice(-2)}`, files: ["/data/departments.json"], publishers: [{ name: "Report on the Program Expenditures and Revenues of the Consolidated Revenue Fund", url: "https://www.gov.nl.ca/exec/tbs/public-accounts/" }] })] }]);
   return out;
 }
 
@@ -182,7 +186,7 @@ ${pagehead({ crumbs: [["/", "Home"], ["/priorities/", "Priorities"], [null, dep.
 </div></section>
 <section class="section"><div class="wrap">${progTable}</div></section>
 ${estTable ? `<section class="section"><div class="wrap">${estTable}</div></section>` : ""}
-${prof.length ? html`<section class="section"><div class="wrap"><div class="section-head"><h2>Professional services</h2><p>Outside expertise paid from this department's programs in ${latest}.</p></div>
+${prof.length ? html`<section class="section"><div class="wrap"><div class="section-head"><h2>Professional services</h2><p>Outside expertise, including consultants, paid from this department's programs in ${latest}.</p></div>
   ${schedule({ cols: [{ label: "Program" }, { label: "Professional services", num: true }, { label: "Source", num: true }], rows: prof.map((p) => ({ cells: [esc(p.program), money(p.v), receipt(p.source_url, p.page)] })) })}</div></section>` : ""}
 ${awards.length ? html`<section class="section"><div class="wrap">
   <div class="section-head"><h2>Contracts awarded</h2>
@@ -190,7 +194,10 @@ ${awards.length ? html`<section class="section"><div class="wrap">
   ${schedule({ cols: ITEM_COLS, rows: awards.slice(0, 60).map((a) => itemRow(D, a, { showBuyer: false })) })}
   ${awards.length > 60 ? `<p><a href="/body/${D.slug(awards[0].buyer)}/">All ${num(awards.length)} awards</a></p>` : ""}
 </div></section>` : ""}`;
-    out.push([`/department/${slug}/`, { title: dep.name, description: `${dep.name}: Newfoundland and Labrador spending by program, planned against actual, with contracts awarded.`, body, notes }]);
+    const budgeted = progs.reduce((t, p) => t + (p.c3 || 0), 0);
+    const spent = sum ? `${dep.name} spent ${moneyWords(sum.gross)} in ${latest}${budgeted > 0 ? `, against a budget of ${moneyWords(budgeted)}` : ""}.` : `${dep.name}: the ${estYear} budget estimates by program.`;
+    out.push([`/department/${slug}/`, { title: `${dep.name} spending, ${latest || estYear}`,
+      description: desc(`${spent} Spending by program, contracts awarded and professional services, with sources.`), body, notes }]);
   }
 
   // estimates overview
@@ -205,6 +212,6 @@ ${awards.length ? html`<section class="section"><div class="wrap">
     rows: estRows.map((r) => ({ cells: [`<a href="/department/${D.slug(r.department)}/">${esc(r.department)}</a>`, moneyWords(r.c1), moneyWords(r.c2), moneyWords(r.c3), receipt(r.source_url, r.page)] })),
     foot: [{ cells: ["Total", moneyWords(estTotal), moneyWords(estRows.reduce((s, r) => s + r.c2, 0)), moneyWords(estRows.reduce((s, r) => s + r.c3, 0)), ""] }],
   })}</div></section>`;
-  out.push([`/department/estimates-${estYear}/`, { title: `Budget estimates ${estYear}`, body, notes }]);
+  out.push([`/department/estimates-${estYear}/`, { title: `NL budget ${estYear}: spending planned by department`, description: desc(`What the Newfoundland and Labrador government plans to spend in ${estYear}, department by department and program by program, from the budget estimates.`), body, notes }]);
   return out;
 }

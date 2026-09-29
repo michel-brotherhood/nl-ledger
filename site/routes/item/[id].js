@@ -1,5 +1,6 @@
 import { getItem } from "../../lib/search.mjs";
-import { itemPage } from "../../lib/views.mjs";
+import { itemPage, itemMeta } from "../../lib/views.mjs";
+import { recordIndexable } from "../../lib/indexing.mjs";
 import { assets, page, cached } from "../_shared.js";
 
 export async function onRequestGet(ctx) {
@@ -12,6 +13,7 @@ export async function onRequestGet(ctx) {
       return page(ctx, a, { title: "Not found", body, status: 404, maxAge: 300 });
     }
     const v = itemPage(it, a);
-    return page(ctx, a, { title: v.title, description: `${v.title}: the public record and its source.`, body: v.body });
+    const meta = itemMeta(it);
+    return page(ctx, a, { title: meta.title, description: meta.description, body: v.body, robots: recordIndexable(it) ? "" : "noindex,follow" });
   });
 }

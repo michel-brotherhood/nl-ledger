@@ -5,14 +5,14 @@ let cache = null;
 export async function assets(ctx) {
   if (cache) return cache;
   const get = async (p) => (await ctx.env.ASSETS.fetch(new URL(p, ctx.request.url))).json();
-  const [stats, flags, version] = await Promise.all([get("/data/stats.json"), get("/data/flags.json"), get("/data/version.json")]);
+  const [stats, flags, version, links] = await Promise.all([get("/data/stats.json"), get("/data/flags.json"), get("/data/version.json"), get("/data/links.json")]);
   setAssetVersion(version.v);
-  cache = { stats, flags: Object.fromEntries(flags.flags.map((f) => [f.id, f])), caveat: flags.caveat, updated: version.updated, version: version.v + (version.data || "") + (version.code || "") };
+  cache = { stats, links, flags: Object.fromEntries(flags.flags.map((f) => [f.id, f])), caveat: flags.caveat, updated: version.updated, version: version.v + (version.data || "") + (version.code || "") };
   return cache;
 }
 
-export function page(ctx, a, { title, description, body, status = 200, path, maxAge = 3600 }) {
-  const htmlText = layout({ title, description, body, path: path || new URL(ctx.request.url).pathname, updated: a.updated });
+export function page(ctx, a, { title, description, body, status = 200, path, maxAge = 3600, jsonld, robots }) {
+  const htmlText = layout({ title, description, body, path: path || new URL(ctx.request.url).pathname, updated: a.updated, jsonld, robots });
   return new Response(htmlText, {
     status,
     headers: { "content-type": "text/html; charset=utf-8", "cache-control": `public, max-age=${maxAge}` },

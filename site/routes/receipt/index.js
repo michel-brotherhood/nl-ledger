@@ -22,7 +22,7 @@ export async function onRequestGet(ctx) {
     </form>
     <div data-receipt-out>${renderReceipt(R, income, a.stats)}</div>
   </div></section>`;
-  const res = page(ctx, a, { title: "Your receipt", body, path: "/receipt/", maxAge: 0 });
+  const res = page(ctx, a, { title: "NL income tax calculator: where your taxes go", description: `Enter your income to see what your ${R.tax.year} Newfoundland and Labrador provincial income tax paid for, department by department, worked out from form NL428.`, body, path: "/receipt/", maxAge: 0 });
   res.headers.set("cache-control", "private, no-store");
   return res;
 }

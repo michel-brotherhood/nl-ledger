@@ -1,6 +1,7 @@
 // MHAs and ministers: expense records as published, per member.
 import { esc, html, icon, Notes, schedule, receipt, bar, leaders } from "../../lib/html.mjs";
 import { money, moneyWords, num, pct, date as fmtDate } from "../../lib/format.mjs";
+import { desc, personLd, datasetLd, LICENSE } from "../seo.mjs";
 import { pagehead, caveat } from "../common.mjs";
 
 function nameOrder(n) {
@@ -25,7 +26,7 @@ export function members(D, R) {
   const ranked = mhas.filter((m) => perYear.get(m.person)?.[latestFull]).sort((a, b) => perYear.get(b.person)[latestFull] - perYear.get(a.person)[latestFull]);
   const rmax = ranked[0] ? perYear.get(ranked[0].person)[latestFull] : 1;
 
-  const idxBody = html`${pagehead({ crumbs: [["/", "Home"], [null, "Members"]], title: "Members and ministers", lede: "What each Member of the House of Assembly claimed against their allowances, and what each minister claimed, line by line as the House and Executive Council publish it." })}
+  const idxBody = html`${pagehead({ crumbs: [["/", "Home"], [null, "Members"]], title: "MHA expenses and minister expense claims", lede: "What each Member of the House of Assembly (MHA) claimed against their office, travel and constituency allowances, and what each minister claimed in expenses, line by line as the House and Executive Council publish it." })}
 <section class="section"><div class="wrap grid-2">
   <div><div class="section-head"><h2>MHA spending, ${latestFull}</h2><p>Office, travel and constituency allowances. The House publishes a limit for most categories; <a href="/flags/over-allowance/">no member went past one</a>. Members who served part of the year, or who are ministers or party leaders with other budgets, spend less from these allowances, so the list is not a ranking of thrift.</p></div>
   ${schedule({ compact: true, cols: [{ label: "Member" }, { label: "", w: "36%" }, { label: "Spent", num: true }], rows: ranked.map((m) => ({ cells: [`<a href="/mha/${D.slug(m.person)}/">${esc(nameOrder(m.person))}</a><span class="meta">${esc(m.district || "")}</span>`, bar(perYear.get(m.person)[latestFull], rmax), money(perYear.get(m.person)[latestFull])] })) })}
@@ -36,7 +37,9 @@ export function members(D, R) {
   <ul class="twocol">${mhas.map((m) => `<li><a href="/mha/${D.slug(m.person)}/">${esc(nameOrder(m.person))}</a><span>${moneyWords(m.amount)}</span></li>`)}</ul>
   </div>
 </div></section>`;
-  out.push(["/members/", { title: "Members and ministers", body: idxBody }]);
+  out.push(["/members/", { title: "MHA expenses in Newfoundland and Labrador", description: desc(`What every MHA claimed in office, travel and constituency allowances, ranked for ${latestFull}, plus minister expense claims, each line linked to the published report.`),
+    body: idxBody,
+    jsonld: [datasetLd({ name: "Newfoundland and Labrador MHA expenses and minister expense claims", description: "Every line charged to each Member of the House of Assembly's allowances, and every minister's expense claim, as published by the House of Assembly and Executive Council.", path: "/members/", license: LICENSE.provincial, period: `${years[0].slice(0, 4)}/..`, files: ["/data/members.json"], publishers: [{ name: "Member Accountability and Disclosure Reports, House of Assembly", url: "https://www.assembly.nl.ca/Members/Expenses/" }, { name: "Ministers' expense claims, Executive Council", url: "https://www.gov.nl.ca/exec/cabinet/expenseclaims/" }] })] }]);
 
   // Per MHA
   for (const m of mhas) {
@@ -71,7 +74,13 @@ export function members(D, R) {
   ${schedule({ compact: true, cols: [{ label: "Line" }, { label: "Amount", num: true }, { label: "Source", num: true }], rows: big.map((l) => ({ cells: [`${esc(l.supplier || "")}<span class="meta">${esc(l.description || "")} · ${esc(l.method)} · ${fmtDate(l.date)}</span>`, money(l.amount, { cents: true }), receipt(l.source_url, l.page, l.locator)] })) })}
   <p><a href="/search/?ds=mha&p=${phash}">Search all ${num(m.n)} lines ${icon("arrow")}</a></p></div>
 </div></section>`;
-    out.push([`/mha/${D.slug(m.person)}/`, { title: nameOrder(m.person), description: `Expense claims by ${nameOrder(m.person)}, MHA, as published by the House of Assembly.`, body, notes }]);
+    const nm = nameOrder(m.person);
+    const latestYr = yrs.includes(latestFull) ? latestFull : yrs[0];
+    const latestTotal = lines.filter((l) => l.fiscal_year === latestYr).reduce((s, l) => s + (l.amount || 0), 0);
+    out.push([`/mha/${D.slug(m.person)}/`, { title: `${nm} MHA expenses, ${latestYr}`,
+      description: desc(`${nm}, MHA${m.district ? ` for ${m.district}` : ""}, claimed ${money(latestTotal)} in allowances in ${latestYr}: ${num(m.n)} expense lines since ${m.y0}, each linked to the House of Assembly report.`),
+      body, notes,
+      jsonld: [personLd({ name: nm, path: `/mha/${D.slug(m.person)}/`, jobTitle: "Member of the House of Assembly", description: m.district ? `MHA for ${m.district}` : undefined })] }]);
   }
 
   // Per minister
@@ -107,7 +116,9 @@ export function members(D, R) {
       return { cells: [`${esc(c.description)}${x.routes ? `<span class="meta">${esc(x.routes)}</span>` : ""}<span class="meta">${esc(c.method)} · ${esc(c.buyer)}</span>`, fmtDate(c.date), money(c.amount, { cents: true }), receipt(c.source_url, c.page, c.locator)] };
     }) })}
 </div></section>`;
-    out.push([`/ministers/${D.slug(m.person)}/`, { title: m.person, description: `Ministerial expense claims by ${m.person}, as published by Executive Council.`, body }]);
+    out.push([`/ministers/${D.slug(m.person)}/`, { title: `${m.person} expense claims`,
+      description: desc(`${m.person}'s minister expense claims paid ${fmtDate(m.d0)} to ${fmtDate(m.d1)}: ${money(m.amount)} in ${num(m.n)} lines, by category, each linked to the Executive Council report.`),
+      body, jsonld: [personLd({ name: m.person, path: `/ministers/${D.slug(m.person)}/`, jobTitle: "Minister, Government of Newfoundland and Labrador" })] }]);
   }
   return out;
 }

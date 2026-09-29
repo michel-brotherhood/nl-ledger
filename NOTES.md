@@ -91,6 +91,14 @@ cf deploy --dry-run            # build and checks only
 - Supplier matching across sources is by normalised name only (no business numbers), so one company spelled two ways appears twice, and two different companies with the same name would merge.
 - Year-over-year department comparisons do not follow renamed departments.
 
+## Search engines
+
+- `build.mjs` writes `sitemap.xml` (every static page, `/receipt/`, and the suppliers with 3 or more records or $250,000 or more on record; record and search pages are left out), `robots.txt` (with the `Sitemap:` line and `Content-Signal: search=yes, ai-input=yes`) and `data/links.json` (which `/body/`, `/pay/` and `/department/` pages exist, so pages rendered on request never link to a missing one). Thresholds are in `site/lib/indexing.mjs`.
+- Indexing: `noindex,follow` on every search variant (any query, filter or page number), on record pages unless the record is a contract, grant or payment of $25,000 or more with a real description, and on supplier pages below the sitemap threshold. Pay, expense and municipal payment lines are never indexed on their own.
+- Structured data (JSON-LD, `site/src/seo.mjs`): `BreadcrumbList` on every page with a breadcrumb line, `WebSite` with `SearchAction` and `Organization` on the home page, `Dataset` on `/data/`, `/priorities/`, `/members/`, `/federal/` and `/pay/*` (licence is the publisher's, not the code's), `Person` on MHA and minister pages, `Organization` on public body pages. No `Organization` on supplier pages (a payee can be an individual).
+- `site/check.sh` runs `check-dist.mjs` on the built pages: internal links, JSON-LD parses, unique descriptions, sitemap and robots.
+- Not in the repository: Google Search Console and Bing Webmaster verification (a TXT record on the domain), submitting the sitemap, IndexNow.
+
 ## D1 write budget
 
 The NL Ledger account's first load on 2026-09-29 wrote 29,697 rows (D1's own count). The free limit is 100,000 a day per account and resets at midnight UTC. An unchanged re-run writes nothing.

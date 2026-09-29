@@ -94,9 +94,31 @@ const NAV = [
   ["/data/", "Ask AI"],
 ];
 
-export function layout({ title, description, path = "/", body, notes, bodyClass = "", head = "", scripts = "", updated }) {
+// ---- structured data (JSON-LD). Escaped so a record's text can never close the script tag.
+export const ldScript = (obj) => `<script type="application/ld+json">${JSON.stringify(obj).replace(/</g, "\\u003c").replace(/\u2028/g, "\\u2028").replace(/\u2029/g, "\\u2029")}</script>`;
+const plain = (h) => String(h).replace(/<[^>]*>/g, "").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'").trim();
+
+// A BreadcrumbList from the page's own breadcrumb line (<p class="crumbs">), so every page that shows crumbs also declares them.
+export function breadcrumbList(body, path) {
+  const m = String(body).match(/<p class="crumbs">(.*?)<\/p>/s);
+  if (!m) return null;
+  const parts = m[1].split(" / ").map((x) => {
+    const a = x.match(/^<a href="([^"]*)">(.*)<\/a>$/s);
+    return a ? { href: a[1], name: plain(a[2]) } : { href: null, name: plain(x) };
+  });
+  if (parts.length < 2) return null;
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: parts.map((c, i) => ({ "@type": "ListItem", position: i + 1, name: c.name, item: `${SITE.url}${c.href || path}` })),
+  };
+}
+
+export function layout({ title, description, path = "/", body, notes, bodyClass = "", head = "", scripts = "", updated, jsonld = [], robots = "" }) {
   const full = title ? `${title} · ${SITE.name}` : `${SITE.name}: ${SITE.tagline}`;
   const desc = description || "Every provincial award, federal contract and grant, MHA and minister expense, and public pay record in Newfoundland and Labrador, each linked to its source.";
+  const crumbs = breadcrumbList(body, path);
+  const ld = [...(crumbs ? [crumbs] : []), ...jsonld].map(ldScript).join("\n");
   const nav = NAV.map(
     ([href, label]) => `<a href="${href}"${path.startsWith(href) ? ' aria-current="page"' : ""}>${label}</a>`
   ).join("");
@@ -112,8 +134,16 @@ export function layout({ title, description, path = "/", body, notes, bodyClass 
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:type" content="website">
 <meta property="og:url" content="${SITE.url}${esc(path)}">
+<meta property="og:site_name" content="${SITE.name}">
+<meta property="og:locale" content="en_CA">
 <meta property="og:image" content="${SITE.url}/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${SITE.name}: ${esc(SITE.tagline)}">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${esc(full)}">
+<meta name="twitter:description" content="${esc(desc)}">
+<meta name="twitter:image" content="${SITE.url}/og.png">${robots ? `\n<meta name="robots" content="${esc(robots)}">` : ""}
 <meta name="theme-color" content="#1f3c96">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -124,11 +154,12 @@ export function layout({ title, description, path = "/", body, notes, bodyClass 
 <link rel="stylesheet" href="/site.css?v=${ASSET_VERSION}">
 <script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 ${head}
+${ld}
 </head>
 <body class="${bodyClass}">
 <a class="skip" href="#main">Skip to content</a>
 ${globalThis.process?.env?.NL_SAMPLE ? `<aside class="proto" aria-label="Sample data"><p><strong>Sample data.</strong> This local copy holds a small random sample of the records, so totals, rankings and search results are partial. Run the pipeline for the full data.</p></aside>` : ""}
-<aside class="proto" aria-label="About this prototype"><p><strong>Prototype.</strong> A thought experiment in what public records can show. Figures are gathered and combined by automated scripts and have not been independently vetted. <a href="/about/">What is this?</a></p></aside>
+<aside class="proto" aria-label="About this prototype" data-nosnippet><p><strong>Prototype.</strong> A thought experiment in what public records can show. Figures are gathered and combined by automated scripts and have not been independently vetted. <a href="/about/">What is this?</a></p></aside>
 <header class="mast">
   <div class="mast-in">
     <a class="brand" href="/">${WORDMARK}</a>

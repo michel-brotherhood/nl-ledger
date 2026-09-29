@@ -2,6 +2,7 @@
 // and the two towns. Plus the federal overview and the small-purchases page.
 import { esc, html, icon, Notes, leaders, bar, receipt, schedule } from "../../lib/html.mjs";
 import { money, moneyWords, num, pct, date as fmtDate } from "../../lib/format.mjs";
+import { desc, clip, datasetLd, orgPageLd, LICENSE } from "../seo.mjs";
 import { pagehead, itemRow, ITEM_COLS, caveat, datasetLabel } from "../common.mjs";
 
 const BUYER_SETS = ["ppa", "fed_contract", "fed_grant", "canadabuys", "paradise", "stjohns"];
@@ -60,7 +61,10 @@ ${pagehead({ crumbs: [["/", "Home"], ["/bodies/", "Public bodies"], [null, b.buy
   ${schedule({ cols: ITEM_COLS, rows: recent.map((a) => itemRow(D, a, { showBuyer: false })) })}
   <p style="margin-block-start:1.5rem"><a href="/search/?b=${D.keyHash(b.buyer_key)}">Search all ${num(b.n)} records for ${esc(b.buyer)} ${icon("arrow")}</a></p>
 </div></section>`;
-    out.push([`/body/${slug}/`, { title: b.buyer, description: `Contracts, grants and payments by ${b.buyer}, each linked to its source.`, body, notes }]);
+    const what = b.level === "federal" ? "federal contracts and grants in Newfoundland and Labrador" : b.level === "municipal" ? "payments" : "contract awards";
+    out.push([`/body/${slug}/`, { title: `${b.buyer}: contracts, grants and payments`,
+      description: desc(`${b.buyer}: ${num(b.n)} records, ${moneyWords(b.amount || 0)} in ${what}, with its biggest suppliers, how it bought and the source of each record.`),
+      body, notes, jsonld: [orgPageLd({ name: b.buyer, path: `/body/${slug}/`, description: `Public body in the records: ${num(b.n)} contracts, grants and payments.` })] }]);
   }
 
   // index
@@ -72,7 +76,7 @@ ${pagehead({ crumbs: [["/", "Home"], ["/bodies/", "Public bodies"], [null, b.buy
   const body = html`${pagehead({ crumbs: [["/", "Home"], [null, "Public bodies"]], title: "Public bodies", lede: "Every department, agency, health authority, town and federal department that appears in the records, with what it bought and from whom." })}
 ${groups.map(([title, rows]) => html`<section class="section"><div class="wrap"><h2 style="margin-block-end:1rem">${title}</h2>
 ${schedule({ compact: true, cols: [{ label: "Body" }, { label: "Records", num: true }, { label: "Value", num: true }], rows: rows.map((b) => ({ cells: [`<a href="/body/${D.slug(b.buyer)}/">${esc(b.buyer)}</a>`, num(b.n), moneyWords(b.amount || 0)] })) })}</div></section>`)}`;
-  out.push(["/bodies/", { title: "Public bodies", body }]);
+  out.push(["/bodies/", { title: "Government departments and agencies in the records", description: desc(`Every provincial department, agency, health authority, town and federal department in the spending records: ${num(list.length)} public bodies, each with its contracts, grants and biggest suppliers.`), body }]);
 
   out.push(federal(D, R));
   out.push(smallPurchases(D, R));
@@ -108,7 +112,10 @@ function federal(D, R) {
 <section class="section"><div class="wrap"><h2 style="margin-block-end:1rem">Major transfers, 2024-25</h2>
 ${leaders(mtp.map(([k, v]) => ({ label: esc(k), value: moneyWords(v) })))}
 <p class="small muted" style="margin-block-start:1rem">Public Accounts of Canada, Volume III. Figures are published in millions of dollars.</p></div></section>`;
-  return ["/federal/", { title: "Federal money", body, notes }];
+  return ["/federal/", { title: "Federal contracts and grants in Newfoundland and Labrador",
+    description: desc(`Federal contracts worth ${moneyWords(c.dedup_value)} and grants worth ${moneyWords(g.dedup_value)} went to Newfoundland and Labrador suppliers and recipients, counted once each, by department.`),
+    body, notes,
+    jsonld: [datasetLd({ name: "Federal contracts and grants in Newfoundland and Labrador", description: "Federal contracts over $10,000 to suppliers with a Newfoundland and Labrador postal code, and federal grant and contribution agreements to recipients in the province, each counted once after amendments.", path: "/federal/", license: LICENSE.federal, publishers: [{ name: "Proactive disclosure of contracts over $10,000", url: "https://open.canada.ca/data/en/dataset/d8f85d91-7dec-4fd1-8055-483b77225d8b" }, { name: "Proactive disclosure of grants and contributions", url: "https://open.canada.ca/data/en/dataset/432527ab-7aac-45b5-81d6-7597107a7013" }] })] }];
 }
 
 function smallPurchases(D, R) {
@@ -148,5 +155,6 @@ function smallPurchases(D, R) {
   ${schedule({ cols: ITEM_COLS, rows: sjTop.map((a) => itemRow(D, a, { showBuyer: false })) })}
   <p><a href="/search/?ds=stjohns">All sampled St. John's lines</a></p>
 </div></section>`;
-  return ["/small-purchases/", { title: "Small purchases", body, notes }];
+  return ["/small-purchases/", { title: "Small purchases: every Town of Paradise payment",
+    description: desc(`The Town of Paradise publishes every payment: ${num(p.n)} payments from ${fmtDate(p.d0)} to ${fmtDate(p.d1)}, ${pct(under1k / p.n)} of them under $1,000. The province publishes none.`), body, notes }];
 }
