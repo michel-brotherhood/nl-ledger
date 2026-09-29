@@ -23,6 +23,8 @@ import { llmsTxt } from "./src/llms.mjs";
 import { desc, siteLd } from "./src/seo.mjs";
 import { supplierIndexable, SUPPLIER_MIN_RECORDS, SUPPLIER_MIN_TOTAL } from "./lib/indexing.mjs";
 import { SITE } from "./lib/format.mjs";
+import { buildVocab } from "./lib/spell.mjs";
+import { words } from "./lib/search.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const DIST = join(HERE, "dist");
@@ -70,6 +72,11 @@ writeJSON("data/version.json", { v, data: createHash("sha1").update(readFileSync
 writeJSON("data/departments.json", departmentsJSON(D));
 writeJSON("data/flag_results.json", flagResultsJSON(D));
 writeJSON("data/members.json", membersJSON(D));
+// Every word the search documents contain, with how many hold it: spelling help in search (lib/spell.mjs).
+// From the same docs.jsonl the D1 sync loads, so a corrected word always has records behind it.
+const docsPath = join(dirname(D_PATH), "d1", "docs.jsonl");
+if (!existsSync(docsPath)) throw new Error(`${docsPath} is missing: run the pipeline's export step (or ./dev.sh for the sample)`);
+writeJSON("data/words.json", buildVocab(readFileSync(docsPath, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l).body), words));
 
 const h = home(D, R);
 write("/", { title: "NL government spending: every contract, expense and salary", description: desc(`Every Newfoundland and Labrador government contract, grant, expense claim and $100,000+ salary in one place. Each figure links to its source.`), body: h.body, notes: h.notes, bodyClass: "home", jsonld: siteLd() });

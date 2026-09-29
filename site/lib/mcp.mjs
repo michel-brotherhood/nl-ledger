@@ -1,7 +1,7 @@
 // Read-only MCP server (Model Context Protocol, streamable HTTP transport, JSON responses).
 // Served by the site's Worker at /mcp (routes/mcp.js).
 // `io` supplies: db (D1), json(path) -> fetches one of the site's /data files.
-import { search, getItem, sha10, DATASETS } from "./search.mjs";
+import { find, getItem, sha10, DATASETS } from "./search.mjs";
 import { SITE, money, moneyWords, workTime, perPerson, perHousehold, DATASET_LABEL } from "./format.mjs";
 
 const PROTOCOLS = ["2025-11-25", "2025-06-18", "2025-03-26", "2024-11-05"];
@@ -27,7 +27,7 @@ export const TOOLS = [
   {
     name: "search_records",
     title: "Search spending records",
-    description: `Search every line item: contract awards, federal contracts and grants, minister and MHA expense lines, and pay over $100,000. Every word must match; words match by prefix. Give a query, a filter, or both. Returns up to ${PAGE} records per page, largest amount first (use page for more), each with its source citation. Sources: ${SOURCE_HELP}.`,
+    description: `Search every line item: contract awards, federal contracts and grants, minister and MHA expense lines, and pay over $100,000. records holds exact matches: every word matches (by prefix), largest amount first, up to ${PAGE} per page (use page for more). A misspelled word is corrected when nothing matches exactly (see corrected). On page 1, related_by_meaning adds up to 20 records about the same thing that do not contain every word, closest first. Give a query, a filter, or both. Each record has its source citation. Sources: ${SOURCE_HELP}.`,
     inputSchema: {
       type: "object",
       properties: {
@@ -244,11 +244,15 @@ async function call(name, args, io) {
       if (!q && !args.source && !args.year && !args.pattern && !args.supplier_id) return problem("Give a query or at least one filter (source, year, pattern or supplier_id).");
       if (args.source && !SOURCE_IDS.includes(args.source)) return problem(`Unknown source "${args.source}".`, { sources: DATASET_LABEL });
       // One window of matching documents, flattened to line items and sorted once; pages slice that list.
-      const r = await search(io.db, { q, ds: args.source, y: args.year, f: args.pattern, s: args.supplier_id }, { limit: 40, order: "amount" });
-      const all = r.items.sort((a, b) => (b.a || 0) - (a.a || 0));
       const page = Math.min(20, Math.max(1, Math.floor(Number(args.page) || 1)));
+      const r = await find(io, { q, ds: args.source, y: args.year, f: args.pattern, s: args.supplier_id }, { limit: 40, order: "amount", meaning: page === 1 });
+      const all = r.items.sort((a, b) => (b.a || 0) - (a.a || 0));
       const items = all.slice((page - 1) * PAGE, page * PAGE).map(cite);
-      if (!all.length) return { records: [], note: "Nothing matched. Try fewer or shorter words, or drop a filter. Names match by the start of each word." };
+      const near = r.near?.length ? r.near.map((it) => ({ ...cite(it), closeness: it.near })) : undefined;
+      const corrected = r.corrected ? `No record contains "${q}"; these are for "${r.corrected.q}".` : undefined;
+      const suggest = r.suggest?.length ? r.suggest : undefined;
+      if (!all.length && !near) return { records: [], suggested_queries: suggest, note: "Nothing matched. Try fewer or shorter words, or drop a filter. Names match by the start of each word." };
+      if (!all.length) return { records: [], note: "No record contains every word. related_by_meaning lists records about the same thing; check each one against the question.", suggested_queries: suggest, caution: CAUTION, related_by_meaning: near };
       if (!items.length) return { records: [], note: `Page ${page} is past the end. There are ${all.length} records in ${Math.ceil(all.length / PAGE)} pages.` };
       const more = all.length > page * PAGE;
       return {
@@ -256,9 +260,11 @@ async function call(name, args, io) {
         page,
         pages: Math.ceil(all.length / PAGE),
         next_page: more ? page + 1 : undefined,
+        corrected,
         truncated: r.more ? "More records match than one search returns. These are the largest; add words or a filter (source, year) to see smaller ones." : undefined,
         caution: CAUTION,
         records: items,
+        related_by_meaning: near,
         search_page_url: `${SITE.url}/search/?${new URLSearchParams(Object.entries({ q, ds: args.source, y: args.year, f: args.pattern, s: args.supplier_id }).filter(([, v]) => v))}`,
       };
     }
@@ -286,11 +292,11 @@ async function call(name, args, io) {
       }
       if (!s) {
         if (!nm) return problem("No supplier with that id.");
-        // Offer close matches: suppliers whose records contain every word of the name.
-        const r = await search(io.db, { q: nm }, { limit: 20 });
+        // Offer close matches: suppliers whose records contain every word of the name (spelling corrected when none do).
+        const r = await find(io, { q: nm }, { limit: 20, meaning: false });
         const seen = new Map();
         for (const it of r.items) if (it.s && it.k && !seen.has(it.k)) seen.set(it.k, { supplier_id: it.k, name: it.s, source: DATASET_LABEL[it.ds] || it.ds });
-        const want = entityKey(nm).split(" ").filter(Boolean);
+        const want = entityKey(r.corrected ? r.corrected.q : nm).split(" ").filter(Boolean);
         const named = [...seen.values()].filter((m) => want.every((w) => entityKey(m.name).split(" ").some((x) => x.startsWith(w))));
         const matches = named.slice(0, 12);
         return problem(`No supplier is named exactly "${nm}".`, matches.length ? { close_matches: matches, next_step: "Call get_supplier with one of these supplier_id values." } : { next_step: "Try search_records with part of the name." });
@@ -384,9 +390,9 @@ async function call(name, args, io) {
     case "search": {
       const q = String(args.query || "").trim();
       if (!q) return { results: [] };
-      const r = await search(io.db, { q }, { limit: 20 });
+      const r = await find(io, { q }, { limit: 20 });
       return {
-        results: r.items.sort((a, b) => (b.a || 0) - (a.a || 0)).slice(0, PAGE).map((it) => ({
+        results: [...r.items.sort((a, b) => (b.a || 0) - (a.a || 0)).slice(0, PAGE), ...(r.near || [])].map((it) => ({
           id: it.i,
           title: [it.s || it.p, it.d, it.a != null ? money(it.a) : null, it.t || it.fy].filter(Boolean).join(" · "),
           url: `${SITE.url}/item/${it.i}/`,

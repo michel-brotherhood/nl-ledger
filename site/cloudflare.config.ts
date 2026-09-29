@@ -25,6 +25,12 @@ export default defineConfig({
     env: {
       ASSETS: bindings.assets(),
       DB: bindings.d1({ id: env("NL_LEDGER_D1_ID"), name: "nl-ledger" }),
+      // Search by meaning (lib/meaning.mjs, NOTES.md "Search"): Workers AI turns the query into a vector,
+      // Vectorize finds the closest search documents (filled by pipeline/vectorize_sync.py), and the rate
+      // limit caps how many queries per minute, per Cloudflare location, may reach either.
+      AI: bindings.ai({}),
+      MEANING: bindings.vectorize({ name: "nl-ledger-meaning" }),
+      MEANING_LIMIT: bindings.rateLimit({ namespace: "346", simple: { limit: 30, period: 60 } }),
     },
   },
 });

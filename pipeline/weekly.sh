@@ -3,7 +3,7 @@
 # Order matters: nothing reaches the site until every check has passed, and the D1 budget
 # is checked before deploying so the site and the search index never go out of step.
 #
-# Needs: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, NL_LEDGER_D1_ID and the NL_LEDGER_S3_*
+# Needs: CLOUDFLARE_API_TOKEN (permissions in NOTES.md, "Weekly job"), CLOUDFLARE_ACCOUNT_ID, NL_LEDGER_D1_ID and the NL_LEDGER_S3_*
 # settings (see archive.py). Prints "== <step>" before each step, "FAILED at <step>: ..." on
 # failure and one "SUMMARY: ..." line at the end; the host script sends those to Healthchecks.
 set -euo pipefail
@@ -47,6 +47,10 @@ uv run python guards.py check
 step "d1 budget"
 uv run python d1_sync.py --dry-run
 
+step "meaning index check"
+# Proves the token can run Workers AI and reach Vectorize before anything is deployed.
+uv run python vectorize_sync.py --dry-run
+
 step "site build"
 # Wrangler checks that site/dist exists before running its own build command, and a fresh
 # container has none, so build and run the guardrails here first; cf deploy rebuilds the same.
@@ -73,6 +77,10 @@ step "d1 sync"
 cd ../pipeline
 uv run python d1_sync.py | tee /tmp/d1.log
 
+step "meaning index"
+# Embeds only the documents that changed since the last run (data/state/vectorize-*.json).
+uv run python vectorize_sync.py | tee /tmp/vectorize.log
+
 step "archive verify"
 uv run python archive.py --verify 1
 
@@ -81,4 +89,4 @@ uv run python guards.py commit | tee /tmp/baseline.log
 items=$(grep -o '[0-9,]* items' /tmp/baseline.log | head -1)
 
 trap - ERR
-echo "SUMMARY: ${gathered:-data gathered unknown}; ${items}; $(grep -o '[0-9,]* rows written' /tmp/d1.log | tail -1 || echo 'D1 unchanged'); commit ${GIT_SHA:-unknown}"
+echo "SUMMARY: ${gathered:-data gathered unknown}; ${items}; $(grep -o '[0-9,]* rows written' /tmp/d1.log | tail -1 || echo 'D1 unchanged'); $(grep -o 'embedded [0-9,]*' /tmp/vectorize.log | tail -1 || echo 'embedded 0'); commit ${GIT_SHA:-unknown}"

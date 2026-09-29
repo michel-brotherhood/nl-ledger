@@ -46,6 +46,9 @@ export function searchPage({ params, result, flags, page }) {
   const base = "/search/?" + new URLSearchParams(Object.entries(p).filter(([, v]) => v)).toString();
   const active = ["s", "n", "b", "p", "i"].filter((k) => p[k]);
   const items = result?.items || [];
+  const near = result?.near || [];
+  const suggest = result?.suggest || [];
+  const corrected = result?.corrected;
   const sorted = [...items].sort((a, b) => (b.a || 0) - (a.a || 0));
   const total = sorted.reduce((s, it) => s + (it.a || 0), 0);
   const empty = !p.q && !Object.keys(p).some((k) => k !== "q" && p[k]);
@@ -68,11 +71,18 @@ export function searchPage({ params, result, flags, page }) {
 </div></header>
 <section class="section" style="padding-block-start:2rem"><div class="wrap">
   ${empty ? html`<p class="lede">Try one of these:</p><ul class="chips">${examples.map((e) => `<li><a href="/search/?q=${encodeURIComponent(e)}">${esc(e)}</a></li>`)}</ul>
-    <p class="muted">Search looks in supplier and recipient names, people's names as published, descriptions, programs and places. Words match the start of words: <em>snow</em> finds snowplow. All words must appear.</p>`
-    : items.length ? html`<p class="small muted" aria-live="polite">${num(items.length)} records on this page${result.more ? " (more on the next page)" : ""}, ${moneyWords(total)} together, largest first. Each links to its source.</p>
+    <p class="muted">Search looks in supplier and recipient names, people's names as published, descriptions, programs and places. Words match the start of words: <em>snow</em> finds snowplow. Records containing every word come first; records close in meaning follow them, and a misspelled name is corrected when nothing matches.</p>`
+    : html`${corrected ? html`<p class="small" role="status">No record contains <strong>${esc(p.q)}</strong>. Showing records for <strong>${esc(corrected.q)}</strong>.</p>` : ""}
+      ${items.length ? html`<p class="small muted" aria-live="polite">${num(items.length)} record${items.length === 1 ? "" : "s"} on this page${result.more ? " (more on the next page)" : ""}, ${moneyWords(total)} together, largest first. Each links to its source.</p>
       <ol class="results">${sorted.map((it) => resultItem(it, flags))}</ol>
       ${pager(base, page, result.more)}`
-    : html`<p class="empty">Nothing matched${p.q ? ` <strong>${esc(p.q)}</strong>` : ""}. Try fewer or shorter words, or remove a filter.</p>`}
+      : html`<p class="empty">${p.q ? html`No record contains every word of <strong>${esc(p.q)}</strong>.` : "Nothing matched."}${near.length ? "" : " Try fewer or shorter words, or remove a filter."}</p>`}
+      ${suggest.length ? html`<p class="small" style="margin-block-end:0.4rem">Searches that find records:</p><ul class="chips">${suggest.map((s) => `<li><a href="/search/?${esc(new URLSearchParams({ ...Object.fromEntries(Object.entries(p).filter(([, v]) => v)), q: s }).toString())}">${esc(s)}</a></li>`)}</ul>` : ""}
+      ${near.length ? html`<section aria-labelledby="near-h" class="near">
+        <h2 id="near-h">${items.length ? "Close in meaning" : "Closest in meaning"}</h2>
+        <p class="small muted">Records about the same thing that do not contain every word, closest first. Check each one against its source.</p>
+        <ol class="results">${near.map((it) => resultItem(it, flags))}</ol>
+      </section>` : ""}`}
 </div></section>`;
   return body;
 }

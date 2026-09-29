@@ -1,10 +1,11 @@
 // The MCP server, served from the site's own address.
 import { handleMcp } from "../lib/mcp.mjs";
+import { searchIO } from "./_shared.js";
 
 const cache = new Map();
 export async function onRequest(ctx) {
   const io = {
-    db: ctx.env.DB,
+    ...searchIO(ctx),
     json: async (p) => {
       if (cache.has(p)) return cache.get(p);
       const res = await ctx.env.ASSETS.fetch(new URL(p, ctx.request.url));
