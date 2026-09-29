@@ -44,6 +44,11 @@ def main():
         rng.shuffle(first)
         rng.shuffle(rest)
         keep.update((first[: n // 2] + rest)[:n])
+    # Every public body a pattern names keeps its largest record, so its page exists and no link from a pattern page is broken.
+    for (key,) in con.execute("SELECT DISTINCT subject_key FROM flags WHERE subject_type='buyer'").fetchall():
+        row = con.execute("SELECT id FROM items WHERE buyer_key=? AND dataset IN ('ppa','fed_contract','fed_grant','canadabuys','paradise','stjohns') ORDER BY amount DESC LIMIT 1", (key,)).fetchone()
+        if row:
+            keep.add(row[0])
     con.execute("CREATE TEMP TABLE keep(id TEXT PRIMARY KEY)")
     con.executemany("INSERT INTO keep VALUES (?)", [(i,) for i in keep])
     con.execute("DELETE FROM items WHERE id NOT IN (SELECT id FROM keep)")
