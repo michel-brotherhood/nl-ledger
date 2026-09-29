@@ -139,6 +139,63 @@ cf deploy --dry-run            # build and checks only
 - Supplier matching (`pipeline/suppliers.py`, method on `/method/suppliers/`) joins names only on evidence: the same name once spelling and legal suffixes are set aside, a bilingual pair, a shared business number or postal code on federal records, the same federal award in two files, a department printed after its body's name, or a reviewed decision in `pipeline/supplier_rules.csv`. Provincial records carry no business number, so a misspelling there stays a separate supplier until a reviewed decision joins it (`docs/supplier-near-matches.csv` lists the candidates). Two different companies with the same name still merge.
 - Year-over-year department comparisons do not follow renamed departments.
 
+## Search
+
+`/search` and the AI server's `search_records` and `search` tools share `find()` in `site/lib/search.mjs`.
+
+| Step | What it does |
+|---|---|
+| Exact | D1 full-text search: every word must appear, words match by their start. Listed first, largest first, exactly as before |
+| Spelling | When nothing matches, each word no record contains is replaced by the closest word records do contain (`lib/spell.mjs`, one or two letters off). The page says so: "No record contains Memorail hospital. Showing records for memorial hospital." |
+| Meaning | Page 1 only. Up to 20 records about the same thing that the exact search did not return, closest first, under "Close in meaning" (`lib/meaning.mjs`) |
+| Suggestions | Under 5 exact records: shorter searches that do match ("who fixes the roads in Gander" → "roads gander") |
+
+- Filters (source, year, pattern) apply to both lists. A supplier, public body, person or record filter switches meaning off.
+- The word list is `/data/words.json`, written by `build.mjs` from `data/build/d1/docs.jsonl` (22,745 words, 88 KB compressed).
+
+### How meaning works
+
+- One vector per D1 search document: a short text (source, public body, title, descriptions, programs, methods, supplier, place) embedded with Workers AI `@cf/baai/bge-m3` (1,024 dimensions, handles French names), in the Vectorize index `nl-ledger-meaning` (cosine; metadata indexes `ds`, `y0`, `y1` for the source and year filters).
+- Query: the search text is embedded, Vectorize returns the 50 closest documents, those scoring 0.42 or more are read from D1 by row id (the same `sha1(doc_id)` number `export.py` assigns, written into the SQL as digits because it passes JavaScript's safe integer range).
+- The cutoff (0.42) comes from the query set: unrelated searches ("Zorblatt Industries", "space shuttle launch") score below it.
+
+### Cost and safety
+
+| Guard | What |
+|---|---|
+| Edge cache | Search pages are cached an hour (as before); a cached page calls nothing |
+| Meaning cache | Each search text's closest documents are cached a day per Cloudflare location |
+| Rate limit | `MEANING_LIMIT`: 30 uncached meaning lookups a minute per Cloudflare location; beyond it, search is exact only. The zone rule (40 requests per 10 seconds per address on `/search`, `/mcp` and the record pages) still applies |
+| Fallback | No binding (local dev, CI), limit reached, a call over 2.5 seconds, or any error: exact search only, no error shown |
+
+- Workers AI: bge-m3 costs $0.012 per million tokens; a search is about 10 tokens, and the free 10,000 neurons a day cover about 9 million tokens. A full re-embed of 29,035 documents is about 1.9 million tokens.
+- Vectorize: (searches + stored vectors) × 1,024 dimensions at $0.01 per million, after 50 million free a month; storage is under $0.01 a month.
+- Monthly, on top of Workers Paid: about $0 at 10,000 meaning lookups, $0.80 at 100,000, $10 at a million. Worst case under the rate limit: about $0.45 a day for each Cloudflare location a bot keeps busy.
+- Measured from a Worker (99 searches): embedding 66 ms median (106 ms at the 95th percentile), Vectorize 84 ms (104 ms), D1 read by row id 14 ms (26 ms). The lookup runs alongside the exact search, so an uncached search takes about 150 ms longer.
+
+### Rebuilding the index
+
+- `pipeline/vectorize_sync.py` embeds only documents whose hash changed and deletes those gone. What the index holds is kept in `data/state/vectorize-nl-ledger-meaning.json`, written only after Cloudflare accepts each batch, so a failed run is repaired by the next. Without that file (a new machine, a lost volume) it embeds everything again: about 10 minutes, a few cents.
+- The weekly job runs `vectorize_sync.py --dry-run` before deploying (the token can run Workers AI and reach Vectorize) and `vectorize_sync.py` after the D1 sync.
+- By hand: `cd pipeline && uv run python vectorize_sync.py --cf-login` (the local `cf` login instead of a token). It creates the index and its metadata indexes when missing.
+- A new model or a change to the embedded text: sync into a new index name (`--index`, `--model`, `--dims`), then point `MEANING` in `site/cloudflare.config.ts` and `MEANING.model` in `lib/meaning.mjs` at it and deploy.
+
+### Checking it
+
+- `node site/check-search.mjs` (CI): spelling, the meaning list and every fallback, on the sample with stand-ins for Workers AI and Vectorize.
+- `node site/eval-search.mjs` (after a pipeline run, with the `cf` login): 30 searches a reporter, a councillor or a retiree might type, plus 3 that should find nothing (`site/search-queries.mjs`), scored on the first 10 records shown.
+- Local preview with meaning: `NL_LEDGER_MEANING=1 ./dev.sh` (through the Cloudflare API with the `cf` login).
+
+| Query set, first 10 records shown | Before (exact only) | After |
+|---|---|---|
+| Searches that find something relevant | 14 of 30 | 28 of 30 |
+| Share of records shown that are relevant | 0.92 (117 shown) | 0.86 (267 shown) |
+| Records shown for the 3 nonsense searches | 0 | 4 (Subway restaurant claims for "Toronto subway") |
+
+- Exact-name searches (Nalcor, Deloitte, Microsoft, KPMG, Muskrat Falls) return the same records as before.
+- Still missed: "cancer treatment" (nothing scores above the cutoff) and "consultants for the new hospital" (architects and consultants come back, none naming a hospital).
+- Models compared on the same set (2026-09-29): bge-m3 had something relevant among its 10 closest documents for 27 of 30, bge-small-en-v1.5 for 25; bge-small scored nonsense searches as high as real ones, so no cutoff separated them. qwen3-embedding-0.6b embedded 4 times slower, refused batches of 100 ("input too big") and was dropped after 14,000 documents.
+
 ## Search engines
 
 - `build.mjs` writes `sitemap.xml` (every static page, `/receipt/`, and the suppliers with 3 or more records or $250,000 or more on record; record and search pages are left out), `robots.txt` (with the `Sitemap:` line and `Content-Signal: search=yes, ai-input=yes`) and `data/links.json` (which `/body/`, `/pay/` and `/department/` pages exist, so pages rendered on request never link to a missing one). Thresholds are in `site/lib/indexing.mjs`.
