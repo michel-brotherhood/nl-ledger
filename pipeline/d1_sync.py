@@ -8,6 +8,7 @@ new or changed ones. An unchanged re-run writes nothing.
 Runs queries through the `cf` CLI, so no token is handled here. The account and database IDs
 come from CLOUDFLARE_ACCOUNT_ID and NL_LEDGER_D1_ID, in the environment or in site/.env
 (see site/.env.example). Usage: uv run python d1_sync.py [--dry-run] [--max-writes N]
+(--dry-run also exits non-zero when the sync would be refused, so the weekly job stops before deploying.)
 """
 import json
 import re
@@ -103,10 +104,10 @@ def main():
     new = [by_doc[doc]["rowid"] for doc, d in by_doc.items() if remote.get(doc) != d["h"]]
     writes = len(stale) + len(new)
     print(f"remote {len(remote):,} docs, local {len(local):,}; delete {len(stale):,}, insert {len(new):,} (about {writes:,} rows written)")
-    if dry:
-        return
     if writes > max_writes:
         sys.exit(f"Refusing: {writes:,} writes is over --max-writes {max_writes:,} (D1 free plan: 100,000 a day).")
+    if dry:
+        return
     import hashlib
     for i in range(0, len(stale), 500):
         # the same rowid export.py assigns, as an exact integer literal

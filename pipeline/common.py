@@ -17,6 +17,9 @@ CACHE = ROOT / "data" / "cache"
 CLEAN = ROOT / "data" / "clean"
 BUILD = ROOT / "data" / "build"
 MANIFEST = CACHE / "manifest.json"
+# Downloads that failed during this run (url, file, reason). The weekly job clears it before
+# fetching and fails on any failure the last good run did not already have (guards.py).
+FAILURES = CACHE / "_fetch_failures.json"
 
 UA = (
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/537.36 "
@@ -48,13 +51,37 @@ def sha256(path: Path) -> str:
     return h.hexdigest()
 
 
-def fetch(url: str, dest: Path, *, refresh: bool = False, manifest: dict | None = None) -> Path | None:
-    """Download url to dest unless already cached. Records url, sha256, fetched_at."""
+def record_failure(url: str, dest: Path, reason: str) -> None:
+    """Note a failed download for this run; guards.py decides whether it is new."""
+    failures = json.loads(FAILURES.read_text()) if FAILURES.exists() else []
+    failures.append({"url": url, "file": str(dest.relative_to(CACHE)), "reason": reason,
+                     "cached_copy": dest.exists() and dest.stat().st_size > 0})
+    FAILURES.write_text(json.dumps(failures, indent=1))
+
+
+def is_stale(rel: str, manifest: dict, max_age_days: float | None) -> bool:
+    """True when a cached file was fetched more than max_age_days ago (None: never stale)."""
+    if max_age_days is None:
+        return False
+    fetched = manifest.get(rel, {}).get("fetched_at")
+    if not fetched:
+        return True
+    age = datetime.now(timezone.utc) - datetime.fromisoformat(fetched)
+    return age.total_seconds() > max_age_days * 86400
+
+
+def fetch(url: str, dest: Path, *, refresh: bool = False, max_age_days: float | None = None,
+          manifest: dict | None = None) -> Path | None:
+    """Download url to dest unless already cached. Records url, sha256, fetched_at.
+
+    Files that the publisher replaces in place (the federal bulk files) pass max_age_days so a
+    weekly run fetches them again; published reports never change and are fetched once."""
     dest.parent.mkdir(parents=True, exist_ok=True)
     own = manifest is None
     if own:
         manifest = load_manifest()
     rel = str(dest.relative_to(CACHE))
+    refresh = refresh or is_stale(rel, manifest, max_age_days)
     if dest.exists() and dest.stat().st_size > 0 and not refresh:
         if rel not in manifest:
             manifest[rel] = {"url": url, "sha256": sha256(dest), "fetched_at": _mtime(dest)}
@@ -65,6 +92,7 @@ def fetch(url: str, dest: Path, *, refresh: bool = False, manifest: dict | None 
         try:
             r = _session.get(url, timeout=120, stream=True)
             if r.status_code == 404:
+                record_failure(url, dest, "404 not found")
                 return None
             r.raise_for_status()
             tmp = dest.with_suffix(dest.suffix + ".part")
@@ -76,6 +104,7 @@ def fetch(url: str, dest: Path, *, refresh: bool = False, manifest: dict | None 
             if dest.suffix.lower() not in (".html", ".htm") and (head.startswith(b"<!doctype") or head.startswith(b"<html")):
                 tmp.unlink()
                 print(f"  NOT FOUND (HTML page served for {url})")
+                record_failure(url, dest, "HTML page served instead of the file")
                 return None
             tmp.rename(dest)
             manifest[rel] = {
@@ -89,15 +118,24 @@ def fetch(url: str, dest: Path, *, refresh: bool = False, manifest: dict | None 
         except requests.RequestException as e:
             if attempt == 2:
                 print(f"  FAILED {url}: {e}")
+                record_failure(url, dest, str(e)[:200])
                 return None
             time.sleep(2 * (attempt + 1))
     return None
 
 
 def get_text(url: str) -> str:
-    r = _session.get(url, timeout=60)
-    r.raise_for_status()
-    return r.text
+    """A listing page. Retries twice; a page that still fails stops the run (its links are unknown)."""
+    for attempt in range(3):
+        try:
+            r = _session.get(url, timeout=60)
+            r.raise_for_status()
+            return r.text
+        except requests.RequestException:
+            if attempt == 2:
+                raise
+            time.sleep(5 * (attempt + 1))
+    raise AssertionError("unreachable")
 
 
 def _mtime(p: Path) -> str:
