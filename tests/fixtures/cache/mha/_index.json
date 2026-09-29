@@ -1,0 +1,22 @@
+[
+ {
+  "member": "Davis, Bernard",
+  "district": "Virginia Waters - Pleasantville",
+  "page": "https://www.assembly.nl.ca/Members/Expenses/DavisBernardExp.aspx",
+  "fy_start": 2022,
+  "kind": "summary",
+  "url": "https://www.assembly.nl.ca/Members/Expenses/Reports/Apr2022-Mar2023/DavisBernardSum2022-23.pdf",
+  "file": "mha/Apr2022-Mar2023/DavisBernardSum2022-23.pdf",
+  "exists": true
+ },
+ {
+  "member": "Davis, Bernard",
+  "district": "Virginia Waters - Pleasantville",
+  "page": "https://www.assembly.nl.ca/Members/Expenses/DavisBernardExp.aspx",
+  "fy_start": 2022,
+  "kind": "detail",
+  "url": "https://www.assembly.nl.ca/Members/Expenses/Reports/Apr2022-Mar2023/DavisBernardDet2022-23.pdf",
+  "file": "mha/Apr2022-Mar2023/DavisBernardDet2022-23.pdf",
+  "exists": true
+ }
+]
