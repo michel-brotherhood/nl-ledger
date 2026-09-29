@@ -9,8 +9,11 @@
 - a download failed that did not fail in the last good run (a source moved or is down);
   downloads that were already failing (reports listed but never published) are reported only;
 - a dataset lost items, or the cache lost files, against the last good run (a changed PDF
-  layout or listing page parses to fewer rows). Set NL_LEDGER_ALLOW_DROP=1 to accept a
-  reviewed drop for one run.
+  layout or listing page parses to fewer rows).
+
+After a person has looked at a failure and found it real and expected (a report withdrawn,
+a link the publisher broke for good), NL_LEDGER_ACCEPT_CHANGES=1 turns these into notes for
+one run, and that run's state becomes the new baseline.
 
 The baseline is data/state/last_good.json. With no baseline (the first run) the counts are
 recorded, not compared.
@@ -52,6 +55,7 @@ def check() -> None:
             problems.append(f"stale: newest download is {now['gathered'][:10]}, {age.days} days old; nothing was fetched this run")
 
     known = set(base["failures"]) if base else set()
+    accept = os.environ.get("NL_LEDGER_ACCEPT_CHANGES") == "1"
     for f in now["failure_detail"]:
         line = f"{f['reason']}: {f['url']}" + (" (older copy kept)" if f["cached_copy"] else "")
         if f["url"] in known:
@@ -59,16 +63,15 @@ def check() -> None:
         elif base is None and f["reason"].startswith(("404", "HTML")):
             notes.append("not published, " + line)  # first run: listed-but-missing reports become the baseline
         else:
-            problems.append("download failed, " + line)
+            (notes if accept else problems).append("download failed, " + line)
 
     if base:
-        allow = os.environ.get("NL_LEDGER_ALLOW_DROP") == "1"
         for ds, was in base["counts"].items():
             n = now["counts"].get(ds, 0)
             if n < was * (1 - ALLOWED_DROP):
-                (notes if allow else problems).append(f"{ds}: {n:,} items, down from {was:,} in the last good run")
+                (notes if accept else problems).append(f"{ds}: {n:,} items, down from {was:,} in the last good run")
         if now["files"] < base["files"]:
-            (notes if allow else problems).append(f"cache: {now['files']} files in manifest.json, down from {base['files']}")
+            (notes if accept else problems).append(f"cache: {now['files']} files in manifest.json, down from {base['files']}")
 
     for n in notes:
         print("note:", n)

@@ -66,7 +66,7 @@ Every Monday 09:00 UTC the maintainer's home server runs the whole pipeline in a
 | Baseline (`guards.py commit`) | this run becomes the one the next run is compared with |
 
 - The job needs `CLOUDFLARE_API_TOKEN` (an account token: Workers edit, D1 edit, account settings read; zone read and Workers routes edit on `nlledger.ca`), `CLOUDFLARE_ACCOUNT_ID`, `NL_LEDGER_D1_ID` and the `NL_LEDGER_S3_*` settings in `archive.py`.
-- A drop that has been checked and is real (a report withdrawn, a better de-duplication) is accepted for one run with `NL_LEDGER_ALLOW_DROP=1`.
+- A failure that has been checked and is real (a report withdrawn, a link the publisher broke for good, a better de-duplication) is accepted for one run with `NL_LEDGER_ACCEPT_CHANGES=1`; that run becomes the new baseline.
 - The last lines of a run are `SUMMARY: Data gathered <date>; <items> items; <rows> rows written` or `FAILED at <step>: ...`.
 - Run the same container locally: `docker build -t nl-ledger-pipeline . && docker run --rm --env-file site/.env -v "$PWD/data:/app/data" nl-ledger-pipeline` (it deploys).
 
