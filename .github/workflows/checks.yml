@@ -31,13 +31,18 @@ jobs:
   reconcile:
     name: Reconciliation on sample sources
     runs-on: ubuntu-latest
+    # The weekly job's base image (Dockerfile): the parsers read PDFs through its pdftotext, and
+    # Ubuntu's older pdftotext lays out the program spending report differently.
+    container: node:24-trixie-slim
     steps:
       - uses: actions/checkout@v4
-      - name: Install pdftotext
-        run: sudo apt-get update -q && sudo apt-get install -y -q poppler-utils
+      - name: Install Python and pdftotext
+        run: apt-get update -q && apt-get install -y -q --no-install-recommends python3 poppler-utils ca-certificates
       - uses: astral-sh/setup-uv@v6
       - name: Parse the sample sources and check them against their printed totals
         # tests/fixtures holds one real file per source that prints its own totals; see
         # pipeline/check_fixtures.py for what each check compares.
         working-directory: pipeline
+        env:
+          UV_PYTHON_DOWNLOADS: never
         run: uv sync --frozen --no-install-project && uv run --no-sync python check_fixtures.py
