@@ -10,6 +10,16 @@ export function bodyHref(D, name) {
   return `/body/${D.slug(name)}/`;
 }
 
+// The same query bodies.mjs uses, so a link is written exactly when that page is.
+// A link to a public body's page when the build writes one, plain text otherwise (a pattern can name a body
+// under a spelling that has no page of its own).
+let bodySlugs = null;
+export function bodyAnchor(D, name) {
+  bodySlugs ||= new Set(D.q(`SELECT buyer, buyer_key, level, count(*) n, sum(amount) amount, group_concat(DISTINCT dataset) ds
+      FROM items WHERE dataset IN ('ppa','fed_contract','fed_grant','canadabuys','paradise','stjohns') AND buyer IS NOT NULL GROUP BY buyer_key ORDER BY amount DESC`).map((r) => D.slug(r.buyer)));
+  return bodySlugs.has(D.slug(name)) ? `<a href="${bodyHref(D, name)}">${esc(name)}</a>` : esc(name);
+}
+
 // One line item as a schedule row: [who/what, date, amount, source]
 export function itemRow(D, it, { showBuyer = true, showSupplier = true, flags = true } = {}) {
   const fl = flags ? D.itemFlags.get(it.id) : null;

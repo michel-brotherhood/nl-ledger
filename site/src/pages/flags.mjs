@@ -2,7 +2,7 @@
 import { esc, html, icon, Notes, schedule, receipt, bar } from "../../lib/html.mjs";
 import { money, moneyWords, num, pct, date as fmtDate } from "../../lib/format.mjs";
 import { desc } from "../seo.mjs";
-import { pagehead, itemRow, ITEM_COLS, caveat, datasetLabel } from "../common.mjs";
+import { pagehead, itemRow, ITEM_COLS, caveat, datasetLabel, bodyAnchor } from "../common.mjs";
 
 // Words people search with. The pattern titles come from the pipeline; these keep the site's own wording alongside them.
 const SEARCHED = {
@@ -43,21 +43,21 @@ export function flagPages(D, R) {
       const fed = subjects.filter((s) => JSON.parse(s.detail).source === "fed_contract").map((s) => ({ ...s, x: JSON.parse(s.detail) })).sort((a, b) => b.x.exception_amount - a.x.exception_amount).slice(0, 15);
       results = html`<h2 style="margin-block-end:1rem">Provincial public bodies</h2>
       ${schedule({ cols: [{ label: "Public body" }, { label: "", w: "28%" }, { label: "Without competition", num: true }, { label: "Of all reported", num: true }, { label: "Share", num: true }],
-        rows: prov.slice(0, 40).map((s) => ({ cells: [`<a href="/body/${D.slug(s.subject)}/">${esc(s.subject)}</a><span class="meta">${num(s.x.exception_awards)} of ${num(s.x.awards)} awards</span>`, bar(s.value, 1), moneyWords(s.x.exception_amount), moneyWords(s.x.amount), pct(s.value)] })) })}
+        rows: prov.slice(0, 40).map((s) => ({ cells: [`${bodyAnchor(D, s.subject)}<span class="meta">${num(s.x.exception_awards)} of ${num(s.x.awards)} awards</span>`, bar(s.value, 1), moneyWords(s.x.exception_amount), moneyWords(s.x.amount), pct(s.value)] })) })}
       <h2 style="margin-block:2.5rem 1rem">Federal departments, contracts with NL suppliers</h2>
       ${schedule({ cols: [{ label: "Department" }, { label: "Non-competitive", num: true }, { label: "Of all", num: true }, { label: "Share", num: true }],
-        rows: fed.map((s) => ({ cells: [`<a href="/body/${D.slug(s.subject)}/">${esc(s.subject)}</a>`, moneyWords(s.x.exception_amount), moneyWords(s.x.amount), pct(s.value)] })) })}`;
+        rows: fed.map((s) => ({ cells: [`${bodyAnchor(D, s.subject)}`, moneyWords(s.x.exception_amount), moneyWords(s.x.amount), pct(s.value)] })) })}`;
     } else if (f.id === "repeat-sole-source") {
       const pairs = subjects.map((s) => ({ ...s, x: JSON.parse(s.detail) })).sort((a, b) => b.value - a.value);
       results = schedule({ cols: [{ label: "Public body and supplier" }, { label: "Awards", num: true }, { label: "Value", num: true }, { label: "Period" }],
-        rows: pairs.slice(0, 80).map((s) => ({ cells: [`<a href="/body/${D.slug(s.x.buyer)}/">${esc(s.x.buyer)}</a> → <a href="/supplier/${D.keyHash(s.x.supplier_key)}/">${esc(s.x.supplier)}</a>`, num(s.x.awards), moneyWords(s.value), `${fmtDate(s.x.first)} to ${fmtDate(s.x.last)}`] })) });
+        rows: pairs.slice(0, 80).map((s) => ({ cells: [`${bodyAnchor(D, s.x.buyer)} → <a href="/supplier/${D.keyHash(s.x.supplier_key)}/">${esc(s.x.supplier)}</a>`, num(s.x.awards), moneyWords(s.value), `${fmtDate(s.x.first)} to ${fmtDate(s.x.last)}`] })) });
     } else if (["year-end", "dominant-supplier"].includes(f.id)) {
       const rows = subjects.map((s) => ({ ...s, x: JSON.parse(s.detail) })).sort((a, b) => b.value - a.value);
       results = f.id === "year-end"
         ? schedule({ cols: [{ label: "Public body" }, { label: "Source" }, { label: "Last month's share", num: true }, { label: "Times an even share", num: true }],
-          rows: rows.map((s) => ({ cells: [`<a href="/body/${D.slug(s.subject)}/">${esc(s.subject)}</a>`, esc(datasetLabel(s.x.source)), `${moneyWords(s.x.last_month_amount)} of ${moneyWords(s.x.amount)}`, `${s.value.toFixed(1)}×`] })) })
+          rows: rows.map((s) => ({ cells: [`${bodyAnchor(D, s.subject)}`, esc(datasetLabel(s.x.source)), `${moneyWords(s.x.last_month_amount)} of ${moneyWords(s.x.amount)}`, `${s.value.toFixed(1)}×`] })) })
         : schedule({ cols: [{ label: "Public body" }, { label: "Supplier" }, { label: "Share", num: true }, { label: "Value", num: true }],
-          rows: rows.map((s) => ({ cells: [`<a href="/body/${D.slug(s.subject)}/">${esc(s.subject)}</a>`, `<a href="/supplier/${D.keyHash(s.x.supplier_key)}/">${esc(s.x.supplier)}</a>`, pct(s.value), `${moneyWords(s.x.supplier_amount)} of ${moneyWords(s.x.body_total)}`] })) });
+          rows: rows.map((s) => ({ cells: [`${bodyAnchor(D, s.subject)}`, `<a href="/supplier/${D.keyHash(s.x.supplier_key)}/">${esc(s.x.supplier)}</a>`, pct(s.value), `${moneyWords(s.x.supplier_amount)} of ${moneyWords(s.x.body_total)}`] })) });
     } else if (f.id === "overtime-over-base" || f.id === "severance") {
       const rows = subjects.map((s) => ({ ...s, x: JSON.parse(s.detail) })).sort((a, b) => b.value - a.value);
       results = html`<p>Counted by employer, job title and year. The government's lists name each person; this page does not repeat the names.</p>
