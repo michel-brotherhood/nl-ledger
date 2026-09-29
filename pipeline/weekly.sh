@@ -51,7 +51,7 @@ step "deploy"
 cd ../site
 npx cf deploy
 local_hash=$(sha256sum dist/index.html | cut -d' ' -f1)
-gathered=$(grep -o 'Data gathered [^<.]*' dist/index.html | head -1)
+gathered=$(grep -o 'Data gathered [^<]*' dist/index.html | head -1 | sed 's/\.$//')
 
 step "live check"
 # Static assets update within seconds of a deploy; allow two minutes before calling it failed.
