@@ -1,0 +1,106 @@
+{
+ "total": 9830.538468,
+ "top": [
+  [
+   "Health and Community Services",
+   {
+    "actual": 4463.739098,
+    "est": 4361.7123,
+    "page": 163
+   }
+  ],
+  [
+   "Consolidated Fund Services",
+   {
+    "actual": 1319.438664,
+    "est": 1418.8851,
+    "page": 21
+   }
+  ],
+  [
+   "Education",
+   {
+    "actual": 1271.45351,
+    "est": 1271.6952,
+    "page": 151
+   }
+  ],
+  [
+   "Transportation and Infrastructure",
+   {
+    "actual": 799.753117,
+    "est": 757.9019,
+    "page": 61
+   }
+  ],
+  [
+   "Children, Seniors and Social Development",
+   {
+    "actual": 464.667329,
+    "est": 435.7232,
+    "page": 143
+   }
+  ],
+  [
+   "Justice and Public Safety",
+   {
+    "actual": 384.56077,
+    "est": 366.2497,
+    "page": 169
+   }
+  ]
+ ],
+ "rest_n": 13,
+ "rest_sum": 1126.92598,
+ "pick": [
+  [
+   "Children, Seniors and Social Development",
+   {
+    "actual": 464.667329,
+    "est": 435.7232,
+    "page": 143
+   }
+  ],
+  [
+   "Transportation and Infrastructure",
+   {
+    "actual": 799.753117,
+    "est": 757.9019,
+    "page": 61
+   }
+  ],
+  [
+   "Health and Community Services",
+   {
+    "actual": 4463.739098,
+    "est": 4361.7123,
+    "page": 163
+   }
+  ],
+  [
+   "Consolidated Fund Services",
+   {
+    "actual": 1319.438664,
+    "est": 1418.8851,
+    "page": 21
+   }
+  ],
+  [
+   "Executive Council",
+   {
+    "actual": 251.911968,
+    "est": 290.8661,
+    "page": 36
+   }
+  ],
+  [
+   "Industry, Energy and Technology",
+   {
+    "actual": 131.617835,
+    "est": 172.0856,
+    "page": 122
+   }
+  ]
+ ],
+ "src": "Report on the Program Expenditures and Revenues of the Consolidated Revenue Fund, 2024-25"
+}

@@ -1,0 +1,31 @@
+name: Challenge a method
+description: Question how something is counted, flagged, grouped or worded.
+title: "Method: "
+labels: ["method"]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Page or method
+      description: The address of the page on nlledger.ca, or the name of the method or flag.
+    validations:
+      required: true
+  - type: textarea
+    id: concern
+    attributes:
+      label: What looks wrong or unclear
+      description: State what the site does and what you think it should do instead.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Links to source records, documentation or an example that shows the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: effect
+    attributes:
+      label: Effect on the figures
+      description: If known, which totals or counts would change and by roughly how much.

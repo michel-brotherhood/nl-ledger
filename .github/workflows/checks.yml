@@ -1,0 +1,29 @@
+name: Checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  guardrails:
+    name: Site guardrails and syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Python scripts parse
+        run: python3 -c "import ast, pathlib; [ast.parse(p.read_text(), str(p)) for p in pathlib.Path('pipeline').glob('*.py')]"
+      - name: JavaScript modules parse
+        run: |
+          find site \( -name '*.mjs' -o -name '*.js' \) -not -path '*/node_modules/*' -not -path '*/dist/*' -print0 | xargs -0 -n1 node --check
+      - name: Guardrails on site code
+        # The full build needs data/build/ledger.db, which only the pipeline creates, and CI does
+        # not download every source. So this scans the site code: lib/, routes/, worker.mjs and
+        # static/ (dist is absent).
+        run: ./site/check.sh

@@ -1,0 +1,27 @@
+name: Request unpublished data
+description: Ask for records that governments hold but do not publish.
+title: "Data request: "
+labels: ["data-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        NL Ledger can only show what is published. This form records gaps, for example small purchases that have no line-by-line list, so they can be documented and, where possible, pursued through an access-to-information request.
+  - type: textarea
+    id: records
+    attributes:
+      label: Records you would like to see
+      description: What the records would show, and which body holds them.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: What question they would answer
+    validations:
+      required: true
+  - type: textarea
+    id: known
+    attributes:
+      label: What is already known
+      description: Whether the body says the records exist, where you looked, and any earlier request or answer.

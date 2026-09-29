@@ -1,0 +1,65 @@
+name: Add a source
+description: Propose a public record that should be loaded into NL Ledger.
+title: "Add source: "
+labels: ["source"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Check [`docs/wishlist.md`](https://github.com/steveclarke/nl-ledger/blob/main/docs/wishlist.md) first. A link and a sentence is enough; no code is needed.
+  - type: input
+    id: name
+    attributes:
+      label: Name of the source
+      placeholder: "Town of Mount Pearl payment register"
+    validations:
+      required: true
+  - type: input
+    id: publisher
+    attributes:
+      label: Publisher
+      description: The body that publishes the records.
+    validations:
+      required: true
+  - type: input
+    id: link
+    attributes:
+      label: Link to where the records are published
+    validations:
+      required: true
+  - type: textarea
+    id: contents
+    attributes:
+      label: What the records contain
+      description: For example payee, description, amount, date. Note the years covered.
+    validations:
+      required: true
+  - type: dropdown
+    id: format
+    attributes:
+      label: Format
+      options:
+        - CSV or Excel
+        - PDF with selectable text
+        - Scanned PDF or images
+        - Web page
+        - Search form only
+        - Other or not sure
+    validations:
+      required: true
+  - type: textarea
+    id: totals
+    attributes:
+      label: Printed totals
+      description: Does the source print totals that the lines can be checked against? If not, say so.
+  - type: input
+    id: licence
+    attributes:
+      label: Licence or terms of use
+      description: A link to the terms, if the publisher states any.
+  - type: checkboxes
+    id: help
+    attributes:
+      label: Helping
+      options:
+        - label: I can help write or test the change.

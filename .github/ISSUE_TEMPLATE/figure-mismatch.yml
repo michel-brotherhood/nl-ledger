@@ -1,0 +1,37 @@
+name: Figure does not match its source
+description: A figure on NL Ledger differs from the record it links to.
+title: "Mismatch: "
+labels: ["correction"]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Address of the page on nlledger.ca
+    validations:
+      required: true
+  - type: input
+    id: shown
+    attributes:
+      label: Figure shown on the site
+      placeholder: "$48,250.00"
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Figure in the source
+      description: With the page number or row where you found it.
+      placeholder: "$48,520.00, page 3 of the PDF"
+    validations:
+      required: true
+  - type: input
+    id: sourcelink
+    attributes:
+      label: Link to the source
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else
+      description: For example a misread digit, a wrong date, or a source that changed after it was loaded.

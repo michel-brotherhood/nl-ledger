@@ -1,0 +1,22 @@
+# Dependencies and build output
+node_modules/
+site/dist/
+.cloudflare/
+.wrangler/
+__pycache__/
+*.pyc
+.venv/
+
+# Pipeline output (downloaded sources, parsed CSVs, local database)
+data/
+
+# Local deploy settings (see site/.env.example)
+.env
+.env.*
+!.env.example
+
+# Screenshots, browser and review tool output
+.playwright-mcp/
+.impeccable/
+*.log
+.DS_Store
