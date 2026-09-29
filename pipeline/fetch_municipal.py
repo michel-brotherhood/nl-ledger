@@ -21,6 +21,7 @@ def paradise(m: dict) -> None:
         # each register from its own payment dates, so the file name is just the URL slug
         slug = "-".join(u.split("/")[-2:])
         fetch(u, CACHE / "paradise" / slug, manifest=m)
+    (CACHE / "paradise").mkdir(parents=True, exist_ok=True)  # a fresh cache has no folder yet
     (CACHE / "paradise" / "_links.txt").write_text("\n".join(links))
     print(f"paradise: {len(links)} unique links")
 
@@ -33,6 +34,7 @@ def stjohns(m: dict) -> None:
             u = "https://www.stjohns.ca" + u
         if u not in links:
             links.append(u)
+    (CACHE / "stjohns").mkdir(parents=True, exist_ok=True)  # a fresh cache has no folder yet
     (CACHE / "stjohns" / "_links.txt").write_text("\n".join(links))
     vouchers = [u for u in links if re.search(r"voucher|payment", u, re.I)]
     print(f"st. john's: {len(links)} pdf links, {len(vouchers)} look like payment vouchers")

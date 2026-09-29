@@ -43,6 +43,7 @@ def ministers(m: dict) -> None:
             fetch(url, dest, manifest=m)
             out.append({"period_page": p, "period_title": title, "cells": cells, "url": url,
                         "file": str(dest.relative_to(CACHE))})
+    (CACHE / "ministers").mkdir(parents=True, exist_ok=True)  # a fresh cache has no folder yet
     (CACHE / "ministers" / "_index.json").write_text(json.dumps(out, indent=1))
     print(f"ministers: {len(out)} reports over {len(keep)} periods")
 
@@ -62,6 +63,7 @@ def sunshine(m: dict) -> None:
     links = list(dict.fromkeys(links))
     for u in links:
         fetch(u, CACHE / "sunshine" / u.rsplit("/", 1)[1], manifest=m)
+    (CACHE / "sunshine").mkdir(parents=True, exist_ok=True)  # a fresh cache has no folder yet
     (CACHE / "sunshine" / "_links.txt").write_text("\n".join(links))
     print(f"sunshine: {len(links)} files")
 
@@ -91,6 +93,7 @@ def mhas(m: dict) -> None:
             out.append({"member": htmllib.unescape(name), "district": htmllib.unescape(district.replace("\\'", "'")),
                         "page": MHA_BASE + page, "fy_start": int(fy), "kind": "detail" if "Det" in path else "summary",
                         "url": url, "file": str(dest.relative_to(CACHE)), "exists": dest.exists()})
+    (CACHE / "mha").mkdir(parents=True, exist_ok=True)  # a fresh cache has no folder yet
     (CACHE / "mha" / "_index.json").write_text(json.dumps(out, indent=1))
     print(f"mha: {len(members)} members, {sum(o['exists'] for o in out)} of {len(out)} reports cached")
 

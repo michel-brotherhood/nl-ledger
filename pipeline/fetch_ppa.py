@@ -27,6 +27,7 @@ def main() -> None:
         name = u.rsplit("/", 1)[1]
         fetch(u, CACHE / "ppa" / name, manifest=m)
     save_manifest(m)
+    (CACHE / "ppa").mkdir(parents=True, exist_ok=True)  # a fresh cache has no folder yet
     (CACHE / "ppa" / "_links.txt").write_text("\n".join(links))
 
 
