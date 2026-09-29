@@ -126,7 +126,7 @@ export function info(D, R) {
   <h2>Known errors in the sources</h2>
   <p>Errors found in the government's own files are not corrected here; the figure is shown as published and the error is listed on the <a href="/sources/#report-card">report card</a>.</p>
   <h2>Report an error</h2>
-  <p>Every figure links to its source. If a figure here does not match the source it links to, that is an error on this site and belongs in this log.</p>
+  <p>Every figure links to its source. If a figure here does not match the source it links to, that is an error on this site and belongs in this log. <a href="/help/#figure">Report it</a>.</p>
 </div></section>`,
   }]);
 
@@ -151,7 +151,47 @@ export function info(D, R) {
   </ul>
   <h2>Status</h2>
   <p>This is a prototype. The name, the scope and the sources will change, and parts of it may be wrong. Mistakes that are found are listed on the <a href="/corrections/">Corrections</a> page. Data was last gathered on ${fmtDate(D.gathered)}.</p>
+  <h2>Help build it</h2>
+  <p>Anyone can suggest a source, question a method, report a figure that does not match its source, or ask for records that are not published. Most of that needs no programming. <a href="/help/">Help build this ${icon("arrow")}</a></p>
 </div></section>`,
+  }]);
+
+  // ---- help build this
+  const REPO = "https://github.com/steveclarke/nl-ledger";
+  const WAYS = [
+    { id: "source", title: "Add a source", form: "add-source.yml", label: "Suggest a source",
+      text: "Know of public spending records this site does not have? A town that publishes its cheque register, a report of awards, a list of payments. Send the link and a sentence about what it holds." },
+    { id: "method", title: "Challenge a method", form: "challenge-method.yml", label: "Question a method",
+      text: "Think something is counted, flagged or worded the wrong way? Say what the site does, what you would do instead, and why. Every method is written down on the Methods page, so there is something concrete to argue with." },
+    { id: "figure", title: "Report a figure", form: "figure-mismatch.yml", label: "Report a figure",
+      text: "Found a figure that does not match the document it links to? Give the page on this site and the page in the source. Confirmed errors are fixed and logged on the Corrections page." },
+    { id: "request", title: "Request data", form: "request-data.yml", label: "Request data",
+      text: "Want records that are not published anywhere? Describe them and who holds them. A good request can become an access to information request, and the answer can be added here." },
+  ];
+  out.push(["/help/", {
+    title: "Help build this",
+    description: "Anyone can help make NL Ledger more accurate and more complete: add a source, challenge a method, report a figure or request data. No programming needed.",
+    body: html`${pagehead({ crumbs: [["/", "Home"], [null, "Help build this"]], title: "Help build this", lede: `${SITE.name} is built in the open, and anyone can help make it more accurate and more complete. Most help needs no programming: a link and a sentence is enough.` })}
+<section class="section"><div class="wrap">
+  <div class="section-head"><h2>Four ways in</h2><p>Each one opens a short form on GitHub, where the site's code and records are kept. A free GitHub account is needed to send it.</p></div>
+  <div class="ways">${WAYS.map((w) => html`<article class="way" id="${w.id}">
+    <div><h3>${esc(w.title)}</h3><p>${esc(w.text)}</p></div>
+    <p class="way-act"><a class="btn" href="${REPO}/issues/new?template=${w.form}">${esc(w.label)} ${icon("arrow")}</a></p>
+  </article>`)}</div>
+</div></section>
+<section class="section"><div class="wrap"><div class="prose">
+  <h2 style="margin-block-start:0">Sources waiting for someone</h2>
+  <p>Some sources are known but not yet loaded: MERX award results, more town payment registers, NL Health Services, Memorial University, the lobbyist registry, political contributions and others. Each has its own page on GitHub with what is known so far. <a href="${REPO}/labels/wishlist">See the list ${icon("arrow")}</a></p>
+  <h2>What makes a contribution useful</h2>
+  <ul>
+    <li>A link to the source for every figure.</li>
+    <li>Where the source prints a total, the parsed lines add up to it.</li>
+    <li>Plain, neutral wording. The site says what the records say and does not accuse anyone.</li>
+  </ul>
+  <p>Every suggestion is read and every change is reviewed before it goes on the site. A suggestion that needs more work stays open with a note on what would settle it.</p>
+  <h2>For programmers</h2>
+  <p>The code is open source under the MIT licence. It fetches each source, reads it, checks it against the source's own totals and builds this site. Setup takes a few commands and no accounts. Start with the <a href="${REPO}#readme">README</a> and the <a href="${REPO}/blob/main/CONTRIBUTING.md">contributing guide</a>, or pick up <a href="${REPO}/issues">an open issue</a>.</p>
+</div></div></section>`,
   }]);
 
   // ---- ask your AI (connect page)

@@ -149,7 +149,7 @@ ${notes ? notes.render() : ""}
     <p class="foot-lede">${SITE.name} is an independent prototype. It republishes public records from the Government of Newfoundland and Labrador, the Government of Canada, the House of Assembly, the Town of Paradise and the City of St. John's. Every figure links to the record it came from.</p>
     <p class="foot-flag">${icon("query")} A flag is a question, not a finding. It is not evidence that anything wrong happened.</p>
     <nav class="foot-nav" aria-label="About this site">
-      <a href="/about/">What is this?</a><a href="/sources/">Sources and report card</a><a href="/method/">Methods</a><a href="/corrections/">Corrections</a><a href="/data/">Ask your AI</a>
+      <a href="/about/">What is this?</a><a href="/sources/">Sources and report card</a><a href="/method/">Methods</a><a href="/corrections/">Corrections</a><a href="/data/">Ask your AI</a><a href="/help/">Help build this</a>
     </nav>
     ${updated ? `<p class="foot-meta">Data gathered ${esc(fmtDate(updated))}.</p>` : ""}
   </div>

@@ -2080,3 +2080,20 @@ article a,
 .ai-home .qa-fig figcaption { color: var(--on-blue-2); }
 /* receipt links inside the gold call-out use the call-out ink */
 .one .rcpt { color: var(--on-gold); }
+
+/* help page: the four ways in, as ruled rows with the action on the right */
+.ways {
+  border-block-start: 1.5px solid var(--ink);
+}
+.way {
+  display: grid;
+  gap: 0.75rem 2rem;
+  padding-block: 1.25rem;
+  border-block-end: 1px solid var(--hair);
+}
+.way h3 { margin: 0 0 0.35rem; }
+.way p { margin: 0; max-inline-size: var(--measure); }
+.way .way-act { align-self: center; }
+@media (min-width: 44rem) {
+  .way { grid-template-columns: minmax(0, 1fr) auto; }
+}
