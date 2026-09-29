@@ -129,9 +129,12 @@ CHANGE_REPORTING = {
     "phac-aspc": "Late amendments are noted \"Funding of $X actually awarded\", where X is the row's own value. Extensions add half "
                  "the original value (1718-HQ-000283: $1,672,840, then $836,420 when two years were added).",
 }
-PA_NAME = {"isc-sac": "Department of Indigenous Services",
-           "aandc-aadnc": "Department of Crown-Indigenous Relations and Northern Affairs",
-           "pch": "Department of Canadian Heritage", "phac-aspc": "Public Health Agency of Canada"}
+PA_NAME = {  # as Public Accounts prints them; a department renamed in a later file needs its new name here
+    "isc-sac": "Department of Indigenous Services",
+    "aandc-aadnc": "Department of Crown-Indigenous Relations and Northern Affairs",
+    "pch": "Department of Canadian Heritage",
+    "phac-aspc": "Public Health Agency of Canada",
+}
 # Running-total departments say so in their notes: ACOA "the previous value was $X" (X is the
 # prior row in 1,514 of 1,519 cases), Health Canada "The total agreement value previously
 # disclosed has been updated", NRC "The total amended value is -$X" (the row is the original
