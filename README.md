@@ -72,23 +72,31 @@ Sources not yet included are listed in [`docs/wishlist.md`](docs/wishlist.md). L
 
 ## Run it locally
 
-You need [uv](https://docs.astral.sh/uv/) with Python 3.12 or newer, Node 22.13 or newer, and, for the St. John's scans, `pdftoppm` (poppler) and `tesseract`. No accounts or keys are needed.
+**Quick start.** You need only [Node](https://nodejs.org) 22.13 or newer. No accounts, keys or downloads.
+
+```sh
+git clone https://github.com/steveclarke/nl-ledger.git
+cd nl-ledger
+./dev.sh
+```
+
+Open <http://localhost:8787>. `./dev.sh` loads a small random sample of the records (`sample/`, about 1.5 MB), builds the site, and serves every page, including search, supplier, record, receipt and the MCP server at `/mcp`, from a local copy of the search index. A banner on each page says it is sample data, so totals and rankings are partial. Use `./dev.sh 3000` for another port. It takes about a minute the first time.
+
+**Full data.** For everything, run the pipeline. You need [uv](https://docs.astral.sh/uv/) with Python 3.12 or newer, and, for the St. John's scans, `pdftoppm` (poppler) and `tesseract`.
 
 ```sh
 # 1. Fetch the sources, parse them, check totals, write data/build/ledger.db
 cd pipeline
 ./run.sh
 
-# 2. Build the site and run the guardrail checks
-cd ../site
-npm install
-node build.mjs
-./check.sh
+# 2. Run the site on that data (the same command; it uses data/build/ when it exists)
+cd ..
+./dev.sh
 ```
 
-The pipeline takes about six minutes on a laptop. Downloads are cached in `data/cache/`; delete a file there to fetch it again. The federal contracts file is several hundred megabytes.
+The pipeline takes about six minutes on a laptop. Downloads are cached in `data/cache/`; delete a file there to fetch it again. The federal contracts file is several hundred megabytes. To go back to the sample, delete `data/build/`.
 
-The build writes static pages to `site/dist/`; open them with any static file server (for example `npx serve site/dist`). Search, supplier, record and receipt pages run as Worker code against the D1 search index, so they need a Cloudflare setup; the rest of the site works without one. Deploying and syncing the index are maintainer steps, described in [`NOTES.md`](NOTES.md).
+To build and check the static pages without serving them: `cd site && node build.mjs && ./check.sh`. The sample is written by `pipeline/make_sample.py` (maintainers run it after a full pipeline run). Deploying and syncing the search index to Cloudflare are maintainer steps, described in [`NOTES.md`](NOTES.md).
 
 ## Project layout
 
@@ -96,6 +104,8 @@ The build writes static pages to `site/dist/`; open them with any static file se
 |---|---|
 | `pipeline/` | Python. Fetch, parse, build, flags, reconcile, export |
 | `pipeline/d1_sync.py` | Pushes changed search documents to the D1 index (maintainers only) |
+| `pipeline/make_sample.py`, `sample/` | The small sample data that `./dev.sh` loads on a fresh clone |
+| `dev.sh`, `site/dev.mjs` | Run the whole site locally, with no Cloudflare account |
 | `site/` | Static build (`build.mjs`, `src/pages/`), shared code (`lib/`), the Worker (`worker.mjs`) and its request-time routes (`routes/`), including the MCP server (`lib/mcp.mjs`) |
 | `docs/` | Sources, reconciliation, trace sample, review notes, wishlist |
 | `brand/` | Logo, icons, social images and the brand guide (`brand/index.html`) |

@@ -57,7 +57,7 @@ cf deploy --dry-run            # build and checks only
 
 - `build.mjs` takes about 5 seconds and writes `site/dist`. `check.sh` is the guardrail: backer name, author meta, accusation words.
 - `cf deploy` hands the build to Wrangler (`site/wrangler.config.ts`) and writes its output under `site/.cloudflare/` (not in git).
-- Local preview: `cf dev` (untested; it needs a local copy of the D1 data).
+- Local preview: `./dev.sh` from the repository root (no Cloudflare account). It serves `site/dist` and runs the Worker's route code against a local SQLite copy of the search index (`data/build/local-search.db`). With no `data/build/ledger.db` it loads the sample in `sample/`. After a full pipeline run, `cd pipeline && uv run python make_sample.py` refreshes the sample (seeded, same rows each time unless the data changes); commit `sample/`.
 
 ## How the free plan limits shaped it
 
@@ -84,6 +84,7 @@ cf deploy --dry-run            # build and checks only
 ## What is not verified
 
 - Provincial income tax inputs: the 2025 brackets match CRA's rates page, and the basic personal amount ($11,067) matches CRA form NL428 (2025), both read in a browser because canada.ca refuses plain `curl` requests.
+- CPP and EI credits on the receipt: form NL428 (2025) lines 27 and 29 take the base CPP and EI premium amounts at 8.7%; the enhanced CPP and CPP2 amounts are deductions from income. Rates and maximums are from CRA's CPP and EI pages (parameters in `pipeline/stats.py`); the method page shows a worked example at the median wage, checked by hand.
 - PPA award rows have no printed totals to reconcile against; row counts per report are the check.
 - Paradise registers print no totals; 71 wrapped lines in 2021-2025 registers did not parse, and registers before July 2020 use another layout and are not loaded.
 - St. John's is a 12-page OCR sample only; OCR can misread characters.
@@ -99,6 +100,7 @@ The NL Ledger account's first load on 2026-09-29 wrote 29,697 rows (D1's own cou
 - Page: `site/src/pages/connect.mjs`; the client list, one-click links, starter questions and the home example answer are data in `site/src/connect.mjs`. Every client there is marked tested, seen or docs-only, with its doc link. Keep that true when adding one.
 - Server: `site/lib/mcp.mjs`. `search_records` reads one window of 40 documents ordered by total, flattens to line items and pages them 25 at a time, so "largest" questions get the largest records. `get_members` reads `/data/members.json` (built by `site/src/mcpdata.mjs`). `search` and `fetch` follow OpenAI's deep-research shape. Four MCP prompts.
 - Discovery: `/server.json` (MCP registry format, schema 2025-12-11, validates), `/mcp/server-card` and `/.well-known/ai-catalog.json` (draft SEP-2127, served by the Worker), `/llms.txt`. Nothing submitted to any registry. The registry name `ca.nlledger/nl-ledger` needs HTTP proof at `/.well-known/mcp-registry-auth` when submitting.
+- Icons: `icons` on the `initialize` server info, in `server.json` and in the server card point at `/nl-ledger-icon-256.png` and `/app-icon.svg` (from `brand/svg/app-icon.svg`). ChatGPT only takes an icon when an app is created, so `/data/` offers the 256 px PNG as a download.
 - Tested 2026-09-29, before the move to nlledger.ca: Claude Code (`claude mcp add --transport http nl-ledger <address>/mcp`, then `claude -p`) and Codex CLI (`codex mcp add nl-ledger --url ...`, then `codex exec`) both connected and answered with source links. Gemini CLI added the server but was not signed in, so it did not answer.
 - Seen working in a browser, not documented: `https://claude.ai/customize/connectors?modal=add-custom-connector` opens the add dialog; `https://claude.ai/new?q=` and `https://chatgpt.com/?q=` open a new chat with the text typed in (not sent).
 - The "Try it here" panel calls `/mcp` once per press, never on load (D1 read budget).

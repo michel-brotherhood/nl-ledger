@@ -32,6 +32,8 @@ Two checks run on each pull request (`.github/workflows/checks.yml`):
 - **Guardrails.** `site/check.sh` scans the site code for the maintainer's name: the site presents the records, not the people who run it. Run after a local build, it also scans the built pages for that name, for an author meta tag and for accusation words such as "waste" or "corrupt" outside the quoted records. The first two fail the check; the third prints for a reviewer to judge. CI has no built pages, so it runs only the code scan.
 - **Syntax.** Every script in `pipeline/` and every module in `site/` must parse.
 
+To see your change on a running site, `./dev.sh` from a fresh clone needs only Node 22.13 or newer. It loads a small sample of the records, so no download or account is involved (see the [README](README.md#run-it-locally)).
+
 These checks cannot run the full pipeline. Doing so downloads every source, including federal files of several hundred megabytes, and takes minutes. That means CI does not check reconciliation or the built pages. Run them yourself before opening a pull request that touches data or the site:
 
 ```sh
@@ -49,7 +51,7 @@ A maintainer reviews every pull request, however small. The review looks at the 
 
 1. Fork the repository and create a branch.
 2. Make the change. For a new source, add its fetch and parse scripts in `pipeline/` and its entry in `docs/sources.md`.
-3. Run the local steps above.
+3. Run the local steps above. `./dev.sh` is the quickest way to look at the result.
 4. Open a pull request and fill in the template.
 
 If you would rather not do these steps, open an issue with what you found and where. That is enough.
