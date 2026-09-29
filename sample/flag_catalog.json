@@ -72,8 +72,7 @@
    ],
    "data": [
     "ppa",
-    "fed_contract",
-    "paradise"
+    "fed_contract"
    ],
    "limits": "A payment is not a purchase: one purchase can be paid in parts, and one payment can cover several purchases. Round budgets ($9,500, $49,000) land under limits for ordinary reasons."
   },
@@ -83,11 +82,9 @@
    "short": "Two or more invoices from one supplier for the same thing, each under a limit, together over it.",
    "why": "Splitting one purchase into several smaller ones to stay under a limit is the classic way around a tender rule.",
    "how": [
-    "Town of Paradise: invoices from the same vendor, paid on the same date, with the same description (ignoring numbers and punctuation), each under the town's $139,000 open-call threshold for goods and services and together over it.",
     "Federal contracts: two or more contracts from the same department to the same vendor within 7 days, with the same description, each under $25,000 and together $25,000 or more. Call-ups against a standing offer are left out, since a standing offer is meant to be drawn on many times, and so are vendors printed as a person's name."
    ],
    "data": [
-    "paradise",
     "fed_contract"
    ],
    "limits": "Monthly bills, separate jobs and separate sites are often paid on the same day. The register does not say whether invoices were for one piece of work."
@@ -98,14 +95,13 @@
    "short": "Awards and payments bunched in the last month of the fiscal year.",
    "why": "Unspent budgets lapse at year end. Research on United States federal contracts found spending in the last week of the year ran several times the weekly average, and year-end projects were rated lower quality.",
    "how": [
-    "Provincial and federal fiscal years end on 31 March; Paradise's year ends on 31 December.",
+    "Provincial and federal fiscal years end on 31 March.",
     "For each public body with at least 20 dated awards or payments, the last month's share of dollars is compared with an even share (one twelfth).",
     "Flagged when the last month holds at least three times an even share."
    ],
    "data": [
     "ppa",
-    "fed_contract",
-    "paradise"
+    "fed_contract"
    ],
    "limits": "Some work is seasonal. Award dates are as printed, and a few printed dates are plainly wrong (see the date check)."
   },
@@ -149,19 +145,6 @@
     "ppa"
    ],
    "limits": "Shown as published; the site does not correct dates."
-  },
-  {
-   "id": "possible-duplicate",
-   "title": "Possible duplicate payments",
-   "short": "The same invoice from the same vendor, for the same amount, paid more than once.",
-   "why": "Duplicate payments are the most common error auditors find in payment registers.",
-   "how": [
-    "Town of Paradise: vendor, invoice number and amount all match on two or more lines with different payment numbers."
-   ],
-   "data": [
-    "paradise"
-   ],
-   "limits": "Recurring charges sometimes reuse an invoice number, and a reversed and reissued payment looks the same. The register does not show refunds or reversals."
   },
   {
    "id": "over-allowance",

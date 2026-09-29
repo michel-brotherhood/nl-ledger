@@ -153,7 +153,7 @@ export function home(D, R) {
     <div>
       <div class="section-head">
         <h2 id="wh-h">Where it went</h2>
-        <p class="lede">${num(R.itemCount)} line items from provincial, federal and municipal records: contract awards (including sole-source), grants, MHA and minister expense claims, salaries over $100,000 (the sunshine list), every payment the Town of Paradise publishes and a sample from the City of St. John's.</p>
+        <p class="lede">${num(R.itemCount)} line items from provincial and federal records: contract awards (including sole-source), grants, MHA and minister expense claims and salaries over $100,000 (the sunshine list).</p>
       </div>
       <form class="field" action="/search/" method="get" role="search" style="max-inline-size:30rem">
         <label for="wq">Search every record</label>
@@ -162,7 +162,7 @@ export function home(D, R) {
       <ul class="chips" style="margin-block-start:1rem">${R.suggestions.map((s) => `<li><a href="/search/?q=${encodeURIComponent(s)}">${esc(s)}</a></li>`)}</ul>
       <h3 style="margin-block:2rem .8rem">By level of government</h3>
       ${leaders(levelTotals.map((l) => ({ label: `<span class="sw lv-${l.level}"></span>${esc(l.label)}`, value: moneyWords(l.amount) })))}
-      <p class="small muted" style="margin-block-start:.8rem">Federal: contracts with suppliers that have an NL postal code, and grant and contribution agreements, whose values can span several years (major transfers are on the <a href="/federal/">federal page</a>). Provincial: contract awards since 2021, minister and MHA claims, and four years of pay over $100,000. Municipal: Paradise payments and a sample from St. John's. The sources cover different years and kinds of money, so these are not one year's spending and should not be compared as if they were. <a href="/sources/">What each source covers</a>.</p>
+      <p class="small muted" style="margin-block-start:.8rem">Federal: contracts with suppliers that have an NL postal code, and grant and contribution agreements, whose values can span several years (major transfers are on the <a href="/federal/">federal page</a>). Provincial: contract awards since 2021, minister and MHA claims, and four years of pay over $100,000. The sources cover different years and kinds of money, so these are not one year's spending and should not be compared as if they were. <a href="/sources/">What each source covers</a>.</p>
     </div>
     <div>
       <h3 style="margin-block-end:.8rem">Largest recipients across all three levels</h3>

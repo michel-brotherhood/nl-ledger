@@ -2,9 +2,9 @@
 
 Three independent reviews ran on 2026-09-29 against the live site, each by a reviewer with no part in building it: a source trace, a hostile read of the figures and wording, and a design review. This file records what they found and what was done.
 
-## 1. Source trace (34 items)
+## 1. Source trace (30 items)
 
-- Scope: the 26 random items in `docs/trace-sample.md` plus 8 picked at random from live search results.
+- Scope: the 22 random items in `docs/trace-sample.md` plus 8 picked at random from live search results.
 - Every item was compared with its source row (cached copy, and the live file for 18 of them: byte-identical) and with its page on the site.
 - Result: all 34 amounts match to the cent; every date, payee and buyer matches. No link opened the wrong PDF page.
 
@@ -32,8 +32,7 @@ Source quirks inherited as published: a supplier typo ("ECTRICAL"), one federal 
 |---|---|---|---|
 | Federal grants double-counted: several departments give each amendment a new reference number | Grouped by department, agreement number and recipient; latest amendment kept where a department reports running totals, amendments summed where it reports changes (Indigenous Services, CIRNAC) | $10.70B | $8.67B |
 | Federal contracts double-counted: vendor spelled differently across amendments; Coast Guard purchase orders reported by both DFO and DND | Grouped by purchase order and cleaned vendor name across departments; two placeholder "Company XYZ" records dropped | $2.80B | $2.63B |
-| Supplier pages added payment records on top of the contracts and grants they pay | Headline counts contracts, grants, awards and town payments; Public Accounts payments and CanadaBuys notices shown apart as overlapping | Nunatsiavut $1.8B | $1.18B plus $640M overlapping, shown separately |
-| A St. John's page total loaded as an $19M payment with the payee blanked | Total lines skipped; blanking rule no longer hides companies whose names start with an initial | | |
+| Supplier pages added payment records on top of the contracts and grants they pay | Headline counts contracts, grants, awards and payments; Public Accounts payments and CanadaBuys notices shown apart as overlapping | Nunatsiavut $1.8B | $1.18B plus $640M overlapping, shown separately |
 | Severance and overtime showed total pay, not the severance or overtime | Now the severance and overtime amounts, as person-years | $53.9M / $46.1M | $10.3M / $23.5M |
 | Pay flags named individuals under the patterns heading; split-invoices named an individual contractor | Pay flags shown by employer and job title only; vendors printed as a person's name and standing-offer call-ups excluded from split-invoices; patterns intro rewritten | | |
 | Tender limits were not the law ($10K/$50K/$100K) and the clauses were attributed to the Act | Thresholds now from Public Procurement Regulations s.5 by type of body (read on assembly.nl.ca); clauses attributed to the Regulations s.6 | | |
@@ -55,7 +54,7 @@ One disagreement: the reviewer estimated grants at $6.0B to $7.9B and Nunatsiavu
 | "Doctors' fee-for-service billing" label | Fixed: "Professional services in the Physician Services program" |
 | Unsourced interest explanation | Rewritten and cited |
 | CanadaBuys old-style ids 404 | Those link to the dataset instead |
-| Loaded wording (late publication motive, "2006 scandal", "every payment two towns publish", "payments" count) | Rewritten |
+| Loaded wording (late publication motive, "2006 scandal", "payments" count) | Rewritten |
 | Receipt input "-5" and "1e308" | Fixed: invalid input rejected with a message |
 
 ### Not fixed

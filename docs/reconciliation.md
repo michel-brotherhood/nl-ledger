@@ -10,12 +10,10 @@ Generated 2026-09-29 by `pipeline/reconcile.py` from `data/build/ledger.db`.
 | mha | 58,521 | $7,057,632.94 |
 | sunshine | 34,493 | $4,406,623,501.22 |
 | fed_grant | 29,294 | $8,509,445,623.16 |
-| paradise | 17,916 | $119,578,978.41 |
 | fed_contract | 8,533 | $2,614,227,060.51 |
 | ppa | 6,327 | $1,358,312,018.08 |
 | minister | 2,585 | $3,424,682.22 |
 | pa_tp | 2,484 | $11,889,648,933.00 |
-| stjohns | 640 | $19,311,414.77 |
 | canadabuys | 538 | $855,968,652.83 |
 | pa_pss | 358 | $690,028,445.00 |
 
@@ -110,10 +108,3 @@ Major federal transfers to NL, 2024-25 (Public Accounts, $ millions as published
 - 2023-24 actual: gross expenditure $9,571,838,311.00
 - 2024-25 actual: gross expenditure $10,628,156,038.00
 - 2026-27 estimates: gross expenditure $12,903,424,100.00
-
-## Municipal payments
-
-- Paradise: 56 register files downloaded; 48 distinct monthly registers used; 17,916 payment lines, $119,578,978.41.
-- Lines that look like payments but did not parse: 71 (mostly wrapped descriptions). Registers from early 2020 use a different layout and are not loaded.
-- The registers print no totals, so there is nothing to reconcile the sum against.
-- St. John's: the first 12 pages of the 2026 weekly-voucher PDF were read with OCR as a sample. Cover memos (payroll and weekly totals) are excluded. OCR text can misread characters; each row links to its page.

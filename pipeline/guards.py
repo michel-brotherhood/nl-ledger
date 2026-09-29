@@ -24,7 +24,7 @@ import sqlite3
 import sys
 from datetime import datetime, timezone
 
-from common import BUILD, CACHE, FAILURES, ROOT, load_manifest
+from common import BUILD, CACHE, DISABLED, FAILURES, ROOT, load_manifest
 
 STATE = ROOT / "data" / "state"
 BASELINE = STATE / "last_good.json"
@@ -67,6 +67,8 @@ def check() -> None:
 
     if base:
         for ds, was in base["counts"].items():
+            if ds in DISABLED:  # switched off on purpose (common.DISABLED)
+                continue
             n = now["counts"].get(ds, 0)
             if n < was * (1 - ALLOWED_DROP):
                 (notes if accept else problems).append(f"{ds}: {n:,} items, down from {was:,} in the last good run")

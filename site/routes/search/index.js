@@ -18,6 +18,6 @@ export async function onRequestGet(ctx) {
     const title = params.q ? `Search: ${params.q}` : "Search";
     // Only the bare search page is indexed; every query, filter and page number (including a search with no results) is not.
     const bare = !Object.keys(params).some((k) => params[k] !== "");
-    return page(ctx, a, { title, description: "Search every provincial award, federal contract and grant, expense claim, pay record and municipal payment.", body: searchPage({ params, result, flags: a.flags, page: pageNo }), path: "/search/", robots: bare ? "" : "noindex,follow" });
+    return page(ctx, a, { title, description: "Search every provincial award, federal contract and grant, expense claim and pay record.", body: searchPage({ params, result, flags: a.flags, page: pageNo }), path: "/search/", robots: bare ? "" : "noindex,follow" });
   });
 }

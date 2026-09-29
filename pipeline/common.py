@@ -21,6 +21,9 @@ CACHE = DATA / "cache"
 CLEAN = DATA / "clean"
 BUILD = DATA / "build"
 MANIFEST = CACHE / "manifest.json"
+# Sources switched off: the pipeline does not fetch, parse, count or publish them. The parsers
+# stay in the repository; to switch one back on, remove it from this set (NOTES.md, "Switching a source on or off").
+DISABLED = {"paradise", "stjohns"}
 # Downloads that failed during this run (url, file, reason). The weekly job clears it before
 # fetching and fails on any failure the last good run did not already have (guards.py).
 FAILURES = CACHE / "_fetch_failures.json"

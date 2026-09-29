@@ -179,7 +179,7 @@ export function supplierPage(s, { flags, stats, hash, links }) {
 <header class="pagehead"><div class="wrap">
   <p class="crumbs"><a href="/">Home</a> / <a href="/search/">Search</a> / Supplier</p>
   <h1>${esc(s.name)}</h1>
-  <p class="lede">${num(s.n)} records across provincial, federal and municipal sources: ${moneyWords(s.total)} in contract awards, grant agreements and payments${s.overlap ? `, plus ${moneyWords(s.overlap)} in federal payment and notice records that repeat money already counted` : ""}${s.city ? `. Listed in ${esc(s.city)}` : ""}.${s.names ? ` Also printed as: ${s.names.filter((n) => n !== s.name).map(esc).join("; ")}.` : ""}</p>
+  <p class="lede">${num(s.n)} records across provincial and federal sources: ${moneyWords(s.total)} in contract awards, grant agreements and payments${s.overlap ? `, plus ${moneyWords(s.overlap)} in federal payment and notice records that repeat money already counted` : ""}${s.city ? `. Listed in ${esc(s.city)}` : ""}.${s.names ? ` Also printed as: ${s.names.filter((n) => n !== s.name).map(esc).join("; ")}.` : ""}</p>
   ${s.combined ? combinedNames(s, hash) : ""}
 </div></header>
 <section class="section"><div class="wrap">

@@ -16,28 +16,28 @@ Generated 2026-09-29 by `pipeline/suppliers.py`. A supplier page groups every re
 
 ## Counts
 
-- Name keys (names after the same-name step): 14,299.
-- Suppliers after joining: 13,604.
-- Name keys folded into another: 695 (341 business number, 196 same name, 68 bilingual, 40 unit, 28 postal code, 19 reviewed, 3 same award).
-- Names printed more than one way (same name once spelling is set aside): 3,090, listed in `docs/supplier-merges.csv` with their other printings.
-- Close names left apart: 2,724 (`docs/supplier-near-matches.csv`).
+- Name keys (names after the same-name step): 12,661.
+- Suppliers after joining: 11,980.
+- Name keys folded into another: 681 (341 business number, 190 same name, 68 bilingual, 32 unit, 28 postal code, 19 reviewed, 3 same award).
+- Names printed more than one way (same name once spelling is set aside): 3,007, listed in `docs/supplier-merges.csv` with their other printings.
+- Close names left apart: 2,701 (`docs/supplier-near-matches.csv`).
 - Joins stopped by a reviewed "apart" decision: 0.
 
 ## Largest merges by value
 
 | Supplier | Names joined | Records | Value | Evidence |
 |---|---|---:|---:|---|
-| Government of Newfoundland and Labrador | Province of Newfoundland and Labrador; Government of Newfoundland and Labrador - Department of Health and Community Services; GOVERNMENT OF NEWFOUNDLAND AND LABRADOR NEWFOUNDLAND EXCHEQUER ACCOUNT; NEWFOUNDLAND EXCHEQUER ACCOUNT; and 11 more | 377 | $1,574,416,940 | bilingual, reviewed, same name, unit |
+| Government of Newfoundland and Labrador | Province of Newfoundland and Labrador; Government of Newfoundland and Labrador - Department of Health and Community Services; GOVERNMENT OF NEWFOUNDLAND AND LABRADOR NEWFOUNDLAND EXCHEQUER ACCOUNT; Newfoundland Exchequer Account; and 11 more | 297 | $1,573,979,281 | bilingual, reviewed, same name, unit |
 | Nunatsiavut Government | Nunatsiavut Government, Department of Health & Social Development; Nunatsiavut Government - Department of Health and Social Development (DHSD); NUNATISIAVUT GOVERNMENT; gouvernement nunatsiavut; and 2 more | 249 | $1,234,153,321 | bilingual, postal code, unit |
-| Memorial University of Newfoundland | Memorial University; Grenfell Campus, Memorial University of Newfoundland; Memorial University of Newfoundland and Labrador; Fisheries & Marine Institute of Memorial University of Nfld.; and 16 more | 869 | $383,775,828 | bilingual, business number, same name, unit |
+| Memorial University of Newfoundland | Memorial University; Grenfell Campus, Memorial University of Newfoundland; Memorial University of Newfoundland and Labrador; Fisheries & Marine Institute of Memorial University of Nfld.; and 16 more | 868 | $383,772,119 | bilingual, business number, same name, unit |
 | Mushuau Innu First Nation | Mushuau Innu First Nation Innu Band Council | 84 | $294,478,295 | business number |
 | St. John's Dockyard | NEWDOCK - ST. JOHN'S DOCKYARD LTD | 67 | $252,102,485 | reviewed |
 | Sheshatshiu Innu First Nation | Sheshatshiu Innu Band Council; premiere nation innue sheshatshiu | 115 | $224,746,961 | bilingual, reviewed |
 | Qalipu Mi'kmaq First Nation Band | Qalipu Mi'kmaq First Nation; Qalipu First Nation Band; Qalipu First Nation; Qalipu Mi'kmaq First Nations Band; and 2 more | 154 | $191,451,770 | bilingual, business number, reviewed, same name |
 | Association for New Canadians | association pour les nouveaux canadiens | 162 | $152,996,334 | bilingual |
 | Microsoft Canada Inc. | Microsoft; Microsoft Cooperation | 40 | $140,426,797 | reviewed |
-| CITY OF ST. JOHN'S | City of St. John's Municipal Council; CITY OF ST. JOHNS'S; ville de st johns; ville de st jean de tn | 273 | $124,927,657 | bilingual, business number, reviewed |
 | RJG CONSTRUCTION LTD | R.J.G. Construction Limited | 58 | $117,242,308 | same name |
+| City of St. John's | City of St. John's Municipal Council; CITY OF ST. JOHNS'S; ville de st johns; ville de st jean de tn | 116 | $97,651,653 | bilingual, business number, reviewed |
 | Braya Renewable Fuels (Newfoundland) LP | BRAYA RENEWABLES FUELS (NEWFOUNDLAND) LP | 4 | $86,863,420 | postal code |
 | NUNATUKAVUT COMMUNITY COUNCIL INC. | NunatuKavut | 235 | $78,183,837 | business number |
 | Newfoundland and Labrador | terre neuve et labrador | 15 | $65,666,091 | bilingual |
@@ -50,7 +50,7 @@ Generated 2026-09-29 by `pipeline/suppliers.py`. A supplier page groups every re
 | St. John's International Airport Authority | autorite aeroportuaire de st johns international | 17 | $34,695,751 | bilingual |
 | Miawpukek First Nation | Miawpukek Mi'kamawey Mawi'omi; Miawpukek First Nations; MIAWPUKEK FIRST NATION - ST. ANNE'S SCHOOL | 179 | $32,366,012 | postal code, reviewed, unit |
 | J.M.J. HOLDINGS LTD. | JMJ Holdings Ltd | 3 | $29,136,157 | same name |
-| FIRST LIGHT ST. JOHN'S FRIENDSHIP CENTRE INC. | St. John's Native Friendship Centre; FIRST LIGHT ST JOHN S FRIENDSHIP CENTRE INC; First Light St. John's Friendship Center | 109 | $28,422,027 | business number, reviewed, same name |
+| FIRST LIGHT ST. JOHN'S FRIENDSHIP CENTRE INC. | St. John's Native Friendship Centre; FIRST LIGHT ST JOHN S FRIENDSHIP CENTRE INC; First Light St. John's Friendship Center | 106 | $28,420,272 | business number, reviewed, same name |
 | FLOYD'S CONSTRUCTION LTD | FLOYD'S CONSTRUCTON LTD | 41 | $24,957,747 | same award |
 
 ## Close names left apart (largest 30)
@@ -60,19 +60,19 @@ Generated 2026-09-29 by `pipeline/suppliers.py`. A supplier page groups every re
 | NEWFOUNDLAND AND LABRADOR DEPARTMENT OF JUSTICE AND PUBLIC SAFETY ($46,374,110) | Province of Newfoundland and Labrador, Department of Justice and Public Safety ($27,253,603) | one name inside the other (often a parent and its subsidiary or branch) |
 | GE Healthcare ($10,009,005) | GE Healthcare Canada ($31,793,963) | one name inside the other (often a parent and its subsidiary or branch) |
 | Newfoundland and Labrador Association of Technology and Innovation Inc. ($84,136,752) | Newfoundland and Labrador Association of Technology Industries Incorporated ($9,977,876) | same business number, different names (a parent body's number, or an owner's) |
-| Department of Industry, Energy and Technology ($9,194,653) | Government of Newfoundland and Labrador ($1,922,715,201) | same business number, different names (a parent body's number, or an owner's) |
+| Department of Industry, Energy and Technology ($9,194,653) | Government of Newfoundland and Labrador ($1,922,657,096) | same business number, different names (a parent body's number, or an owner's) |
 | Department of Industry, Energy and Technology ($9,194,653) | Province of Newfoundland and Labrador ($5,643,235,971) | same business number, different names (a parent body's number, or an owner's) |
 | Department of Industry, Energy and Technology ($9,194,653) | Department of Tourism Culture Arts and Recreation ($7,008,090) | same business number, different names (a parent body's number, or an owner's) |
-| Department of Tourism Culture Arts and Recreation ($7,008,090) | Government of Newfoundland and Labrador ($1,922,715,201) | same business number, different names (a parent body's number, or an owner's) |
+| Department of Tourism Culture Arts and Recreation ($7,008,090) | Government of Newfoundland and Labrador ($1,922,657,096) | same business number, different names (a parent body's number, or an owner's) |
 | Department of Tourism Culture Arts and Recreation ($7,008,090) | Province of Newfoundland and Labrador ($5,643,235,971) | same business number, different names (a parent body's number, or an owner's) |
 | Horizon économique de Terre-Neuve-et-Labrador Inc. ($7,498,237) | Reseau de Developpement Economique et d'Employabilite de Terre-Neuve-et-Labrador ($6,730,044) | same business number, different names (a parent body's number, or an owner's) |
 | Department of Energy and Mines ($6,500,000) | Department of Industry, Energy and Technology ($9,194,653) | same business number, different names (a parent body's number, or an owner's) |
 | Department of Energy and Mines ($6,500,000) | Department of Tourism Culture Arts and Recreation ($7,008,090) | same business number, different names (a parent body's number, or an owner's) |
-| Department of Energy and Mines ($6,500,000) | Government of Newfoundland and Labrador ($1,922,715,201) | same business number, different names (a parent body's number, or an owner's) |
+| Department of Energy and Mines ($6,500,000) | Government of Newfoundland and Labrador ($1,922,657,096) | same business number, different names (a parent body's number, or an owner's) |
 | Department of Energy and Mines ($6,500,000) | Province of Newfoundland and Labrador ($5,643,235,971) | same business number, different names (a parent body's number, or an owner's) |
 | Fisheries & Marine Institute of Memorial University of Nfld. ($14,594,248) | MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES ($5,444,430) | same business number, different names (a parent body's number, or an owner's) |
 | Memorial University ($8,142,667) | MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES ($5,444,430) | same business number, different names (a parent body's number, or an owner's) |
-| Memorial University of Newfoundland ($540,169,119) | MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES ($5,444,430) | same business number, different names (a parent body's number, or an owner's) |
+| Memorial University of Newfoundland ($540,165,410) | MEMORIAL UNIVERSITY OF NEWFOUNDLAND FINANCIAL AND ADMINISTRATIVE SERVICES ($5,444,430) | same business number, different names (a parent body's number, or an owner's) |
 | Fisheries & Marine Institute of Memorial University of Nfld. ($14,594,248) | Fisheries and Marine Institute of the Memorial University of Newfoundland and Labrador ($5,188,643) | one name inside the other (often a parent and its subsidiary or branch) |
 | Fédération des francophones de Terre-Neuve et du Labrador ($8,260,814) | FÉDÉRATION DES FRANCOPHONES DE TERRE-NEUVE ET DU LABRADOR (LA) ($3,881,154) | one name inside the other (often a parent and its subsidiary or branch) |
 | D F BARNES LIMITED ($3,760,422) | D.F. Barnes Services Limited ($10,204,267) | one name inside the other (often a parent and its subsidiary or branch) |
@@ -80,7 +80,7 @@ Generated 2026-09-29 by `pipeline/suppliers.py`. A supplier page groups every re
 | Commissionaires ($3,699,768) | COMMISSIONAIRES OF NFLD ($8,385,847) | one name inside the other (often a parent and its subsidiary or branch) |
 | Miawpukek First Nation ($33,057,046) | Netukulimk Fisheries Limited ($3,692,479) | same business number, different names (a parent body's number, or an owner's) |
 | Miawpukek Mi'kamawey Mawi'omi ($16,446,753) | Netukulimk Fisheries Limited ($3,692,479) | same business number, different names (a parent body's number, or an owner's) |
-| 10566 Energy NL Inc. ($4,636,349) | Newfoundland & Labrador Oil & Gas Industries Association Inc. ($3,612,279) | same business number, different names (a parent body's number, or an owner's) |
+| 10566 Energy NL Inc. ($4,634,795) | Newfoundland & Labrador Oil & Gas Industries Association Inc. ($3,612,279) | same business number, different names (a parent body's number, or an owner's) |
 | Emmanuel Construction ($5,079,001) | Emmanuel Construction Services Ltd ($3,309,490) | one name inside the other (often a parent and its subsidiary or branch) |
 | The Excite Corporation Inc. ($3,145,609) | Town of Grand Falls-Windsor ($57,319,038) | same business number, different names (a parent body's number, or an owner's) |
 | NEWFOUNDLAND AND LABRADOR DEPARTMENT OF JUSTICE AND PUBLIC SAFETY ($46,374,110) | Newfoundland & Labrador Justice and Public Safety ($3,100,253) | one name inside the other (often a parent and its subsidiary or branch) |

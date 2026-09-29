@@ -17,7 +17,7 @@ import subprocess
 from collections import Counter
 from pathlib import Path
 
-from common import CACHE, CLEAN, load_manifest, money, norm_space, pdf_pages
+from common import CACHE, CLEAN, DISABLED, load_manifest, money, norm_space, pdf_pages
 
 PLINE = re.compile(
     r"^\s*(\S+)\s+(\d{1,2}/\d{1,2}/\d{4})\s+(.+?)\s{2,}(\S+(?: \S+)?)\s{2,}(.+?)\s{2,}(-?[\d,]+\.\d{2})\s*$"
@@ -144,8 +144,12 @@ def write(name, rows):
 
 def main():
     manifest = load_manifest()
-    paradise(manifest)
-    stjohns(manifest)
+    if "paradise" not in DISABLED:
+        paradise(manifest)
+    if "stjohns" not in DISABLED:
+        stjohns(manifest)
+    if DISABLED >= {"paradise", "stjohns"}:
+        print("municipal: skipped, both sources are switched off (common.DISABLED)")
 
 
 if __name__ == "__main__":

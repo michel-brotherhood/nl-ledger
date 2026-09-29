@@ -72,14 +72,14 @@ ${pagehead({ crumbs: [["/", "Home"], ["/bodies/", "Public bodies"], [null, b.buy
     ["Provincial public bodies", list.filter((b) => b.ds.includes("ppa"))],
     ["Federal departments and agencies", list.filter((b) => !b.ds.includes("ppa") && b.level === "federal")],
     ["Towns and cities", list.filter((b) => b.level === "municipal")],
-  ];
-  const body = html`${pagehead({ crumbs: [["/", "Home"], [null, "Public bodies"]], title: "Public bodies", lede: "Every department, agency, health authority, town and federal department that appears in the records, with what it bought and from whom." })}
+  ].filter(([, rows]) => rows.length);
+  const body = html`${pagehead({ crumbs: [["/", "Home"], [null, "Public bodies"]], title: "Public bodies", lede: "Every department, agency, health authority and federal department that appears in the records, with what it bought and from whom." })}
 ${groups.map(([title, rows]) => html`<section class="section"><div class="wrap"><h2 style="margin-block-end:1rem">${title}</h2>
 ${schedule({ compact: true, cols: [{ label: "Body" }, { label: "Records", num: true }, { label: "Value", num: true }], rows: rows.map((b) => ({ cells: [`<a href="/body/${D.slug(b.buyer)}/">${esc(b.buyer)}</a>`, num(b.n), moneyWords(b.amount || 0)] })) })}</div></section>`)}`;
-  out.push(["/bodies/", { title: "Government departments and agencies in the records", description: desc(`Every department, agency, health authority, town and federal department in the records: ${num(list.length)} public bodies, each with its contracts and grants.`), body }]);
+  out.push(["/bodies/", { title: "Government departments and agencies in the records", description: desc(`Every department, agency, health authority and federal department in the records: ${num(list.length)} public bodies, each with its contracts and grants.`), body }]);
 
   out.push(federal(D, R));
-  out.push(smallPurchases(D, R));
+  if (D.one("SELECT count(*) n FROM items WHERE dataset='paradise'").n) out.push(smallPurchases(D, R));
   return out;
 }
 

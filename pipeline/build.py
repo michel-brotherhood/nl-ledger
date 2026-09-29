@@ -19,7 +19,7 @@ from collections import defaultdict
 
 from bodies import canonical_body
 import suppliers
-from common import BUILD, CLEAN, entity_key, key_hash, name_forms, norm_space
+from common import BUILD, CLEAN, DISABLED, entity_key, key_hash, name_forms, norm_space
 
 DB = BUILD / "ledger.db"
 
@@ -248,14 +248,14 @@ def main():
             source_file=f"federal/{r['file']}", locator=f"CSV line {r['csv_line']}")
 
     # --- Municipal
-    for r in rows("paradise_payments.csv"):
+    for r in ([] if "paradise" in DISABLED else rows("paradise_payments.csv")):
         add("paradise", id=iid("paradise", r["source_file"], r["page"], r["payment_no"], r["invoice"], r["amount"], r["description"]),
             buyer="Town of Paradise", supplier=r["vendor"], description=r["description"],
             amount=f(r["amount"]), date=r["date"], fiscal_year=f"calendar {r['date'][:4]}",
             extra={"payment_no": r["payment_no"], "invoice": r["invoice"], "register_month": r["register_month"]},
             source_url=r["source_url"], source_file=r["source_file"], page=int(r["page"]),
             locator=f"page {r['page']}, payment {r['payment_no']}, invoice {r['invoice']}")
-    for i, r in enumerate(rows("stjohns_ocr_lines.csv"), 1):
+    for i, r in enumerate([] if "stjohns" in DISABLED else rows("stjohns_ocr_lines.csv"), 1):
         withheld = r["payee_withheld"] == "1"
         text = r["text"]
         if withheld:
@@ -344,7 +344,7 @@ def main():
     for r in rows("ppa_superseded.csv"):
         issues.append(("PPA contract awards", "https://www.gov.nl.ca/ppa/tenders/awarded/", r["dropped"],
                        f"replaced by a revised issue ({r['kept']})"))
-    for r in rows("paradise_files.csv"):
+    for r in ([] if "paradise" in DISABLED else rows("paradise_files.csv")):
         if "duplicate" in r["status"] or "superseded" in r["status"] or "no lines" in r["status"]:
             issues.append(("Town of Paradise payment registers", "https://www.paradise.ca/government-engage/cheque-register/",
                            r["file"], r["status"]))
@@ -354,7 +354,7 @@ def main():
     fed = json.loads((CLEAN / "federal_report.json").read_text())
     con.executemany("INSERT INTO facts VALUES (?,?)", [("stats", json.dumps(stats)), ("federal_report", json.dumps(fed)),
                                                        ("supplier_matching", json.dumps(matching)),
-                                                       ("datasets", json.dumps(DATASETS))])
+                                                       ("datasets", json.dumps({k: v for k, v in DATASETS.items() if k not in DISABLED}))])
     con.commit()
 
     for ds, n, amt in con.execute("SELECT dataset, count(*), round(sum(amount)) FROM items GROUP BY dataset ORDER BY 2 DESC"):
