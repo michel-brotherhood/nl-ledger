@@ -176,9 +176,16 @@ def main():
         sys.exit(f"Refusing: {len(changed):,} documents to embed is over --max-docs {a.max_docs:,}")
     if a.dry_run:
         # Also proves the token can reach both services, so a missing permission fails before deploy.
-        cf.embed(a.model, ["permission check"])
-        info = cf.index_info(a.index)
-        print(f"token can run {a.model}; index {'exists' if info else 'will be created'}")
+        for what, test in (("Workers AI read", lambda: cf.embed(a.model, ["permission check"])),
+                           ("Vectorize edit", lambda: cf.index_info(a.index))):
+            try:
+                test()
+            except RuntimeError as e:
+                if "401" in str(e) or "403" in str(e):
+                    sys.exit(f"The Cloudflare token is refused by {what.split()[0]} {what.split()[1]}: add the "
+                             f"'{what}' permission to it (NOTES.md, Weekly job). {e}")
+                raise
+        print(f"token can run {a.model} and reach Vectorize; index {a.index} {'exists' if cf.index_info(a.index) else 'will be created'}")
         return
 
     if not cf.index_info(a.index):
