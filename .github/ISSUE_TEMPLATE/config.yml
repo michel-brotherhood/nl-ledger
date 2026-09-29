@@ -1,5 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Known sources not yet included
-    url: https://github.com/steveclarke/nl-ledger/blob/main/docs/wishlist.md
-    about: Check the wishlist before proposing a source.
+    url: https://github.com/steveclarke/nl-ledger/labels/wishlist
+    about: Check the wishlist before proposing a source; comment on one to pick it up.
+  - name: Questions and ideas
+    url: https://github.com/steveclarke/nl-ledger/discussions
+    about: Anything about the project that is not about one record or source.
