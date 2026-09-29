@@ -166,8 +166,6 @@ export const DATASET_LABEL = {
   canadabuys: "Federal award notice",
   pa_pss: "Federal professional services payment",
   pa_tp: "Federal transfer payment",
-  paradise: "Town of Paradise payment",
-  stjohns: "City of St. John's payment (machine-read)",
 };
 
 export const LEVEL_LABEL = { provincial: "Provincial", federal: "Federal", municipal: "Municipal" };

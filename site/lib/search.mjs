@@ -16,7 +16,10 @@ const TAG = {
   i: (v) => "zi" + v,
 };
 
-export const DATASETS = ["ppa", "fed_contract", "fed_grant", "canadabuys", "pa_pss", "pa_tp", "sunshine", "minister", "mha", "paradise", "stjohns"];
+// Sources switched off (the pipeline side is DISABLED in pipeline/common.py; NOTES.md, "Switching a source on or off").
+export const SOURCES_OFF = ["paradise", "stjohns"];
+export const DATASETS = ["ppa", "fed_contract", "fed_grant", "canadabuys", "pa_pss", "pa_tp", "sunshine", "minister", "mha", "paradise", "stjohns"]
+  .filter((d) => !SOURCES_OFF.includes(d));
 
 export function words(text) {
   return String(text || "")

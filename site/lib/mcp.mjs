@@ -1,12 +1,12 @@
 // Read-only MCP server (Model Context Protocol, streamable HTTP transport, JSON responses).
 // Served by the site's Worker at /mcp (routes/mcp.js).
 // `io` supplies: db (D1), json(path) -> fetches one of the site's /data files.
-import { search, getItem, sha10 } from "./search.mjs";
+import { search, getItem, sha10, DATASETS } from "./search.mjs";
 import { SITE, money, moneyWords, workTime, perPerson, perHousehold, DATASET_LABEL } from "./format.mjs";
 
 const PROTOCOLS = ["2025-11-25", "2025-06-18", "2025-03-26", "2024-11-05"];
 
-const INSTRUCTIONS = `NL Ledger: public spending records for Newfoundland and Labrador. It covers provincial contract awards, minister and MHA expenses, public sector pay over $100,000, department and program spending, federal contracts, grants and transfers in the province, and municipal payments from Paradise and a St. John's sample.
+const INSTRUCTIONS = `NL Ledger: public spending records for Newfoundland and Labrador. It covers provincial contract awards, minister and MHA expenses, public sector pay over $100,000, department and program spending, federal contracts, grants and transfers in the province.
 
 Rules for answers:
 - Answer only from tool results. If the records do not answer the question, say so.
@@ -20,14 +20,14 @@ How to start: use search_records for words or names, get_supplier for one compan
 const PAGE = 25;
 const READ_ONLY = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
 
-const SOURCE_IDS = Object.keys(DATASET_LABEL);
+const SOURCE_IDS = DATASETS.filter((k) => DATASET_LABEL[k]);
 const SOURCE_HELP = SOURCE_IDS.map((k) => `${k} = ${DATASET_LABEL[k]}`).join("; ");
 
 export const TOOLS = [
   {
     name: "search_records",
     title: "Search spending records",
-    description: `Search every line item: contract awards, federal contracts and grants, minister and MHA expense lines, pay over $100,000, and municipal payments. Every word must match; words match by prefix. Give a query, a filter, or both. Returns up to ${PAGE} records per page, largest amount first (use page for more), each with its source citation. Sources: ${SOURCE_HELP}.`,
+    description: `Search every line item: contract awards, federal contracts and grants, minister and MHA expense lines, and pay over $100,000. Every word must match; words match by prefix. Give a query, a filter, or both. Returns up to ${PAGE} records per page, largest amount first (use page for more), each with its source citation. Sources: ${SOURCE_HELP}.`,
     inputSchema: {
       type: "object",
       properties: {
@@ -51,7 +51,7 @@ export const TOOLS = [
   {
     name: "get_supplier",
     title: "Get a supplier or recipient",
-    description: "Get everything one supplier or recipient received from provincial, federal and municipal sources: totals by source, year and buyer, flags, and the largest records. Give a name or a supplier_id. If the name does not match exactly, the result lists close matches with their ids.",
+    description: "Get everything one supplier or recipient received from provincial and federal sources: totals by source, year and buyer, flags, and the largest records. Give a name or a supplier_id. If the name does not match exactly, the result lists close matches with their ids.",
     inputSchema: { type: "object", properties: { name: { type: "string", description: "Company or recipient name, e.g. 'Pennecon'." }, supplier_id: { type: "string", description: "10-character id from an earlier result." } } },
     annotations: { title: "Get a supplier or recipient", ...READ_ONLY },
   },
@@ -116,7 +116,7 @@ export const PROMPTS = [
   { name: "no_open_call", title: "Awards without an open call", description: "What the province awarded without an open call in a year, and to whom.", arguments: [{ name: "year", description: "Calendar year, e.g. 2025", required: false }],
     text: (a) => `Using NL Ledger, what did Newfoundland and Labrador public bodies award without an open call in ${a.year || "the most recent full year"}? List the largest awards with buyer, supplier and amount, and cite the source of each.` },
   { name: "follow_the_money", title: "Follow one company's money", description: "Everything one company or group received, from every level of government.", arguments: [{ name: "name", description: "Company or recipient name", required: true }],
-    text: (a) => `Using NL Ledger, show everything ${a.name || "this company"} received from provincial, federal and municipal governments, by source and year. Cite the largest records.` },
+    text: (a) => `Using NL Ledger, show everything ${a.name || "this company"} received from provincial and federal governments, by source and year. Cite the largest records.` },
   { name: "mha_travel", title: "MHA travel", description: "How MHA travel spending compares across members.", arguments: [],
     text: () => "Using NL Ledger, which MHAs charged the most travel to their allowances in 2024-25, and how does that compare with the average member? Cite the reports." },
   { name: "make_it_human", title: "Make an amount human", description: "Turn any amount into per person, per household and time to earn.", arguments: [{ name: "amount", description: "Amount in dollars", required: true }],

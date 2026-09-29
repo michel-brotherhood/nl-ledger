@@ -14,7 +14,7 @@ from collections import defaultdict
 from datetime import date
 
 from build import DB
-from common import BUILD
+from common import BUILD, DISABLED
 
 OCP = ("The Open Contracting Partnership's guide to red flags puts it this way: a red flag is not evidence "
        "that anything wrong happened. It points at something that may be worth a closer look.")
@@ -204,6 +204,14 @@ CATALOG = [
     },
 ]
 
+# Switched-off sources (common.DISABLED) leave no trace in the catalogue: a flag that only
+# they feed is dropped, and wording that names them is removed.
+CATALOG = [c for c in CATALOG if set(c["data"]) - DISABLED]
+for _c in CATALOG:
+    _c["data"] = [d for d in _c["data"] if d not in DISABLED]
+    _c["how"] = [h.replace("; Paradise's year ends on 31 December", "") for h in _c["how"]
+                 if not ("paradise" in DISABLED and h.startswith("Town of Paradise:"))]
+
 # Open-call thresholds, Public Procurement Regulations (NLR 13/18) section 5, by type of public body.
 LIMITS_BY_TYPE = {
     "department": [(34_700, "goods"), (100_000, "leases of space"), (139_000, "services and public works")],
@@ -326,7 +334,8 @@ def main():
     for bt, limits in LIMITS_BY_TYPE.items():
         under([r for r in ppa if body_type(r["buyer"]) == bt], limits, f"ppa ({bt})")
     under(fed, [(LIMIT_FED, "federal contracts without bids")], "fed_contract")
-    under(par, LIMITS_BY_TYPE["local"], "paradise")
+    if "paradise" not in DISABLED:
+        under(par, LIMITS_BY_TYPE["local"], "paradise")
     extra_detail["just-under-limit"] = dist
 
     # split invoices

@@ -12,7 +12,7 @@ const RECORD_SETS = new Set(["ppa", "fed_contract", "fed_grant", "canadabuys", "
 export const supplierIndexable = (s) => s.n >= SUPPLIER_MIN_RECORDS || s.total >= SUPPLIER_MIN_TOTAL;
 
 // A record is indexable when it is a contract, grant or large payment of at least $25,000 with a description that says what
-// was bought. Pay lines, expense lines and municipal payments are never indexed on their own: they are one person's or
+// was bought. Pay lines and expense lines are never indexed on their own: they are one person's or
 // one small payment, and the employer, member or supplier page is the useful unit.
 export function recordIndexable(it) {
   if (!RECORD_SETS.has(it.ds)) return false;

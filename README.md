@@ -16,7 +16,7 @@
 
 # NL Ledger
 
-NL Ledger gathers the spending records that Newfoundland and Labrador governments already publish and puts them in one searchable place: contract awards, minister and MHA expenses, public sector pay over $100,000, department budgets, federal contracts and grants in the province, and two municipal payment registers. Every figure links back to the document it came from. Live site: <https://nlledger.ca>.
+NL Ledger gathers the spending records that Newfoundland and Labrador governments already publish and puts them in one searchable place: contract awards, minister and MHA expenses, public sector pay over $100,000, department budgets, federal contracts and grants in the province. Every figure links back to the document it came from. Live site: <https://nlledger.ca>.
 
 It is a thought experiment in what public records can show an ordinary citizen. Three things to know before relying on it:
 
@@ -52,8 +52,6 @@ Every line item comes from one of these. Coverage is what is loaded today.
 | [Award notices](https://canadabuys.canada.ca/en/tender-opportunities/award-notices) | Public Services and Procurement Canada (CanadaBuys) | Federal awards to suppliers in the province, August 2022 on; shown, never added into totals | Bulk CSV |
 | [Public Accounts, Volume III: professional and special services](https://www.tpsgc-pwgsc.gc.ca/recgen/cpc-pac/index-eng.html) | Receiver General for Canada | Payments over $100,000 to payees in the province, 2021-22 to 2024-25 | Bulk CSV |
 | [Public Accounts, Volume III: transfer payments](https://www.tpsgc-pwgsc.gc.ca/recgen/cpc-pac/index-eng.html) | Receiver General for Canada | Transfers over $100,000 to recipients in the province, 2021-22 to 2024-25 | Bulk CSV |
-| [Cheque register](https://www.paradise.ca/government-engage/cheque-register/) | Town of Paradise | Every payment, monthly, from mid-2020 | PDF text |
-| [Payment vouchers](https://www.stjohns.ca/your-government/access-to-information-and-protection-of-privacy/proactive-disclosures/) | City of St. John's | A sample: the first pages of the 2026 weekly file | Scanned images, read by OCR |
 | [Statistics Canada tables](https://www150.statcan.gc.ca/) 14-10-0064, 17-10-0009, 98-10-0002, 36-10-0450 | Statistics Canada | Median wage, population, households, provincial revenue: the denominators for per-person figures | Data tables |
 | [Form NL428](https://www.canada.ca/en/revenue-agency.html) | Canada Revenue Agency | Provincial income tax brackets for the personal receipt | Web page |
 
@@ -62,7 +60,7 @@ Sources not yet included are listed in [`docs/wishlist.md`](docs/wishlist.md). L
 ## How it works
 
 1. **Fetch.** Scripts download each source and keep the original file with its address, a checksum and the time it was fetched.
-2. **Parse.** Each source has its own reader for PDF tables, PDF text, Excel cells, CSV or OCR. Every record keeps a pointer to the file and page or row it came from.
+2. **Parse.** Each source has its own reader for PDF tables, PDF text, Excel cells or CSV. Every record keeps a pointer to the file and page or row it came from.
 3. **Check against printed totals.** Where a source prints its own totals, the parsed lines are added up and compared: every minister report, every MHA category and 173 of 175 department totals match. Sources that print no totals are checked by row counts and by a random sample traced by hand. Results are in [`docs/reconciliation.md`](docs/reconciliation.md) and [`docs/review-notes.md`](docs/review-notes.md).
 4. **Count each amount once.** Federal files repeat a contract on every amendment. The build keeps the latest row per contract or agreement. The rules are on the site's Methods page.
 5. **Flag patterns.** A set of documented patterns marks records that raise questions, such as repeat sole-source awards or amounts just under a procurement limit. Each pattern has a method page.
@@ -82,7 +80,7 @@ cd nl-ledger
 
 Open <http://localhost:8787>. `./dev.sh` loads a small random sample of the records (`sample/`, about 1.5 MB), builds the site, and serves every page, including search, supplier, record, receipt and the MCP server at `/mcp`, from a local copy of the search index. A banner on each page says it is sample data, so totals and rankings are partial. Use `./dev.sh 3000` for another port. It takes about a minute the first time.
 
-**Full data.** For everything, run the pipeline. You need [uv](https://docs.astral.sh/uv/) with Python 3.12 or newer, and, for the St. John's scans, `pdftoppm` (poppler) and `tesseract`.
+**Full data.** For everything, run the pipeline. You need [uv](https://docs.astral.sh/uv/) with Python 3.12 or newer.
 
 ```sh
 # 1. Fetch the sources, parse them, check totals, write data/build/ledger.db
@@ -127,7 +125,6 @@ The data is not covered by that licence. Each record stays under the licence of 
 - Statistics Canada tables: [Statistics Canada Open Licence](https://www.statcan.gc.ca/en/reference/licence).
 - Province of Newfoundland and Labrador records (awards, minister claims, pay lists, expenditure reports): no open licence is stated on those pages; the province's [copyright notice](https://www.gov.nl.ca/disclaimer/) permits use by the public. The province's Open Government Licence covers its open data portal, which this site does not use.
 - House of Assembly records: the [Copyright & Privacy Statement](https://www.assembly.nl.ca/CopyrightPrivacyStatement.aspx): citation and excerpts with the source acknowledged; commercial use needs the Speaker's approval.
-- Municipal records: [Town of Paradise terms](https://www.paradise.ca/terms-and-conditions/) (non-commercial copying only, otherwise written permission) and the [City of St. John's terms](https://www.stjohns.ca/terms-and-conditions-of-use/) (all rights reserved, no licence stated).
 
 The site's Sources page lists the licence for each source.
 

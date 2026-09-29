@@ -6,7 +6,7 @@ export function llmsTxt(D, R, TOOLS) {
   const u = SITE.url;
   return `# ${SITE.name}
 
-> ${SITE.tagline}. ${num(R.itemCount)} public spending records (provincial contract awards, minister and MHA expenses, public sector pay over $100,000, department and program spending, federal contracts, grants and transfers in the province, and municipal payments), each linked to the government file and page or row it came from. A prototype: the figures were gathered and combined by automated scripts and have not been independently vetted.
+> ${SITE.tagline}. ${num(R.itemCount)} public spending records (provincial contract awards, minister and MHA expenses, public sector pay over $100,000, department and program spending, federal contracts, grants and transfers in the province), each linked to the government file and page or row it came from. A prototype: the figures were gathered and combined by automated scripts and have not been independently vetted.
 
 The best way for an AI assistant to use the records is the read-only MCP server at ${MCP_URL} (streamable HTTP, no authentication). Cite source_url for every figure. A flagged pattern is a question, not a finding of wrongdoing.
 

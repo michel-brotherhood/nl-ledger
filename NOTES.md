@@ -9,7 +9,7 @@ How the live site is hosted, built, deployed and checked. The README covers what
 | Site | https://nlledger.ca (`www.nlledger.ca` redirects to it) |
 | MCP server | https://nlledger.ca/mcp |
 | Worker | `nlledger` (workers.dev address turned off; the domain is the only address) |
-| D1 database | `nl-ledger` (search index, 29,690 documents for 161,865 line items) |
+| D1 database | `nl-ledger` (search index, 29,035 documents for 143,133 line items) |
 
 The Cloudflare account ID and D1 database ID are not in the repository. Deploys and the D1 sync read them from `CLOUDFLARE_ACCOUNT_ID` and `NL_LEDGER_D1_ID`, in the environment or in `site/.env` (ignored by git; see `site/.env.example`). Building and checking the site locally needs neither.
 
@@ -33,6 +33,17 @@ The Cloudflare account ID and D1 database ID are not in the repository. Deploys 
 | `docs/reconciliation.md`, `docs/trace-sample.md` | Checks against the sources (the trace sample is drawn once and kept) |
 | `docs/supplier-matching.md`, `docs/supplier-merges.csv`, `docs/supplier-near-matches.csv` | Supplier matching: counts and largest merges, every joined name with its evidence, close names kept apart. Written by `pipeline/suppliers.py`; reviewed decisions are in `pipeline/supplier_rules.csv` |
 | `docs/review-notes.md` | Second-review findings and what was done about them |
+
+## Switching a source on or off
+
+Paradise (`paradise`) and St. John's (`stjohns`) are switched off. Their fetch and parse code (`fetch_municipal.py`, `parse_municipal.py`) is kept.
+
+- Off: the names are in `DISABLED` in `pipeline/common.py` and in `SOURCES_OFF` in `site/lib/search.mjs`. The pipeline then skips their fetch, parse, build, flags and reconcile steps, and `guards.py` ignores them.
+- To switch one back on: remove its name from both lists, run `./run.sh` (it fetches and parses them again), then `node build.mjs` in `site/`. The Sources page, search filter, AI server source list and the small-purchases page (Paradise) return by themselves.
+- Also restore their two entries in `DATASET_LABEL` (`site/lib/format.mjs`: "Town of Paradise payment", "City of St. John's payment (machine-read)").
+- Wording that was reworded when they went off comes back with `git log --grep "Take Paradise and St. John's off"`: the home page, footer, README, AI server text, the "How patterns work" wording and the licence sentence on the Sources page.
+- The first weekly run after switching on needs `NL_LEDGER_ACCEPT_CHANGES=1`, since the record count rises and the new sources appear.
+- On switching on, the D1 sync adds their search documents.
 
 ## Run the pipeline
 
@@ -98,10 +109,10 @@ cf deploy --dry-run            # build and checks only
 
 | Limit | Design answer |
 |---|---|
-| D1: 100,000 rows written a day | 165,464 line items packed into 30,256 search documents (one per award or contract; grouped per MHA category-year, Paradise register month, pay-list job title). Diff-based sync |
+| D1: 100,000 rows written a day | 143,133 line items packed into 29,035 search documents (one per award or contract; grouped per MHA category-year and pay-list job title). Diff-based sync |
 | D1: 5 million rows read a day | Every filter is an indexed full-text token, no table scans. Search, supplier and record pages cached at the edge for an hour |
 | Workers: 10 ms CPU | Pages are rendered from small documents; supplier pages read one of 512 JSON shards |
-| Workers static assets: 20,000 files a version | 939 files: 411 static pages plus 512 shards; supplier, search, record and receipt pages are rendered on request |
+| Workers static assets: 20,000 files a version | 916 files: 404 static pages plus 512 shards; supplier, search, record and receipt pages are rendered on request |
 | Workers: 100,000 requests a day | Only search, supplier, record, receipt and `/mcp` requests count. Static asset requests are free and unlimited |
 
 ## What is verified
@@ -122,15 +133,13 @@ cf deploy --dry-run            # build and checks only
 - Provincial income tax inputs: the 2025 brackets match CRA's rates page, and the basic personal amount ($11,067) matches CRA form NL428 (2025), both read in a browser because canada.ca refuses plain `curl` requests.
 - CPP and EI credits on the receipt: form NL428 (2025) lines 27 and 29 take the base CPP and EI premium amounts at 8.7%; the enhanced CPP and CPP2 amounts are deductions from income. Rates and maximums are from CRA's CPP and EI pages (parameters in `pipeline/stats.py`); the method page shows a worked example at the median wage, checked by hand.
 - PPA award rows have no printed totals to reconcile against; row counts per report are the check.
-- Paradise registers print no totals; 71 wrapped lines in 2021-2025 registers did not parse, and registers before July 2020 use another layout and are not loaded.
-- St. John's is a 12-page OCR sample only; OCR can misread characters.
-- Supplier matching (`pipeline/suppliers.py`, method on `/method/suppliers/`) joins names only on evidence: the same name once spelling and legal suffixes are set aside, a bilingual pair, a shared business number or postal code on federal records, the same federal award in two files, a department printed after its body's name, or a reviewed decision in `pipeline/supplier_rules.csv`. Provincial and municipal records carry no business number, so a misspelling there stays a separate supplier until a reviewed decision joins it (`docs/supplier-near-matches.csv` lists the candidates). Two different companies with the same name still merge.
+- Supplier matching (`pipeline/suppliers.py`, method on `/method/suppliers/`) joins names only on evidence: the same name once spelling and legal suffixes are set aside, a bilingual pair, a shared business number or postal code on federal records, the same federal award in two files, a department printed after its body's name, or a reviewed decision in `pipeline/supplier_rules.csv`. Provincial records carry no business number, so a misspelling there stays a separate supplier until a reviewed decision joins it (`docs/supplier-near-matches.csv` lists the candidates). Two different companies with the same name still merge.
 - Year-over-year department comparisons do not follow renamed departments.
 
 ## Search engines
 
 - `build.mjs` writes `sitemap.xml` (every static page, `/receipt/`, and the suppliers with 3 or more records or $250,000 or more on record; record and search pages are left out), `robots.txt` (with the `Sitemap:` line and `Content-Signal: search=yes, ai-input=yes`) and `data/links.json` (which `/body/`, `/pay/` and `/department/` pages exist, so pages rendered on request never link to a missing one). Thresholds are in `site/lib/indexing.mjs`.
-- Indexing: `noindex,follow` on every search variant (any query, filter or page number), on record pages unless the record is a contract, grant or payment of $25,000 or more with a real description, and on supplier pages below the sitemap threshold. Pay, expense and municipal payment lines are never indexed on their own.
+- Indexing: `noindex,follow` on every search variant (any query, filter or page number), on record pages unless the record is a contract, grant or payment of $25,000 or more with a real description, and on supplier pages below the sitemap threshold. Pay and expense lines are never indexed on their own.
 - Structured data (JSON-LD, `site/src/seo.mjs`): `BreadcrumbList` on every page with a breadcrumb line, `WebSite` with `SearchAction` and `Organization` on the home page, `Dataset` on `/data/`, `/priorities/`, `/members/`, `/federal/` and `/pay/*` (licence is the publisher's, not the code's), `Person` on MHA and minister pages, `Organization` on public body pages. No `Organization` on supplier pages (a payee can be an individual).
 - `site/check.sh` runs `check-dist.mjs` on the built pages: internal links, JSON-LD parses, unique descriptions, sitemap and robots.
 - Not in the repository: Google Search Console and Bing Webmaster verification (a TXT record on the domain), submitting the sitemap, IndexNow.

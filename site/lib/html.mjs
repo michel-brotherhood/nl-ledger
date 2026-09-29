@@ -182,12 +182,12 @@ ${notes ? notes.render() : ""}
 </main>
 <footer class="foot">
   <div class="foot-in">
-    <p class="foot-lede">${SITE.name} is an independent prototype. It republishes public records from the Government of Newfoundland and Labrador, the Government of Canada, the House of Assembly, the Town of Paradise and the City of St. John's. Every figure links to the record it came from.</p>
+    <p class="foot-lede">${SITE.name} is an independent prototype. It republishes public records from the Government of Newfoundland and Labrador, the Government of Canada, and the House of Assembly. Every figure links to the record it came from.</p>
     <p class="foot-flag">${icon("query")} A flag is a question, not a finding. It is not evidence that anything wrong happened.</p>
     <nav class="foot-nav" aria-label="About this site">
       <a href="/about/">What is this?</a><a href="/sources/">Sources and report card</a><a href="/method/">Methods</a><a href="/corrections/">Corrections</a><a href="/data/">Ask your AI</a><a href="/help/">Help build this</a>
     </nav>
-    <p class="foot-meta">Contains information licensed under the Open Government Licence – Canada. Provincial, House of Assembly and municipal records are used under each publisher's own terms, and Statistics Canada figures are adapted from its tables; this does not constitute an endorsement by Statistics Canada of this product. <a href="/sources/#licences">Licences and sources</a>.</p>
+    <p class="foot-meta">Contains information licensed under the Open Government Licence – Canada. Provincial and House of Assembly records are used under each publisher's own terms, and Statistics Canada figures are adapted from its tables; this does not constitute an endorsement by Statistics Canada of this product. <a href="/sources/#licences">Licences and sources</a>.</p>
     ${updated ? `<p class="foot-meta">Data gathered ${esc(fmtDate(updated))}.</p>` : ""}
   </div>
 </footer>

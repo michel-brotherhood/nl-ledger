@@ -12,7 +12,7 @@ import sqlite3
 from collections import Counter, defaultdict
 from datetime import date
 
-from common import CLEAN, ROOT
+from common import CLEAN, DISABLED, ROOT
 from build import DB
 
 DOCS = ROOT / "docs"
@@ -141,17 +141,18 @@ def main():
     for fy, kind, tot in con.execute("SELECT fiscal_year, kind, sum(col1) FROM programs WHERE line_type='object' GROUP BY 1,2 ORDER BY 1"):
         out.append(f"- {fy} {kind}: gross expenditure {money(tot)}")
 
-    # Municipal
-    section("Municipal payments")
-    pf = rows("paradise_files.csv")
-    pp = rows("paradise_payments.csv")
-    out += [f"- Paradise: {len(pf)} register files downloaded; {sum(1 for r in pf if r['status'].startswith('register') and 'superseded' not in r['status'])} "
-            f"distinct monthly registers used; {len(pp):,} payment lines, {money(sum(float(r['amount']) for r in pp))}.",
-            f"- Lines that look like payments but did not parse: {sum(int(r['unparsed']) for r in pf if r['status'].startswith('register'))} "
-            "(mostly wrapped descriptions). Registers from early 2020 use a different layout and are not loaded.",
-            "- The registers print no totals, so there is nothing to reconcile the sum against.",
-            "- St. John's: the first 12 pages of the 2026 weekly-voucher PDF were read with OCR as a sample. "
-            "Cover memos (payroll and weekly totals) are excluded. OCR text can misread characters; each row links to its page."]
+    # Municipal (switched off: common.DISABLED)
+    if not DISABLED >= {"paradise", "stjohns"}:
+        section("Municipal payments")
+        pf = rows("paradise_files.csv")
+        pp = rows("paradise_payments.csv")
+        out += [f"- Paradise: {len(pf)} register files downloaded; {sum(1 for r in pf if r['status'].startswith('register') and 'superseded' not in r['status'])} "
+                f"distinct monthly registers used; {len(pp):,} payment lines, {money(sum(float(r['amount']) for r in pp))}.",
+                f"- Lines that look like payments but did not parse: {sum(int(r['unparsed']) for r in pf if r['status'].startswith('register'))} "
+                "(mostly wrapped descriptions). Registers from early 2020 use a different layout and are not loaded.",
+                "- The registers print no totals, so there is nothing to reconcile the sum against.",
+                "- St. John's: the first 12 pages of the 2026 weekly-voucher PDF were read with OCR as a sample. "
+                "Cover memos (payroll and weekly totals) are excluded. OCR text can misread characters; each row links to its page."]
 
     (DOCS / "reconciliation.md").write_text("\n".join(out) + "\n")
 

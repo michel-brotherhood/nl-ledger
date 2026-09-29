@@ -13,8 +13,8 @@ Public records that are known to exist and are not yet in NL Ledger. Each has a 
 
 | Source | Why it matters | Where it lives | Status |
 |---|---|---|---|
-| Other municipalities' payment registers ([#3](https://github.com/steveclarke/nl-ledger/issues/3)) | Only Paradise (full) and St. John's (sample) are loaded. Most towns publish nothing line by line, so any that do are worth adding. | Town budget and council pages: Mount Pearl, Conception Bay South, Gander, Corner Brook, Grand Falls-Windsor and others | A bounded search found no payment registers for the five named. Contributions of any register found are welcome. |
-| St. John's payment vouchers, full file ([#4](https://github.com/steveclarke/nl-ledger/issues/4)) | The site loads a 12-page sample. The full weekly files hold every accounts-payable payment. | <https://www.stjohns.ca/your-government/access-to-information-and-protection-of-privacy/proactive-disclosures/> | Scanned images; about 1,300 pages to read by OCR. |
+| Other municipalities' payment registers ([#3](https://github.com/steveclarke/nl-ledger/issues/3)) | No municipal register is loaded. Most towns publish nothing line by line, so any that do are worth adding. | Town budget and council pages: Mount Pearl, Conception Bay South, Gander, Corner Brook, Grand Falls-Windsor and others | A bounded search found no payment registers for the five named. Contributions of any register found are welcome. |
+| St. John's payment vouchers, full file ([#4](https://github.com/steveclarke/nl-ledger/issues/4)) | The full weekly files hold every accounts-payable payment. | <https://www.stjohns.ca/your-government/access-to-information-and-protection-of-privacy/proactive-disclosures/> | Scanned images; about 1,300 pages to read by OCR. |
 
 ## Public bodies
 

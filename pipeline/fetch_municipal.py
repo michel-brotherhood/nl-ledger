@@ -2,7 +2,7 @@
 of St. John's weekly payment vouchers (image-only PDFs, OCR in parse_municipal)."""
 import re
 
-from common import CACHE, fetch, get_text, load_manifest, save_manifest
+from common import CACHE, DISABLED, fetch, get_text, load_manifest, save_manifest
 
 PARADISE = "https://www.paradise.ca/government-engage/cheque-register/"
 STJOHNS = "https://www.stjohns.ca/your-government/access-to-information-and-protection-of-privacy/proactive-disclosures/"
@@ -43,11 +43,16 @@ def stjohns(m: dict) -> None:
 
 
 def main() -> None:
+    if DISABLED >= {"paradise", "stjohns"}:
+        print("municipal: skipped, both sources are switched off (common.DISABLED)")
+        return
     m = load_manifest()
-    paradise(m)
-    save_manifest(m)
-    stjohns(m)
-    save_manifest(m)
+    if "paradise" not in DISABLED:
+        paradise(m)
+        save_manifest(m)
+    if "stjohns" not in DISABLED:
+        stjohns(m)
+        save_manifest(m)
 
 
 if __name__ == "__main__":

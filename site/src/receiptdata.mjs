@@ -66,7 +66,7 @@ export function buildReceiptData(D) {
     { level: "provincial", label: "Provincial awards, expense claims and pay", amount: lv(["ppa", "minister", "mha", "sunshine"]) },
     { level: "federal", label: "Federal contracts and grants to NL", amount: lv(["fed_contract", "fed_grant"]) },
     { level: "municipal", label: "Municipal payments", amount: lv(["paradise", "stjohns"]) },
-  ];
+  ].filter((l) => l.amount);
 
   const top = D.q(`SELECT supplier_key, sum(amount) amount, group_concat(DISTINCT dataset) ds, count(*) n FROM items
       WHERE supplier_key IS NOT NULL AND supplier_key != '' AND dataset IN ('ppa','fed_contract','fed_grant','paradise')

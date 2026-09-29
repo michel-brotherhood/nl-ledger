@@ -2,6 +2,7 @@
 import { esc, html, icon, Notes, schedule, leaders } from "../../lib/html.mjs";
 import { money, moneyWords, num, pct, date as fmtDate, workTime, SITE, payrollContributions, nlIncomeTax } from "../../lib/format.mjs";
 import { desc } from "../seo.mjs";
+import { DATASETS } from "../../lib/search.mjs";
 import { pagehead, caveat, datasetLabel } from "../common.mjs";
 import { connectPage } from "./connect.mjs";
 import { LICENCES, SOURCE_LICENCE } from "../licences.mjs";
@@ -82,8 +83,6 @@ export function info(D, R) {
     { body: "Treasury Board Secretariat, compensation lists", grade: [`${(issuesBySource["Compensation disclosure"] || []).length} of the workbooks linked from the disclosure page return "page not found"`, "Names are withheld for police officers (identifiers only), as the Act allows"] },
     { body: "Treasury Board Secretariat, program expenditure reports", grade: ["173 of 175 department totals match the printed statement", "The 2024-25 report prints Labrador Affairs' detail pages empty, with the text #MISSING"] },
     { body: "Province, small purchases", grade: ["No line-by-line payment data is published at all"] },
-    { body: "Town of Paradise", grade: ["Every payment published monthly with vendor and description", "The register page links several months to the wrong file"] },
-    { body: "City of St. John's", grade: ["Every payment published weekly", "Published as scanned images, so it cannot be searched or copied without OCR"] },
   ];
   out.push(["/sources/", {
     title: "Sources: where every figure comes from",
@@ -91,7 +90,7 @@ export function info(D, R) {
     body: html`${pagehead({ crumbs: [["/", "Home"], [null, "Sources"]], title: "Sources and report card", lede: "Where every figure comes from, what each source covers, and how well each publisher does at publishing it." })}
 <section class="section"><div class="wrap">
   <h2 style="margin-block-end:1.5rem">Line-item sources</h2>
-  ${SOURCES.map((s) => { const c = counts[s.ds] || {}; return html`<article id="${s.ds}" style="padding-block:1.25rem;border-block-end:1px solid var(--hair)">
+  ${SOURCES.filter((s) => DATASETS.includes(s.ds)).map((s) => { const c = counts[s.ds] || {}; return html`<article id="${s.ds}" style="padding-block:1.25rem;border-block-end:1px solid var(--hair)">
     <h3>${esc(datasetLabel(s.ds))}</h3>
     <p class="small muted" style="margin:.3rem 0 .6rem">${esc(s.publisher)} · <a href="${esc(s.url)}">${esc(s.url.replace(/^https?:\/\//, "").slice(0, 60))}</a></p>
     <p>${esc(s.what)}</p><p class="small">${esc(s.form)}</p>
@@ -104,10 +103,10 @@ export function info(D, R) {
 <section class="section" id="licences"><div class="wrap">
   <div class="section-head"><h2>Licences</h2><p>Each source stays under the terms of the body that published it. The site's own code is under the <a href="${REPO}/blob/main/LICENSE">MIT licence</a>.</p></div>
   ${schedule({ compact: true, cols: [{ label: "Source" }, { label: "Publisher" }, { label: "Licence" }, { label: "Attribution and conditions" }], rows: [
-    ...SOURCES.map((s) => [datasetLabel(s.ds), s.publisher, LICENCES[SOURCE_LICENCE[s.ds]]]),
+    ...SOURCES.filter((s) => DATASETS.includes(s.ds)).map((s) => [datasetLabel(s.ds), s.publisher, LICENCES[SOURCE_LICENCE[s.ds]]]),
     ...OTHER.map(([t, , , k]) => [t, "", LICENCES[k]]),
   ].map(([src, pub, l]) => ({ cells: [esc(src), esc(pub), `<a href="${esc(l.url)}">${esc(l.name)}</a>`, esc(l.wording ? `Required wording: "${l.wording}"` : l.note)] })) })}
-  <p class="small">Statistics Canada tables: the required wording is completed with the table's number and reference date, as listed under Other sources. Every record links to the original. Reuse of House of Assembly, Town of Paradise and City of St. John's records follows those publishers' terms, not the federal licence.</p>
+  <p class="small">Statistics Canada tables: the required wording is completed with the table's number and reference date, as listed under Other sources. Every record links to the original. Reuse of House of Assembly records follows those publishers' terms, not the federal licence.</p>
 </div></section>
 <section class="section" id="report-card"><div class="wrap">
   <div class="section-head"><h2>Publisher report card</h2><p>How complete, correct and usable each publisher's records are. This grades the publishing, not the spending.</p></div>
@@ -176,7 +175,7 @@ export function info(D, R) {
   const GH = "https://github.com/steveclarke/nl-ledger";
   out.push(["/method/suppliers/", {
     title: "Method: matching supplier names",
-    description: desc("How NL Ledger decides that names printed different ways across provincial, federal and municipal records are one supplier, and which close names it keeps apart."),
+    description: desc("How NL Ledger decides that names printed different ways across provincial and federal records are one supplier, and which close names it keeps apart."),
     body: html`${pagehead({ crumbs: [["/", "Home"], ["/method/", "Methods"], [null, "Supplier names"]], title: "Method: supplier names", lede: "Each source prints a supplier's name its own way. A supplier page combines the names the records show are one supplier, and no others." })}
 <section class="section"><div class="wrap prose">
   <h2>When names are joined</h2>
@@ -233,7 +232,7 @@ export function info(D, R) {
     description: desc("NL Ledger is an independent prototype that gathers Newfoundland and Labrador public spending records in one searchable place, each linked to its source."),
     body: html`${pagehead({ crumbs: [["/", "Home"], [null, "What is this?"]], title: "What is this?", lede: `${SITE.name} is a thought experiment: what could an ordinary citizen learn about Newfoundland and Labrador public spending from the records governments already publish?` })}
 <section class="section"><div class="wrap prose">
-  <p>Governments publish a great deal of spending data, but it is scattered across hundreds of PDFs, spreadsheets and web pages that few people have time to read. This prototype gathers ${num(R.itemCount)} of those records in one place and tries to make the amounts easier to picture. It gathers provincial contract awards, minister and MHA expenses, public sector pay over $100,000, department and program spending, federal contracts, grants and transfers in the province, and the payment registers two municipalities publish.</p>
+  <p>Governments publish a great deal of spending data, but it is scattered across hundreds of PDFs, spreadsheets and web pages that few people have time to read. This prototype gathers ${num(R.itemCount)} of those records in one place and tries to make the amounts easier to picture. It gathers provincial contract awards, minister and MHA expenses, public sector pay over $100,000, department and program spending, federal contracts, grants and transfers in the province.</p>
   <h2>How far to trust the figures</h2>
   <ul>
     <li>Every record comes from a published government source, and each one links back to the file and page or row it came from.</li>
@@ -326,7 +325,7 @@ function scalePage(D, R) {
   const allMin = pick("SELECT sum(amount) a FROM items WHERE dataset='minister'");
   add("Every minister's expense claim, December 2020 to May 2026, together", allMin.a, "/members/", "Executive Council expense reports");
   const para = pick("SELECT sum(amount) a FROM items WHERE dataset='paradise' AND date LIKE '2024%'");
-  add("Everything the Town of Paradise paid out in 2024", para.a, "/small-purchases/", "Paradise payment registers");
+  if (para.a) add("Everything the Town of Paradise paid out in 2024", para.a, "/small-purchases/", "Paradise payment registers");
   const ppa = pick("SELECT * FROM items WHERE dataset='ppa' AND method='Emergency' ORDER BY amount DESC LIMIT 1");
   if (ppa) add(`Largest emergency award: ${ppa.supplier}`, ppa.amount, `/item/${ppa.id.split("-").pop()}/`, ppa.description);
   const ss = pick("SELECT * FROM items WHERE dataset='ppa' AND method='Sole source' ORDER BY amount DESC LIMIT 1");
