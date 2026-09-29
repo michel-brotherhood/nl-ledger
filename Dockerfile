@@ -24,7 +24,8 @@ RUN cd site && npm ci --no-audit --no-fund && npm cache clean --force
 COPY . .
 RUN mkdir -p data && chown -R node:node /app /opt/venv
 ARG GIT_SHA=unknown
-ENV GIT_SHA=$GIT_SHA
+ENV GIT_SHA=$GIT_SHA \
+    PATH=/app/site/node_modules/.bin:$PATH
 USER node
 VOLUME /app/data
 CMD ["pipeline/weekly.sh"]
