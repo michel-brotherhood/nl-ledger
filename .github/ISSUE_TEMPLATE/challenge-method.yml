@@ -7,7 +7,7 @@ body:
     id: page
     attributes:
       label: Page or method
-      description: The address of the page on nlledger.ca, or the name of the method or flag.
+      description: The address of the page on nlledger.ca, or the name of the method or flag. For two supplier names that should or should not be one supplier, the supplier page's address.
     validations:
       required: true
   - type: textarea

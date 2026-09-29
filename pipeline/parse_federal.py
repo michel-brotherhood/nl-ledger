@@ -17,7 +17,7 @@ import json
 import re
 from collections import Counter, defaultdict
 
-from common import CACHE, CLEAN, entity_key, money, norm_space
+from common import CACHE, CLEAN, entity_key, money, name_forms, norm_space
 
 csv.field_size_limit(10**9)
 FED = CACHE / "federal"
@@ -129,7 +129,7 @@ def grants() -> None:
     groups: dict[tuple, list] = defaultdict(list)
     for r in rows:
         agr = (r.get("agreement_number") or "").strip() or f"ref:{r['ref_number']}"
-        who = entity_key(r.get("recipient_legal_name") or r.get("recipient_operating_name") or "")
+        who = entity_key(name_forms(r.get("recipient_legal_name") or r.get("recipient_operating_name"), bilingual=True)[0])
         groups[(r["owner_org"], agr, who)].append(r)
     out = []
     for (org, agr, _), rs in groups.items():
@@ -149,6 +149,8 @@ def grants() -> None:
             "owner_org": org,
             "department": (last.get("owner_org_title") or "").split("|")[0].strip(),
             "recipient": norm_space(last.get("recipient_legal_name") or last.get("recipient_operating_name")),
+            "business_number": next((r.get("recipient_business_number") for r in reversed(rs) if r.get("recipient_business_number")), "") or "",
+            "postal_code": norm_space(last.get("recipient_postal_code")),
             "recipient_operating_name": norm_space(last.get("recipient_operating_name")),
             "recipient_type": last.get("recipient_type") or "",
             "city": norm_space(last.get("recipient_city")),

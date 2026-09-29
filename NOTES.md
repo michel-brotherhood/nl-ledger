@@ -31,6 +31,7 @@ The Cloudflare account ID and D1 database ID are not in the repository. Deploys 
 | `data/build/ledger.db` | Local SQLite: the source of truth for the site. Not in git |
 | `site/` | Static build (`build.mjs`, `src/pages/*.mjs`), shared code (`lib/`), Worker (`worker.mjs`, `routes/`), config (`cloudflare.config.ts`, `wrangler.config.ts`) |
 | `docs/reconciliation.md`, `docs/trace-sample.md` | Checks against the sources (the trace sample is drawn once and kept) |
+| `docs/supplier-matching.md`, `docs/supplier-merges.csv`, `docs/supplier-near-matches.csv` | Supplier matching: counts and largest merges, every joined name with its evidence, close names kept apart. Written by `pipeline/suppliers.py`; reviewed decisions are in `pipeline/supplier_rules.csv` |
 | `docs/review-notes.md` | Second-review findings and what was done about them |
 
 ## Run the pipeline
@@ -110,7 +111,8 @@ cf deploy --dry-run            # build and checks only
   - 58,521 MHA lines: every category adds to its printed Period Activity; detail total equals the summary reports' total exactly.
   - Program spending: 173 of 175 department totals match the summary statements (one small 2019-20 gap; one department whose detail pages the 2024-25 report prints empty).
   - Federal contracts: $11.89B as published, $2.63B once each contract is counted once (grouped by purchase order and cleaned vendor name across departments; an earlier grouping gave $2.83B before those two corrections).
-  - Federal grants: $11.68B as published, $8.67B as 29,465 agreements (latest amendment where a department reports running totals, summed where it reports changes). Method and the one disagreement with the reviewer are in `docs/review-notes.md`.
+  - Federal grants: $11.68B as published, $8.51B as 29,294 agreements (latest amendment where a department reports running totals, summed where it reports changes; a recipient printed in English only on one amendment and "English|French" on the next is one recipient). Method and the one disagreement with the reviewer are in `docs/review-notes.md`; the correction from $8.67B is on `/corrections/`.
+- Supplier pages add up to the records: `site/src/shards.mjs` stops the build when the pages' records, totals or overlap differ from the database.
 - A random sample of line items traced back to source files and pages (`docs/trace-sample.md`, results in `docs/review-notes.md`).
 - A separate reviewer checked figures, wording, privacy and broken links (`docs/review-notes.md`).
 - Guardrail script over the built site before each deploy.
@@ -122,7 +124,7 @@ cf deploy --dry-run            # build and checks only
 - PPA award rows have no printed totals to reconcile against; row counts per report are the check.
 - Paradise registers print no totals; 71 wrapped lines in 2021-2025 registers did not parse, and registers before July 2020 use another layout and are not loaded.
 - St. John's is a 12-page OCR sample only; OCR can misread characters.
-- Supplier matching across sources is by normalised name only (no business numbers), so one company spelled two ways appears twice, and two different companies with the same name would merge.
+- Supplier matching (`pipeline/suppliers.py`, method on `/method/suppliers/`) joins names only on evidence: the same name once spelling and legal suffixes are set aside, a bilingual pair, a shared business number or postal code on federal records, the same federal award in two files, a department printed after its body's name, or a reviewed decision in `pipeline/supplier_rules.csv`. Provincial and municipal records carry no business number, so a misspelling there stays a separate supplier until a reviewed decision joins it (`docs/supplier-near-matches.csv` lists the candidates). Two different companies with the same name still merge.
 - Year-over-year department comparisons do not follow renamed departments.
 
 ## Search engines

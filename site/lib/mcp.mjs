@@ -166,12 +166,38 @@ export function aiCatalog() {
   };
 }
 
-// Same normalisation as pipeline/common.py entity_key
+// Same normalisation as pipeline/common.py entity_key (pipeline/check_matching.py checks they agree).
+function unescapeHtml(s) {
+  const named = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: "\u00a0" };
+  return s.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m, e) => e[0] === "#"
+    ? String.fromCodePoint(e[1] === "x" || e[1] === "X" ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10))
+    : named[e.toLowerCase()] ?? m);
+}
+// "(NLDC)" after "Newfoundland and Labrador Dairy Co-operative": letters in order from the name, starting with its first word.
+function acronymOf(words, acronym) {
+  const letters = acronym.toLowerCase().replace(/[^a-z]/g, "");
+  const text = words.toLowerCase().replace(/[^a-z ]/g, "");
+  if (!letters || !text || text[0] !== letters[0]) return false;
+  const flat = text.replace(/ /g, "");
+  let i = 0;
+  for (const c of letters) { i = flat.indexOf(c, i); if (i < 0) return false; i++; }
+  return true;
+}
+const TAIL = /(\s*[,(-]?\s*\b(o\/a|o\.a\.|operating as|c\/o|dba|d\/b\/a|doing business as|t\/a|trading as|carrying on business as)\b|\s*[,(-]\s*(care of|formerly|previously|now known as)\b).*$/i;
+const SUFFIX = /\b(incorporated|inc|ltd|limited|corp|corporation|co|company|llc|plc|ulc|ltee|ltée|limitee|limitée|l\.?t\.?d|the)\b\.?/g;
 export function entityKey(name) {
-  let s = String(name || "").normalize("NFKD").replace(/[^\x00-\x7f]/g, "").toLowerCase();
-  s = s.replace(/&/g, " and ").replace(/[^a-z0-9 ]+/g, " ");
-  s = s.replace(/\b(incorporated|inc|ltd|limited|corp|corporation|co|company|llc|lp|llp|plc|ulc|ltee|ltée|l\.?t\.?d|the)\b\.?/g, " ");
-  return s.replace(/\s+/g, " ").trim();
+  let s = unescapeHtml(String(name || "")).replace(/\s+/g, " ").trim();
+  s = s.replace(/\blimited partnership\b|\bl\.\s?p\.?(?=\W|$)|\blp\b/gi, " LP ").replace(/[\u2018\u2019`]/g, "'");
+  s = s.replace(TAIL, "") || s;
+  const m = s.match(/\s*\(([A-Z][A-Z&.\- ]{1,11})\)\s*$/);
+  if (m && acronymOf(s.slice(0, m.index), m[1])) s = s.slice(0, m.index);
+  s = s.replace(/\s(and|&)\s+(co|company)\b\.?/gi, " ").replace(/\bco-?op(erative)?\b/gi, "cooperative");
+  s = s.normalize("NFKD").replace(/[^\x00-\x7f]/g, "").toLowerCase();
+  s = s.replace(/'/g, "").replace(/&/g, " and ").replace(/[^a-z0-9 ]+/g, " ");
+  s = s.replace(/\s+/g, " ").trim().replace(/\s(l td|limit ed|limite d|limi ted|lim ited|inc orporated)$/, "");
+  if (String(name || "").length >= 33) s = s.replace(/\s(limite|limit|limi|lim|lt|incorp|incorpor|incorporat|corporat)$/, "");
+  s = s.replace(SUFFIX, " ").replace(/\s+/g, " ").trim();
+  return s.replace(/\bn l\b|\bnl\b/g, "newfoundland and labrador").replace(/\bnfld\b/g, "newfoundland");
 }
 
 // Drop empty fields so every answer stays small enough for any client's context.
@@ -251,8 +277,13 @@ async function call(name, args, io) {
       const nm = String(args.name || "").trim();
       if (!h && nm) h = await sha10(entityKey(nm));
       if (!h || !/^[0-9a-f]{10}$/.test(h)) return problem("Give a supplier name or a 10-character supplier_id.");
-      const shard = await io.json(`/data/s/${parseInt(h.slice(0, 4), 16) % 512}.json`);
-      const s = shard?.[h];
+      const shardOf = (x) => io.json(`/data/s/${parseInt(x.slice(0, 4), 16) % 512}.json`);
+      let s = (await shardOf(h))?.[h];
+      // A name the supplier is also printed under points to the supplier.
+      if (s?.to) {
+        h = s.to;
+        s = (await shardOf(h))?.[h];
+      }
       if (!s) {
         if (!nm) return problem("No supplier with that id.");
         // Offer close matches: suppliers whose records contain every word of the name.
@@ -265,7 +296,9 @@ async function call(name, args, io) {
         return problem(`No supplier is named exactly "${nm}".`, matches.length ? { close_matches: matches, next_step: "Call get_supplier with one of these supplier_id values." } : { next_step: "Try search_records with part of the name." });
       }
       return {
-        supplier_id: h, name: s.name, also_printed_as: s.names, total_cad: s.total, records: s.n,
+        supplier_id: h, name: s.name, total_cad: s.total, records: s.n,
+        also_printed_as: s.combined ? s.combined.map((c) => c.t).filter((t) => t !== s.name) : s.names?.filter((t) => t !== s.name),
+        names_matched_how: s.combined ? `${SITE.url}/method/suppliers/` : undefined,
         by_source: Object.fromEntries(Object.entries(s.byDs).map(([k, [n, a]]) => [DATASET_LABEL[k] || k, { records: n, total_cad: a }])),
         by_year: s.byYear, buyers: s.buyers, flags: s.flags,
         largest_records: s.top.slice(0, 20).map((it) => cite({ ...it, s: s.name })),

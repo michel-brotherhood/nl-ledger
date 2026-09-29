@@ -57,14 +57,17 @@ def short(item_id: str) -> str:
     return item_id.rsplit("-", 1)[-1]
 
 
-def compact(it: dict, flags: list[str], doc_buyer: str, doc_url: str | None) -> dict:
+def compact(it: dict, flags: list[str], doc_buyer: str, doc_url: str | None, multi: set) -> dict:
     x = json.loads(it["extra"] or "{}")
     keep = {k: x[k] for k in ("original_value", "limited_reason", "clause", "contract_no", "program", "riding", "district",
                               "routes", "unit", "base", "overtime", "bonus", "shift", "retro", "severance", "other", "invoice", "payment_no",
                               "weeks", "payee_withheld", "machine_read", "report_period", "term", "reason", "amount_text",
                               "ref_number", "reference_number", "period", "accommodations", "meals", "travel", "other",
-                              "note") if k in x and x[k] not in (None, "", 0)}
+                              "note", "supplier_as_printed") if k in x and x[k] not in (None, "", 0)}
+    # n: the printed name's own key, only where a supplier combines several names, so a
+    # supplier page can link to the records printed under each name.
     d = {"i": short(it["id"]), "s": it["supplier"], "k": key_hash(it["supplier_key"], 10) if it["supplier_key"] else None,
+         "n": key_hash(it["supplier_name_key"], 10) if it["supplier_key"] in multi else None,
          "p": it["person"], "b": it["buyer"] if it["buyer"] != doc_buyer else None, "d": clip(it["description"], 320),
          "a": it["amount"], "c": it["currency"] if it["currency"] != "CAD" else None, "o": it["amount_original"],
          "t": it["date"], "fy": it["fiscal_year"] if not it["date"] else None, "m": it["method"], "city": it["city"],
@@ -80,6 +83,8 @@ def main():
     item_flags = defaultdict(list)
     for fid, iid in con.execute("SELECT flag, item_id FROM flags WHERE item_id IS NOT NULL"):
         item_flags[iid].append(fid)
+    multi = {k for (k,) in con.execute("SELECT supplier_key FROM items WHERE supplier_key IS NOT NULL "
+                                       "GROUP BY supplier_key HAVING count(DISTINCT supplier_name_key) > 1")}
     groups = defaultdict(list)
     for it in con.execute("SELECT * FROM items ORDER BY dataset, buyer, supplier, date"):
         it = dict(it)
@@ -106,7 +111,7 @@ def main():
             rowid = int(hashlib.sha1(doc_id.encode()).hexdigest()[:15], 16)
             urls = {i["source_url"] for i in part}
             doc_url = part[0]["source_url"] if len(urls) == 1 else None
-            items = [compact(i, item_flags.get(i["id"], []), part[0]["buyer"], doc_url) for i in part]
+            items = [compact(i, item_flags.get(i["id"], []), part[0]["buyer"], doc_url, multi) for i in part]
             body = " ".join(filter(None, [part[0]["buyer"]] + [
                 " ".join(filter(None, [i["supplier"], i["person"], i["description"], i["method"], i["city"],
                                        (json.loads(i["extra"] or "{}").get("program") or "")]))
@@ -117,6 +122,8 @@ def main():
                     tags.add(tok("zb", i["buyer_key"]))
                 if i["supplier_key"]:
                     tags.add(tok("zs", i["supplier_key"]))
+                    if i["supplier_key"] in multi:
+                        tags.add(tok("zn", i["supplier_name_key"]))
                 if i["person"]:
                     tags.add(tok("zp", i["person"].lower()))
                 y = (i["date"] or "")[:4] or (i["fiscal_year"] or "")[-4:]

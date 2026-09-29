@@ -21,6 +21,7 @@ export function load() {
   const stats = fact("stats");
   const datasets = fact("datasets");
   const federal = fact("federal_report");
+  const matching = fact("supplier_matching");
   const catalog = JSON.parse(readFileSync(join(ROOT, "data", "build", "flag_catalog.json"), "utf8"));
   const flagById = Object.fromEntries(catalog.flags.map((f) => [f.id, f]));
   const manifest = JSON.parse(readFileSync(join(ROOT, "data", "cache", "manifest.json"), "utf8"));
@@ -58,5 +59,5 @@ export function load() {
   const flagSummary = Object.fromEntries(q("SELECT * FROM flag_summary").map((r) => [r.flag, r]));
   const issues = q("SELECT * FROM publisher_issues");
 
-  return { db, q, one, stats, datasets, federal, catalog, flagById, manifest, gathered, deptSummary, programs, years, deptYear, flagRows, itemFlags, flagSummary, issues, pretty, keyHash, slug };
+  return { db, q, one, stats, datasets, federal, matching, catalog, flagById, manifest, gathered, deptSummary, programs, years, deptYear, flagRows, itemFlags, flagSummary, issues, pretty, keyHash, slug };
 }

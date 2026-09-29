@@ -9,7 +9,7 @@ const BUYER_SETS = ["ppa", "fed_contract", "fed_grant", "canadabuys", "paradise"
 
 export function bodies(D, R) {
   const out = [];
-  const list = D.q(`SELECT buyer, buyer_key, level, count(*) n, sum(amount) amount, group_concat(DISTINCT dataset) ds
+  const list = D.q(`SELECT (SELECT buyer FROM buyers WHERE buyers.buyer_key = items.buyer_key) buyer, buyer_key, level, count(*) n, sum(amount) amount, group_concat(DISTINCT dataset) ds
       FROM items WHERE dataset IN (${BUYER_SETS.map((s) => `'${s}'`).join(",")}) AND buyer IS NOT NULL GROUP BY buyer_key ORDER BY amount DESC`);
 
   for (const b of list) {
@@ -90,8 +90,8 @@ function federal(D, R) {
   const g = F.grants;
   const citeC = notes.cite({ url: "https://open.canada.ca/data/en/dataset/d8f85d91-7dec-4fd1-8055-483b77225d8b", label: "Proactive disclosure of contracts over $10,000 (open.canada.ca), vendors with a postal code beginning with A, one row per contract after amendments" });
   const citeG = notes.cite({ url: "https://open.canada.ca/data/en/dataset/432527ab-7aac-45b5-81d6-7597107a7013", label: "Proactive disclosure of grants and contributions (open.canada.ca), recipient province NL, one row per agreement after amendments" });
-  const deps = D.q(`SELECT buyer, count(*) n, sum(amount) amount, sum(CASE WHEN method='Non-competitive' THEN amount ELSE 0 END) nc FROM items WHERE dataset='fed_contract' GROUP BY buyer_key ORDER BY amount DESC LIMIT 15`);
-  const gdeps = D.q(`SELECT buyer, count(*) n, sum(amount) amount FROM items WHERE dataset='fed_grant' GROUP BY buyer_key ORDER BY amount DESC LIMIT 15`);
+  const deps = D.q(`SELECT (SELECT buyer FROM buyers WHERE buyers.buyer_key = items.buyer_key) buyer, count(*) n, sum(amount) amount, sum(CASE WHEN method='Non-competitive' THEN amount ELSE 0 END) nc FROM items WHERE dataset='fed_contract' GROUP BY buyer_key ORDER BY amount DESC LIMIT 15`);
+  const gdeps = D.q(`SELECT (SELECT buyer FROM buyers WHERE buyers.buyer_key = items.buyer_key) buyer, count(*) n, sum(amount) amount FROM items WHERE dataset='fed_grant' GROUP BY buyer_key ORDER BY amount DESC LIMIT 15`);
   const mtp = Object.entries(F.public_accounts.mtp_2024_25).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
   const body = html`${pagehead({ crumbs: [["/", "Home"], [null, "Federal money"]], title: "Federal money in the province", lede: "Transfers, contracts and grants from the Government of Canada that land in Newfoundland and Labrador." })}
 <section class="section"><div class="wrap">
