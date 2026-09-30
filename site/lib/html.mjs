@@ -139,23 +139,23 @@ const TURNSTILE_SITEKEY = globalThis.process?.env?.NL_LEDGER_TURNSTILE_SITEKEY |
 export function feedbackForm({ page = "/", note = "", email = "", kind = "", error = "", field = "" } = {}) {
   return `<form class="fb-form" action="/feedback" method="post" data-feedback data-sitekey="${TURNSTILE_SITEKEY}">
     <input type="hidden" name="page" value="${esc(page)}">
-    ${error ? `<p class="fb-error" role="alert">${icon("query")}<span>${esc(error)}</span></p>` : ""}
+    ${error ? `<p class="fb-error" id="fb-error" role="alert">${icon("query")}<span>${esc(error)}</span></p>` : ""}
     <fieldset class="fb-kinds">
       <legend>What kind of note is it? <span class="fb-opt">Optional</span></legend>
       <div class="fb-chips">${FEEDBACK_KINDS.map(([v, label]) => `<label><input type="radio" name="kind" value="${v}"${v === kind ? " checked" : ""}><span>${esc(label)}</span></label>`).join("")}</div>
     </fieldset>
     <div class="fb-field">
       <label for="fb-note">Your note</label>
-      <textarea id="fb-note" name="note" rows="5" maxlength="${FEEDBACK_MAX}" required aria-describedby="fb-note-help"${field === "note" ? ' aria-invalid="true"' : ""}>${esc(note)}</textarea>
+      <textarea id="fb-note" name="note" rows="5" maxlength="${FEEDBACK_MAX}" required aria-describedby="fb-note-help${field === "note" ? ' fb-error" aria-invalid="true" autofocus' : '"'}>${esc(note)}</textarea>
       <p class="fb-help" id="fb-note-help">The address of this page is sent with it, so there is no need to say where you were.</p>
     </div>
     <div class="fb-field">
       <label for="fb-email">Email, if you want a reply <span class="fb-opt">Optional</span></label>
-      <input id="fb-email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" maxlength="254" value="${esc(email)}"${field === "email" ? ' aria-invalid="true"' : ""}>
+      <input id="fb-email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" maxlength="254" value="${esc(email)}"${field === "email" ? ' aria-describedby="fb-error" aria-invalid="true" autofocus' : ""}>
     </div>
     <p class="fb-hp" aria-hidden="true"><label>Leave this one empty <input type="text" name="hp_leave_empty" tabindex="-1" autocomplete="off"></label></p>
     <div class="fb-check" data-feedback-check></div>
-    <p class="fb-status" role="status" data-feedback-status></p>
+    <p class="fb-status" id="fb-status" role="status" data-feedback-status></p>
     <div class="fb-act">
       <button class="btn solo" type="submit">Send</button>
       <p class="fb-help">Notes are read by the people who run the site. They are never shown on it. <a href="/about/#privacy">Privacy</a></p>

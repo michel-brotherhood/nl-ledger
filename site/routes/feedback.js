@@ -7,12 +7,14 @@ import { assets, page } from "./_shared.js";
 
 const KINDS = Object.fromEntries(FEEDBACK_KINDS);
 const FROM = "feedback@nlledger.ca"; // any address on the domain: Email Routing is on for it
-const BODY_MAX = 16_000; // bytes of form data; a full note with every field is under 9,000
+const BODY_MAX = 40_000; // bytes of form data: 2,000 characters outside the Latin alphabet are up to 24,000 once encoded
 const DAY_CAP = 300; // notes stored in 24 hours, all visitors together: a flood cannot fill the table or the mailbox
+const CONFIRM_DAY_CAP = 60; // of those, notes that came through the check page: a script can walk that page, so it gets less room
 const ADDRESS_DAY_CAP = 10; // notes stored in a day from one network address, so one sender cannot use up the day's room
 const CONFIRM_MIN = 2_000; // ms between being shown the check page and pressing Send
 const CONFIRM_MAX = 30 * 60_000;
 const EMAIL = /^[^\s@<>()[\]\\,;:"]+@[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+$/i;
+const UNSEEN = /[\u0000-\u001f\u007f-\u009f\u200b-\u200f\u202a-\u202e\u2066-\u2069\ufeff]/; // control and direction characters
 const OTHER_WAY = `Email ${SITE.contact} instead.`;
 
 // ---- what a visitor sent, cleaned
@@ -20,7 +22,8 @@ const clip = (s, n) => [...s].slice(0, n).join("");
 // A path on this site (never another site's address), or nothing.
 export function cleanPage(p) {
   const s = String(p ?? "").replace(/[\u0000-\u001f\u007f]/g, "");
-  return /^\/(?!\/)/.test(s) ? clip(s, 300) : "";
+  // One leading slash and no backslash anywhere: browsers read "/\\host" as another site.
+  return /^\/(?!\/)/.test(s) && !s.includes("\\") ? clip(s, 300) : "";
 }
 function read(form, request) {
   const get = (k) => String(form.get(k) ?? "");
@@ -36,13 +39,14 @@ function read(form, request) {
     kind: KINDS[get("kind")] ? get("kind") : "",
     note: get("note").replace(/\r\n?/g, "\n").replace(/[\u0000-\u0008\u000b-\u001f\u007f]/g, "").trim(),
     email: get("email").trim(),
+    trap: get("hp_leave_empty") !== "",
     page: at,
   };
 }
 function problem(f) {
   if (!f.note) return { field: "note", error: "The note is empty. Write what is missing, wrong or confusing, then press Send." };
   if ([...f.note].length > FEEDBACK_MAX) return { field: "note", error: `The note is over ${FEEDBACK_MAX.toLocaleString("en-CA")} characters. Shorten it, or send it in two parts.` };
-  if (f.email && (f.email.length > 254 || !EMAIL.test(f.email))) return { field: "email", error: "That email address does not look right. Correct it, or leave it empty." };
+  if (f.email && (f.email.length > 254 || !EMAIL.test(f.email) || UNSEEN.test(f.email))) return { field: "email", error: "That email address does not look right. Correct it, or leave it empty." };
   return null;
 }
 
@@ -75,9 +79,16 @@ async function checkConfirm(secret, token, f, now) {
   return { state: age < CONFIRM_MIN ? "early" : "ok", nonce: sig };
 }
 // One network address, for the limits: an IPv6 home or phone holds a whole /64, so its first four groups.
-const addressOf = (ip) => (ip.includes(":") ? ip.split(":").slice(0, 4).join(":") : ip);
+export function addressOf(ip) {
+  if (!ip.includes(":")) return ip;
+  const [head, tail = ""] = ip.split("::");
+  const h = head ? head.split(":") : [];
+  const t = tail ? tail.split(":") : [];
+  const groups = ip.includes("::") ? [...h, ...Array(Math.max(0, 8 - h.length - t.length)).fill("0"), ...t] : h;
+  return groups.slice(0, 4).map((g) => g.replace(/^0+(?=.)/, "").toLowerCase()).join(":");
+}
 // The day's count for an address is kept under a keyed one-way code of it, in a table of its own
-// (feedback_seen): no address is stored, nothing there points at a note, and rows go after two days.
+// (feedback_seen): no address is stored, nothing there points at a note, and counts over a day old are deleted when a note arrives.
 async function addressCode(secret, ip, day) {
   const key = await crypto.subtle.importKey("raw", bytes(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
   return b64(await crypto.subtle.sign("HMAC", key, bytes(`nl-ledger feedback address v1\n${day}\n${addressOf(ip)}`))).slice(0, 22);
@@ -109,11 +120,12 @@ const formPage = (ctx, f, { title, lede, error, field, status }) =>
     body: `${head(esc(title), lede)}<section class="fb fb-page" id="feedback" aria-label="Feedback"><div class="fb-in">${feedbackForm({ ...f, error, field })}</div></section>`,
   });
 
+// `early`: the press came within two seconds. The page keeps the same token, so the wait is not started again.
 function confirmPage(ctx, f, token, early) {
   const hidden = (extra) => [["kind", f.kind], ["note", f.note], ["email", f.email], ["page", f.page], ...extra].map(([k, v]) => `<input type="hidden" name="${k}" value="${esc(v)}">`).join("");
   return render(ctx, {
     title: "Check your note, then send it",
-    body: `${head("Check your note, then send it", early ? "That was quick. Press Send this note once more." : "One more press sends it. This step keeps automated junk out.")}
+    body: `${head("Check your note, then send it", early ? "That was quick. Wait a moment, then press Send this note once more." : "One more press sends it. This step keeps automated junk out.")}
 <section class="section"><div class="wrap fb-confirm">
   <dl class="fb-back">
     ${f.kind ? `<div><dt>Kind</dt><dd>${esc(KINDS[f.kind])}</dd></div>` : ""}
@@ -183,19 +195,22 @@ Sent from the feedback box on ${SITE.url.replace("https://", "")}. Replying to t
 async function store(ctx, f, checked, nonce, ip) {
   const { env } = ctx;
   const now = new Date();
-  const recent = await env.DB.prepare("SELECT count(*) n FROM feedback WHERE created > ?").bind(new Date(now - 86_400_000).toISOString()).first();
-  if ((recent?.n ?? 0) >= DAY_CAP) return "full";
+  // The same token sent twice (a double press, a reload): already stored, nothing more to do or to count.
+  if (await env.DB.prepare("SELECT 1 FROM feedback WHERE nonce = ?").bind(nonce).first()) return "stored";
+  const recent = await env.DB.prepare("SELECT count(*) n, sum(checked = 'confirm') c FROM feedback WHERE created > ?").bind(new Date(now - 86_400_000).toISOString()).first();
+  if ((recent?.n ?? 0) >= DAY_CAP || (checked === "confirm" && (recent?.c ?? 0) >= CONFIRM_DAY_CAP)) return "full";
   const created = now.toISOString();
   if (ip) {
     const day = created.slice(0, 10);
     const seen = await env.DB.prepare("INSERT INTO feedback_seen (k, day, n) VALUES (?, ?, 1) ON CONFLICT(k, day) DO UPDATE SET n = n + 1 RETURNING n")
       .bind(await addressCode(env.TURNSTILE_SECRET, ip, day), day).first();
+    // Only today's and yesterday's counts are kept.
+    ctx.waitUntil(env.DB.prepare("DELETE FROM feedback_seen WHERE day < ?").bind(new Date(now - 86_400_000).toISOString().slice(0, 10)).run().catch(() => {}));
     if (seen.n > ADDRESS_DAY_CAP) return "many";
-    if (seen.n === 1) ctx.waitUntil(env.DB.prepare("DELETE FROM feedback_seen WHERE day < ?").bind(new Date(now - 2 * 86_400_000).toISOString().slice(0, 10)).run().catch(() => {}));
   }
   const row = await env.DB.prepare("INSERT INTO feedback (created, kind, page, note, email, checked, nonce) VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT(nonce) DO NOTHING RETURNING id")
     .bind(created, f.kind, f.page, f.note, f.email, checked, nonce).first();
-  if (!row) return "stored"; // the same token sent twice (a double press, a reload): already stored, nothing more to do
+  if (!row) return "stored";
   ctx.waitUntil((async () => {
     const mail = await email(env, { ...f, id: row.id, created });
     await env.DB.prepare("UPDATE feedback SET mail = ? WHERE id = ?").bind(mail, row.id).run();
@@ -218,13 +233,18 @@ export async function onRequest(ctx) {
       : formPage(ctx, f, { title: "Your note was not sent", error, field, status });
 
   // A form on another site cannot post here.
+  // A browser says where a post came from in one of three headers; whichever is present must name this site.
   const origin = request.headers.get("origin");
-  if (origin && origin !== url.origin) return fail(403, `This form only works on ${url.host}.`);
+  const site = request.headers.get("sec-fetch-site");
+  const referer = request.headers.get("referer");
+  const foreign = origin ? origin !== url.origin : site ? site !== "same-origin" && site !== "none" : referer ? !referer.startsWith(url.origin + "/") : false;
+  if (foreign) return fail(403, `This form only works on ${url.host}.`);
 
   const ip = request.headers.get("cf-connecting-ip") || "";
   const limited = env.FEEDBACK_LIMIT ? !(await env.FEEDBACK_LIMIT.limit({ key: addressOf(ip) || "unknown" })).success : false;
   const tooLong = `That is too long to send. Keep the note under ${FEEDBACK_MAX.toLocaleString("en-CA")} characters.`;
   if (Number(request.headers.get("content-length") || 0) > BODY_MAX) return fail(413, tooLong);
+  if (/^multipart\//i.test(request.headers.get("content-type") || "")) return fail(415, "The note could not be read. Send it from the form on this site.");
   let form;
   try {
     const text = await request.text();
@@ -245,28 +265,28 @@ export async function onRequest(ctx) {
   if (bad) return fail(400, bad.error, f, bad.field);
 
   const done = () => (json ? noStore(Response.json({ ok: true })) : noStore(new Response(null, { status: 303, headers: { location: `/feedback/sent/?from=${encodeURIComponent(f.page)}` } })));
-  // The hidden field only a script fills in: say thanks, keep nothing.
-  if (form.get("hp_leave_empty")) return done();
-
   if (!env.TURNSTILE_SECRET || !env.DB) return fail(503, `Notes cannot be taken right now. ${OTHER_WAY}`, f);
+  const checkPage = async (early) => confirmPage(ctx, f, early || (await confirmToken(env.TURNSTILE_SECRET, f, Date.now())), !!early);
+  const viaCheckPage = () => (json ? fail(403, "The check did not pass.", f, "", { fallback: true }) : checkPage());
   let checked = "";
   let nonce = "";
   const token = form.get("cf-turnstile-response");
-  if (token && (await turnstile(env, token, ip))) {
+  const confirm = form.get("confirm");
+  // A filled trap field (the one only a script, or an over-eager autofill, fills in) is never taken on Turnstile's
+  // word: it goes by the check page, where a person presses once more and a script is held to that page's limits.
+  if (token && !f.trap && (await turnstile(env, token, ip))) {
     checked = "turnstile";
     nonce = crypto.randomUUID();
-  } else if (form.get("confirm")) {
-    const c = await checkConfirm(env.TURNSTILE_SECRET, form.get("confirm"), f, Date.now());
+  } else if (confirm) {
+    const c = await checkConfirm(env.TURNSTILE_SECRET, confirm, f, Date.now());
     if (c.state === "ok") {
       checked = "confirm";
       nonce = c.nonce;
-    } else if (json) return fail(403, "The check did not pass.", f, "", { fallback: true });
-    else return confirmPage(ctx, f, await confirmToken(env.TURNSTILE_SECRET, f, Date.now()), c.state === "early");
-  } else if (json) {
-    // The script falls back to a plain form post, which gets the check page.
-    return fail(403, "The check did not pass.", f, "", { fallback: true });
+    } else if (json) return viaCheckPage();
+    else return checkPage(c.state === "early" ? confirm : "");
   } else {
-    return confirmPage(ctx, f, await confirmToken(env.TURNSTILE_SECRET, f, Date.now()), false);
+    // No check yet: the script falls back to a plain form post, and a plain form post gets the check page.
+    return viaCheckPage();
   }
 
   let result;

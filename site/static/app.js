@@ -230,19 +230,44 @@
     const here = at.value;
 
     // Characters left, once the limit is near.
-    const help = form.querySelector("#fb-note-help");
     const count = document.createElement("span");
     count.className = "fb-count";
-    help.append(" ", count);
+    count.setAttribute("aria-live", "polite");
+    form.querySelector("#fb-note-help").append(" ", count);
     note.addEventListener("input", () => {
       const left = note.maxLength - note.value.length;
       count.textContent = left <= 200 ? `${left} characters left.` : "";
     });
 
-    // The check that a person is sending it (Cloudflare Turnstile) loads only once someone starts a note.
+    // A kind is optional, so a second press on the chosen one takes it back.
+    for (const radio of form.querySelectorAll("input[name=kind]")) {
+      let was = radio.checked;
+      radio.addEventListener("pointerdown", () => (was = radio.checked));
+      radio.addEventListener("click", (e) => {
+        if (was && e.detail) radio.checked = false;
+        was = radio.checked;
+      });
+    }
+
+    const say = (text, error) => {
+      status.textContent = text;
+      status.classList.toggle("is-error", !!error);
+    };
+    let sending = false;
+    const busy = (on) => {
+      sending = on;
+      btn.setAttribute("aria-disabled", String(on));
+      btn.textContent = on ? "Sending…" : "Send";
+    };
+    // Back from the check page: the form is usable again.
+    addEventListener("pageshow", () => busy(false));
+
+    // The check that a person is sending it (Cloudflare Turnstile) loads only once someone starts a note:
+    // the first character typed, the first kind picked, or Send.
     let token = "";
     let widget = null;
     let loading = null;
+    let asked = false; // Turnstile is showing its box and waiting for a click
     const load = () =>
       (loading ||= new Promise((resolve) => {
         const s = document.createElement("script");
@@ -256,9 +281,13 @@
               size: "flexible",
               theme: document.documentElement.dataset.theme || "auto",
               "response-field": false,
-              callback: (t) => (token = t),
+              callback: (t) => ((token = t), (asked = false)),
               "expired-callback": () => (token = ""),
-              "error-callback": () => ((token = ""), true),
+              "error-callback": () => ((token = ""), (asked = false), true),
+              "before-interactive-callback": () => {
+                asked = true;
+                if (sending) say("One more step: tick the box above. The note is sent as soon as you do.");
+              },
             });
           } catch (e) {}
           resolve();
@@ -266,10 +295,13 @@
         s.onerror = () => resolve();
         document.head.append(s);
       }));
-    form.addEventListener("focusin", load, { once: true });
+    form.addEventListener("input", load, { once: true });
+    form.addEventListener("change", load, { once: true });
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    // The token, or "" when Turnstile cannot give one in `ms` (two minutes while it waits for a click).
     const waitToken = async (ms) => {
-      await load();
-      for (let t = 0; !token && widget !== null && t < ms; t += 100) await new Promise((r) => setTimeout(r, 100));
+      await Promise.race([load(), wait(ms)]);
+      for (let t = 0; !token && widget !== null && t < (asked ? 120000 : ms); t += 100) await wait(100);
       return token;
     };
     const renew = () => {
@@ -277,19 +309,10 @@
       try { window.turnstile.reset(widget); } catch (e) {}
     };
 
-    const say = (text, error) => {
-      status.textContent = text;
-      status.classList.toggle("is-error", !!error);
-    };
-    const busy = (on) => {
-      btn.disabled = on;
-      btn.textContent = on ? "Sending…" : "Send";
-    };
     const thanks = () => {
       const done = document.createElement("div");
       done.className = "fb-done";
-      done.tabIndex = -1;
-      done.innerHTML = `<h3>Thank you. Your note was sent.</h3>
+      done.innerHTML = `<h3 tabindex="-1">Thank you. Your note was sent.</h3>
         <p>Every note is read by a person. A question gets a reply at the email address left with it; without an address there is no way to reply.</p>
         <p><button type="button" class="btn solo ghost">Send another note</button></p>`;
       done.querySelector("button").addEventListener("click", () => {
@@ -303,13 +326,17 @@
       });
       form.hidden = true;
       form.after(done);
-      done.focus();
+      done.querySelector("h3").focus();
     };
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      if (btn.disabled) return;
-      for (const el of form.querySelectorAll("[aria-invalid]")) el.removeAttribute("aria-invalid");
+      if (sending) return;
+      for (const el of form.querySelectorAll("[aria-invalid]")) {
+        el.removeAttribute("aria-invalid");
+        if (el !== note) el.removeAttribute("aria-describedby");
+        else el.setAttribute("aria-describedby", "fb-note-help");
+      }
       busy(true);
       say("");
       const t = await waitToken(8000);
@@ -318,7 +345,7 @@
       const body = new URLSearchParams(new FormData(form));
       body.set("cf-turnstile-response", t);
       try {
-        const res = await fetch(form.action, { method: "POST", headers: { accept: "application/json" }, body });
+        const res = await fetch(form.action, { method: "POST", headers: { accept: "application/json" }, body, signal: AbortSignal.timeout(20000) });
         const j = await res.json();
         if (j.ok) return thanks();
         if (j.fallback) return form.submit();
@@ -326,6 +353,7 @@
         const el = j.field && form.elements[j.field];
         if (el) {
           el.setAttribute("aria-invalid", "true");
+          el.setAttribute("aria-describedby", `${el === note ? "fb-note-help " : ""}fb-status`);
           el.focus();
         }
       } catch (err) {

@@ -237,23 +237,28 @@ cd site
 ./notes.sh delete 12   # delete note 12
 ```
 
+- The last line counts notes whose email was not sent.
 - Each note shows its kind, the page it was sent from, the reply address if one was left, how the sender was checked (`turnstile` or `confirm`) and what the mail system answered (`sent <message id>` or `failed: ...`).
 - A note whose mail failed is still in the table; the list is the record, the email is the notice.
-- Replying to the email writes to the visitor when they left an address (it is the message's Reply-To).
+- Replying to the email writes to the visitor when they left an address (it is the message's Reply-To). The reply goes out from whatever address the mailbox sends as.
 
 ### What stops junk
 
 | Guard | What |
 |---|---|
-| Turnstile | Cloudflare Turnstile widget "NL Ledger feedback box" (managed, shown only when it needs a click, no clearance cookie). The script loads when someone first focuses the form, never on page load. The server verifies the token before storing |
-| Check page | No token (JavaScript off, Turnstile blocked or failed): the note is shown back on a page with a "Send this note" button. That page carries a token signed with the Worker's secret over the note and the time; it stores once, not within 2 seconds, not after 30 minutes, and not for a different note |
-| Trap field | A field people never see. A post that fills it gets the thank-you and stores nothing |
-| Rate limit | `FEEDBACK_LIMIT`: 4 posts a minute per network address. Cloudflare counts this per location and loosely; measured on 2026-09-30, a run of 14 quick posts had 5 refused by it. It slows a flood; the check above is what keeps notes out |
-| Per address, per day | 10 stored notes. Counted in `feedback_seen` under a keyed one-way code of the address (an IPv6 address counts as its /64); rows are deleted after two days |
+| Turnstile | Cloudflare Turnstile widget "NL Ledger feedback box" (managed, shown only when it needs a click, no clearance cookie). The script loads when someone starts a note (the first letter typed, a kind picked, or Send), never on page load. The server verifies the token before storing |
+| Check page | No token (JavaScript off, Turnstile blocked or failed): the note is shown back on a page with a "Send this note" button. That page carries a token signed with the Worker's secret over the note and the time; it stores once, not within 2 seconds, not after 30 minutes, and not for a different note. A script can walk this page, so notes that come this way are capped at 60 in 24 hours, which leaves the rest of the day's room for Turnstile-checked notes |
+| Trap field | A field people never see. A post that fills it is sent to the check page whatever Turnstile said, so a person whose browser filled it by mistake loses nothing |
+| Rate limit | `FEEDBACK_LIMIT`: 4 posts a minute per network address. Cloudflare counts this per location and loosely; measured on 2026-09-30, a run of 14 quick posts had 5 refused by it. It slows a flood; the checks and the caps are what bound it |
+| Per address, per day | 10 stored notes. Counted in `feedback_seen` under a keyed one-way code of the address (an IPv6 address counts as its /64); counts more than a day old are deleted whenever a note arrives |
 | Per day, everyone | 300 stored notes in 24 hours; past that the form says to email instead |
-| Size | 2,000 characters a note; a request over 16,000 bytes is refused unread |
-| Origin | A post whose `Origin` is another site is refused |
+| Size | 2,000 characters a note; a request over 40,000 bytes is refused unread |
+| Origin | A post whose `Origin`, `Sec-Fetch-Site` or `Referer` names another site is refused |
 | Nothing echoed | A note is shown only to its sender (the check page, or the form handed back with what to fix), in a response marked `no-store`. No page lists notes |
+
+### What Cloudflare logs
+
+Workers Logs are on (`observability` in `site/cloudflare.config.ts`). Each request the Worker handles, a note included, is logged with its time, address, network address, location and browser headers; the form's fields are not (read from a logged `POST /feedback` on 2026-09-30). The Privacy section says so.
 
 ### Secrets and mail
 
@@ -269,7 +274,7 @@ cd site
 
 `NL_LEDGER_PREVIEW=1 cf deploy` (in `site/`) deploys the same code and bindings as a second Worker, `nlledger-preview`, on its workers.dev address, and leaves the live site alone. It reads and writes the live D1 database.
 
-- Before the first deploy: set both secrets on `nlledger-preview` and add its hostname to the Turnstile widget's domains.
+- Before the first deploy: set both secrets on `nlledger-preview` (the real ones, never Cloudflare's published test secret: it also signs the check page's token) and add its hostname to the Turnstile widget's domains.
 - Afterwards: delete the Worker (`cf workers delete nlledger-preview`), take the hostname off the widget, and delete the test notes.
 
 ## D1 write budget

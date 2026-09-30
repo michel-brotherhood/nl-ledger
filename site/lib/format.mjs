@@ -6,7 +6,7 @@ export const SITE = {
   tagline: "Where Newfoundland and Labrador's public money goes",
   url: "https://nlledger.ca",
   corrections: "corrections@nlledger.ca",
-  // Where the feedback box's notes are emailed, and the address a reply comes from.
+  // The address a visitor is pointed to when the feedback box cannot take a note.
   contact: "info@nlledger.ca",
 };
 

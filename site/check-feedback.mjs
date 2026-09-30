@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import { DatabaseSync } from "node:sqlite";
 import worker from "./worker.mjs";
 import { layout, FEEDBACK_MAX } from "./lib/html.mjs";
+import { addressOf } from "./routes/feedback.js";
 
 const HERE = new URL(".", import.meta.url).pathname;
 const sql = new DatabaseSync(":memory:");
@@ -88,7 +89,9 @@ const check = (ok, what) => {
   check(res.headers.get("cache-control") === "private, no-store" && !/id="feedback"/.test(h.split("<footer")[1] || ""), "the check page is never cached");
   const token = h.match(/name="confirm" value="([^"]+)"/)[1];
   res = await post({ ...f, confirm: token });
-  check(/That was quick/.test(await res.text()) && rows().length === before, "a press within two seconds is asked again");
+  h = await res.text();
+  check(/That was quick/.test(h) && rows().length === before, "a press within two seconds is asked again");
+  check(h.includes(`name="confirm" value="${token}"`), "and keeps its token, so the wait does not start over");
   const old = Date.now;
   Date.now = () => old() + 5000;
   res = await post({ ...f, note: "Something else entirely", confirm: token });
@@ -97,8 +100,10 @@ const check = (ok, what) => {
   check(/Check your note/.test(await res.text()) && rows().length === before, "a forged token is refused");
   res = await post({ ...f, confirm: token });
   check(res.status === 303 && res.headers.get("location") === "/feedback/sent/?from=%2Fitem%2Fabc%2F" && rows().length === before + 1 && rows().at(-1).checked === "confirm", "after the wait the note is stored, and the browser is sent to the thank-you");
-  res = await post({ ...f, confirm: token });
+  res = await post({ ...f, confirm: token }, { "cf-connecting-ip": "198.51.100.7" });
+  res = await post({ ...f, confirm: token }, { "cf-connecting-ip": "198.51.100.7" });
   check(res.status === 303 && rows().length === before + 1, "the same token stores once");
+  check(sql.prepare("SELECT count(*) n FROM feedback_seen").get().n === 0, "and a repeated press is not counted against the address");
   Date.now = () => old() + 31 * 60_000;
   res = await post({ ...f, confirm: token });
   check(/Check your note/.test(await res.text()), "a token over half an hour old is refused");
@@ -118,8 +123,19 @@ const check = (ok, what) => {
   check(res.status === 400 && (await res.json()).field === "note", "an empty note is refused");
   res = await post({ note: "x".repeat(FEEDBACK_MAX + 1), "cf-turnstile-response": "good" }, JSON_);
   check(res.status === 400, `a note over ${FEEDBACK_MAX} characters is refused`);
-  res = await post({ note: "x".repeat(20000), "cf-turnstile-response": "good" }, JSON_);
+  res = await post({ note: "x".repeat(50000), "cf-turnstile-response": "good" }, JSON_);
   check(res.status === 413, "an oversized request is refused before it is read");
+  res = await worker.fetch(new Request("https://nlledger.ca/feedback", { method: "POST", body: (() => { const d = new FormData(); d.set("note", "x"); return d; })() }), env, { waitUntil() {} });
+  check(res.status === 415, "a multipart post is refused with a reason");
+  for (const bad of ["a\u001bcb@x.ca", "a\u202eb@x.ca", "a\u0000@x.ca"]) {
+    res = await post({ note: "x", email: bad, "cf-turnstile-response": "good" }, JSON_);
+    if (res.status !== 400) check(false, `an email address with a control character is refused (${JSON.stringify(bad)})`);
+  }
+  check(true, "email addresses with control or direction characters are refused");
+  res = await post({ note: "x", "cf-turnstile-response": "good" }, { ...JSON_, "sec-fetch-site": "cross-site" });
+  check(res.status === 403, "a cross-site post with no Origin header is refused");
+  res = await post({ note: "x" }, { referer: "https://evil.example/page" });
+  check(res.status === 403 && !/Check your note/.test(await res.text()), "so is one that only names another site as its referer");
   res = await post({ note: "x", email: "not an address", "cf-turnstile-response": "good" }, JSON_);
   check(res.status === 400 && (await res.json()).field === "email", "a bad email address is refused");
   res = await post({ note: "x", email: "a@b.ca\r\nBcc: x@y.z", "cf-turnstile-response": "good" }, JSON_);
@@ -127,7 +143,9 @@ const check = (ok, what) => {
   res = await post({ note: "x", "cf-turnstile-response": "good" }, { ...JSON_, origin: "https://evil.example" });
   check(res.status === 403, "a post from another site is refused");
   res = await post({ note: "buy pills", hp_leave_empty: "http://spam.example", "cf-turnstile-response": "good" }, JSON_);
-  check(res.status === 200 && rows().length === before, "a filled trap field gets a thank-you and stores nothing");
+  check(res.status === 403 && (await res.json()).fallback === true && rows().length === before, "a filled trap field is not taken on Turnstile's word");
+  res = await post({ note: "autofilled by mistake", hp_leave_empty: "Main St", "cf-turnstile-response": "good" });
+  check(/Check your note/.test(await res.text()) && rows().length === before, "it goes to the check page, so a person whose browser filled it loses nothing");
   allow = false;
   res = await post({ note: "x", "cf-turnstile-response": "good" }, JSON_);
   check(res.status === 429 && res.headers.get("retry-after") === "60", "over the rate limit: refused, with when to try again");
@@ -159,6 +177,13 @@ const check = (ok, what) => {
   mailFails = false;
 }
 
+// ---- a long note in another script
+{
+  const n = rows().length;
+  const res = await post({ note: "ᐃᓄᒃᑎᑐᑦ".repeat(285), "cf-turnstile-response": "good" }, JSON_);
+  check(res.status === 200 && rows().length === n + 1, "1,995 Inuktitut characters are accepted (every one is nine bytes on the wire)");
+}
+
 // ---- one address, one day
 {
   const from = (ip) => ({ ...JSON_, "cf-connecting-ip": ip });
@@ -172,7 +197,34 @@ const check = (ok, what) => {
   await post({ note: "v6 b", "cf-turnstile-response": "good" }, from("2001:db8:1:2:bbbb::2"));
   const seen = sql.prepare("SELECT k, n FROM feedback_seen ORDER BY n").all();
   check(seen.length === 3 && seen.at(-2).n === 2, "an IPv6 /64 counts as one address");
+  check(addressOf("2001:db8::1:2:3:4") === addressOf("2001:db8::9:2:3:4") && addressOf("2001:0db8:0:0:1::") === "2001:db8:0:0" && addressOf("::1") === "0:0:0:0" && addressOf("203.0.113.9") === "203.0.113.9", "a shortened IPv6 address is expanded before its /64 is taken");
+  sql.prepare("INSERT INTO feedback_seen (k, day, n) VALUES ('old', '2020-01-01', 1), ('yesterday', ?, 1)").run(new Date(Date.now() - 86_400_000).toISOString().slice(0, 10));
+  await post({ note: "again", "cf-turnstile-response": "good" }, from("203.0.113.10"));
+  const kept = sql.prepare("SELECT k FROM feedback_seen").all().map((r) => r.k);
+  check(!kept.includes("old") && kept.includes("yesterday"), "counts more than a day old are deleted whenever a note arrives");
   check(seen.every((r) => !/203|2001|db8/.test(r.k)) && !JSON.stringify(rows()).includes("203.0.113"), "no address is stored, only a one-way code, apart from the notes");
+}
+
+// ---- the check page's share of the day
+{
+  const old = Date.now;
+  const viaCheckPage = async (note) => {
+    const f = { note };
+    const h = await (await post(f)).text();
+    const token = h.match(/name="confirm" value="([^"]+)"/)[1];
+    Date.now = () => old() + 3000;
+    const res = await post({ ...f, confirm: token });
+    Date.now = old;
+    return res;
+  };
+  const ins = sql.prepare("INSERT INTO feedback (created, note, checked, nonce) VALUES (?, 'fill', 'confirm', ?)");
+  const have = sql.prepare("SELECT count(*) n FROM feedback WHERE checked = 'confirm'").get().n;
+  for (let i = have; i < 60; i++) ins.run(new Date().toISOString(), `cfill-${i}`);
+  const n = rows().length;
+  let res = await viaCheckPage("the sixty-first by the check page");
+  check(res.status === 503 && rows().length === n, "the check page stores 60 notes a day, then no more");
+  res = await post({ note: "a Turnstile-checked note still gets in", "cf-turnstile-response": "good" }, JSON_);
+  check(res.status === 200 && rows().length === n + 1, "which leaves the rest of the day's room for Turnstile-checked notes");
 }
 
 // ---- the day's cap
@@ -188,7 +240,7 @@ const check = (ok, what) => {
 {
   const get = (u) => worker.fetch(new Request("https://nlledger.ca" + u), env, { waitUntil() {} }).then((r) => r.text());
   check(/href="\/flags\/">Back to the page you were on/.test(await get("/feedback/sent/?from=/flags/")), "the thank-you links back to the page");
-  check(!/evil/.test(await get("/feedback/sent/?from=//evil.example/")) && !/evil/.test(await get("/feedback/sent/?from=https://evil.example/")), "and never to another site");
+  check(!/evil/.test(await get("/feedback/sent/?from=//evil.example/")) && !/evil/.test(await get("/feedback/sent/?from=https://evil.example/")) && !/evil/.test(await get("/feedback/sent/?from=/%5Cevil.example/x")), "and never to another site, by slash or backslash");
 }
 
 console.log(failed ? `${failed} FAILED` : "feedback checks: pass");

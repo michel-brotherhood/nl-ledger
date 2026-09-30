@@ -14,5 +14,5 @@ CREATE TABLE IF NOT EXISTS feedback (
 );
 CREATE INDEX IF NOT EXISTS feedback_created ON feedback (created);
 -- How many notes a network address has sent in a day, under a keyed one-way code of the address (never the
--- address itself). Rows are deleted after two days.
+-- address itself). Counts more than a day old are deleted whenever a note arrives.
 CREATE TABLE IF NOT EXISTS feedback_seen (k TEXT NOT NULL, day TEXT NOT NULL, n INTEGER NOT NULL, PRIMARY KEY (k, day));

@@ -11,15 +11,22 @@ setting() { local v="${!1:-}"; [ -n "$v" ] || v=$(sed -n "s/^$1=//p" .env 2>/dev
 export CLOUDFLARE_ACCOUNT_ID="$(setting CLOUDFLARE_ACCOUNT_ID)"
 DB="$(setting NL_LEDGER_D1_ID)"
 cf="$(command -v cf || echo ./node_modules/.bin/cf)"
-id() { [[ "${1:-}" =~ ^[0-9]+$ ]] || { echo "give the note's number" >&2; exit 1; }; echo "$1"; }
 case "${1:-}" in
   setup) "$cf" d1 query "$DB" --sql "$(grep -v '^--' feedback.sql | sed 's/--.*//' | tr '\n' ' ')" ;;
-  done) "$cf" d1 query "$DB" --sql "UPDATE feedback SET done = date('now') WHERE id = $(id "${2:-}")" ;;
-  delete) "$cf" d1 query "$DB" --sql "DELETE FROM feedback WHERE id = $(id "${2:-}")" ;;
+  done | delete)
+    [[ "${2:-}" =~ ^[0-9]+$ ]] || { echo "give the note's number: ./notes.sh $1 12" >&2; exit 1; }
+    if [ "$1" = done ]; then sql="UPDATE feedback SET done = date('now') WHERE id = $2"; else sql="DELETE FROM feedback WHERE id = $2"; fi
+    "$cf" d1 query "$DB" --sql "$sql" ;;
   "" | *[0-9])
-    "$cf" d1 query "$DB" --sql "SELECT id, created, kind, page, note, email, checked, mail, done FROM feedback ORDER BY id DESC LIMIT $(id "${1:-20}")" |
-      node -e 'const rows = JSON.parse(require("fs").readFileSync(0, "utf8")).flatMap((x) => x.results || []);
-        for (const r of rows) console.log(`#${r.id}  ${r.created.slice(0, 16).replace("T", " ")} UTC  ${r.kind || "no kind"}  ${r.page || "no page"}${r.done ? `  [done ${r.done}]` : ""}\n    reply to: ${r.email || "no address"}   checked by: ${r.checked}   mail: ${r.mail || "pending"}\n${r.note.replace(/^/gm, "    | ")}\n`);
-        console.log(`${rows.length} ${rows.length === 1 ? "note" : "notes"}`);' ;;
+    n="${1:-20}"
+    [[ "$n" =~ ^[0-9]+$ ]] || { echo "give a number of notes: ./notes.sh 50" >&2; exit 1; }
+    "$cf" d1 query "$DB" --sql "SELECT id, created, kind, page, note, email, checked, mail, done FROM feedback ORDER BY id DESC LIMIT $n; SELECT count(*) unsent FROM feedback WHERE mail NOT LIKE 'sent%'" |
+      node -e 'const out = JSON.parse(require("fs").readFileSync(0, "utf8"));
+        const rows = out[0]?.results || [];
+        // Visitor text goes to a terminal: control and direction characters are dropped (a note keeps its line breaks).
+        const c = (s, keep) => String(s ?? "").replace(keep ? /[\u0000-\u0009\u000b-\u001f\u007f-\u009f‪-‮⁦-⁩]/g : /[\u0000-\u001f\u007f-\u009f‪-‮⁦-⁩]/g, "");
+        for (const r of rows) console.log(`#${r.id}  ${r.created.slice(0, 16).replace("T", " ")} UTC  ${r.kind || "no kind"}  ${c(r.page) || "no page"}${r.done ? `  [done ${r.done}]` : ""}\n    reply to: ${c(r.email) || "no address"}   checked by: ${r.checked}   mail: ${c(r.mail) || "pending"}\n${c(r.note, true).replace(/^/gm, "    | ")}\n`);
+        const unsent = out[1]?.results?.[0]?.unsent || 0;
+        console.log(`${rows.length} ${rows.length === 1 ? "note" : "notes"}${unsent ? `; ${unsent} in the table with no email sent (mail failed or is pending)` : ""}`);' ;;
   *) sed -n '2,7p' "$0" ;;
 esac
