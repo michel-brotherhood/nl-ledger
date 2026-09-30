@@ -1741,7 +1741,7 @@ article a,
 
 /* Prototype notice, every page */
 .proto { background: var(--paper-3); color: var(--ink); border-block-end: 1px solid var(--hair); }
-.proto p { margin: 0 auto; max-inline-size: 72rem; padding: .6rem 1rem; font-size: .95rem; line-height: 1.5; text-align: center; }
+.proto p { margin: 0 auto; max-inline-size: 72rem; padding: .6rem 1rem; font-size: .95rem; line-height: 1.5; text-align: center; text-wrap: balance; }
 .proto strong { display: inline-block; margin-inline-end: .4rem; padding: .05rem .5rem; border-radius: var(--radius); background: var(--gold); color: var(--on-gold); font-size: .8rem; font-weight: 800; font-stretch: 80%; letter-spacing: .07em; text-transform: uppercase; vertical-align: .05em; }
 .proto a { color: inherit; font-weight: 600; text-underline-offset: .15em; }
 
