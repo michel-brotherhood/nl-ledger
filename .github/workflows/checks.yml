@@ -33,6 +33,9 @@ jobs:
         # not download every source. So this scans the site code: lib/, routes/, worker.mjs and
         # static/ (dist is absent).
         run: ./site/check.sh
+      - name: MCP checks on the sample
+        # Exercise the read-only MCP tools over HTTP, through the local server and committed sample data.
+        run: node site/check-mcp.mjs
 
   reconcile:
     name: Reconciliation on sample sources
