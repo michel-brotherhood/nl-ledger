@@ -206,13 +206,18 @@ function methodPage(D, B) {
 <section class="section"><div class="wrap prose">
   <h2>Two bases of accounting</h2>
   <p>The province publishes its finances on two bases. They answer different questions, cover different bodies and count at different moments. This site shows both and never adds a figure from one to a figure from the other.</p>
-  <div class="sched-wrap"><table class="sched">
-    <thead><tr><th scope="col">Question</th><th scope="col">Documents</th><th scope="col">Basis</th><th scope="col">Covers</th></tr></thead>
-    <tbody>
-      <tr><th scope="row">What was budgeted, and what was spent?</th><td>Budgeted: the Estimates given to the House of Assembly with the budget. Spent: the Report on the Program Expenditures and Revenues of the Consolidated Revenue Fund.</td><td>Modified cash: a payment counts in the year it is made.</td><td>Government departments, the Legislature and the money they pass on as grants.</td></tr>
-      <tr><th scope="row">Did the year end in surplus or deficit, and what is the debt?</th><td>The Public Accounts: the audited Consolidated Summary Financial Statements.</td><td>Accrual: a cost counts in the year it is incurred, and buildings and roads are spread over their useful lives.</td><td>Departments together with Crown corporations, boards and authorities, such as Newfoundland and Labrador Health Services, Memorial University and Newfoundland and Labrador Hydro.</td></tr>
-    </tbody>
-  </table></div>
+  <h3>What was budgeted, and what was spent?</h3>
+  <ul>
+    <li><strong>Documents.</strong> Budgeted: the Estimates given to the House of Assembly with the budget. Spent: the Report on the Program Expenditures and Revenues of the Consolidated Revenue Fund.</li>
+    <li><strong>Basis.</strong> Modified cash: a payment counts in the year it is made.</li>
+    <li><strong>Covers.</strong> Government departments and the Legislature, including the grants they pay to other bodies.</li>
+  </ul>
+  <h3>Did the year end in surplus or deficit, and what is the debt?</h3>
+  <ul>
+    <li><strong>Documents.</strong> The Public Accounts: the audited Consolidated Summary Financial Statements.</li>
+    <li><strong>Basis.</strong> Accrual: a cost counts in the year it is incurred, and buildings and roads are spread over their useful lives.</li>
+    <li><strong>Covers.</strong> Departments together with Crown corporations, boards and authorities, such as Newfoundland and Labrador Health Services, Memorial University and Newfoundland and Labrador Hydro.</li>
+  </ul>
 
   <h2>Budgeted against spent</h2>
   <ul>
