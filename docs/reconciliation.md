@@ -104,7 +104,7 @@ Major federal transfers to NL, 2024-25 (Public Accounts, $ millions as published
 ## Department and program spending
 
 - Check: for each department and account (current, capital), gross expenditure summed from the parsed object lines equals the department's gross expenditure in the report's own summary statement (rounded to $000). 174 of 175 match.
-- Check, Estimates: each department's program lines add to the "Total: Program Estimates" line of its Program Funding Summary, current and capital, to the dollar. 184 of 184 match (8 years of Estimates).
+- Check, Estimates: each department's program lines add to the "Total: Program Estimates" line of its Program Funding Summary, current and capital, to the dollar. 248 of 248 match (8 years of Estimates).
   - 2024-25 labrador affairs (CURRENT): summary $16,697,000.00, parsed nothing. The 2024-25 report prints Labrador Affairs detail pages with only a heading and '#MISSING'; the source has no lines to parse.
 - 2019-20 actual: gross expenditure $8,214,258,993.00
 - 2019-20 estimates: gross expenditure $8,654,325,200.00

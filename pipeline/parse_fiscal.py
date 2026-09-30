@@ -250,7 +250,8 @@ def main():
             est_page[k] = int(r["page"])
         else:
             spent[k] += float(r["summary"])
-            spent_src.setdefault(k, (r["source_file"], r["source_url"], int(r["page"])))
+            if k not in spent_src or int(r["page"]) < spent_src[k][2]:  # the current account statement comes first
+                spent_src[k] = (r["source_file"], r["source_url"], int(r["page"]))
 
     def report_name(fy: str, d: str) -> str:
         """The summary statement sometimes prints a shorter name than the department's own pages."""

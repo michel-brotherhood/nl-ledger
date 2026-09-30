@@ -4,8 +4,9 @@ import { money, moneyWords, num, pct, workTime, perPerson, perHousehold, yearsOf
 import { renderReceipt } from "../../lib/receipt.mjs";
 import { caveat } from "../common.mjs";
 import { EXAMPLE } from "../connect.mjs";
+import { coverLedger } from "./budget.mjs";
 
-export function home(D, R) {
+export function home(D, R, B) {
   const notes = new Notes();
   const S = D.stats;
   const fy = R.year;
@@ -14,6 +15,7 @@ export function home(D, R) {
   const cite = notes.cite({ url: src.url, page: src.pages[0], label: `Report on the Program Expenditures and Revenues of the Consolidated Revenue Fund ${fy}, Statement of Expenditure and Related Revenue by Department (current and capital accounts), gross expenditure, all departments`, locator: `PDF pages ${src.pages.join(" and ")}` });
   const citePop = notes.cite({ url: S.population.url, label: `Statistics Canada table ${S.population.table}, population of Newfoundland and Labrador on ${fmtDate(S.population.date)}: ${num(S.population.value)}` });
   const citeWage = notes.cite({ url: S.median_weekly_wage.url, label: `Statistics Canada table ${S.median_weekly_wage.table} (vector ${S.median_weekly_wage.vector}), median weekly wage of full-time employees in Newfoundland and Labrador, ${S.median_weekly_wage.year}: ${money(S.median_weekly_wage.value, { cents: true })}, times 52 weeks = ${money(S.median_annual_wage.value)} a year` });
+  const ledger = coverLedger(B.latest, notes); // cited here so its notes are numbered in page order
   const citeHH = notes.cite({ url: S.households.url, label: `Statistics Canada table ${S.households.table}, private households in Newfoundland and Labrador, 2021 Census: ${num(S.households.value)}` });
   const citeRev = notes.cite({ url: S.provincial_government.url, label: `Statistics Canada table ${S.provincial_government.table}, Newfoundland and Labrador provincial government, ${S.provincial_government.year}: income taxes from households ${moneyWords(S.provincial_government.personal_income_tax)} (vector ${S.provincial_government.vectors["From households"]}) of total revenue ${moneyWords(S.provincial_government.revenue)} (vector ${S.provincial_government.vectors["General governments revenue"]})` });
   const citeTax = notes.cite({ url: S.nl_tax.source, label: `${S.nl_tax.source_label}. The receipt applies the ${S.nl_tax.year} brackets, the basic personal amount, CPP and EI credits and the low-income reduction; other credits are not applied` });
@@ -42,6 +44,7 @@ export function home(D, R) {
     <h1 id="cover-h" class="cover-title">The Newfoundland and Labrador government spent</h1>
     <p class="cover-fig">${moneyWords(total)}${cite}</p>
     <p class="cover-sub">in ${fy}. That is <em>${money(perPerson(total, S))}</em> for every person in the province${citePop}, or what <em>${num(people)}</em> people earning the median full-time wage make in a year${citeWage}.</p>
+    ${ledger}
     <hr class="cover-rule">
     <div class="cover-forms">
       <form class="field" action="/receipt/" method="get" data-receipt-form>
@@ -143,7 +146,7 @@ export function home(D, R) {
       </tbody>
       <tfoot><tr class="total"><th scope="row">All ${depts.length} departments</th><td class="hide-sm"></td><td class="n">${moneyWords(total)}</td><td class="n">${moneyWords(depts.reduce((s, d) => s + (d.original || 0), 0))}</td><td class="n hide-sm">${money(perPerson(total, S))}</td></tr></tfoot>
     </table></div>
-    <p style="margin-block-start:1.5rem"><a href="/priorities/">Every department and program, ${D.years[0]} to ${fy} ${icon("arrow")}</a></p>
+    <p style="margin-block-start:1.5rem"><a href="/priorities/">Every department and program, ${D.years[0]} to ${fy} ${icon("arrow")}</a> · <a href="/budget/">Budget against actual, the deficit and net debt</a></p>
   </div>
 </section>`;
 

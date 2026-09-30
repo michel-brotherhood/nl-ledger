@@ -126,12 +126,13 @@ export const MORE = [
   ["Raycast", "The Install MCP Server command, transport HTTP (Raycast Pro)", "Paste the address", "https://manual.raycast.com/ai/model-context-protocol"],
 ];
 
-// Starter questions. Each was checked against the tools on 2026-09-29: the tools return what the
-// question needs. The "Using NL Ledger" prefix makes the assistant reach for the connector.
+// Starter questions. Each was checked against the tools on 2026-09-29 (the budget one on 2026-09-30):
+// the tools return what the question needs. The "Using NL Ledger" prefix makes the assistant reach for the connector.
 export const QUESTIONS = [
   { q: "What was the largest provincial contract awarded without an open call in 2025, and who got it?", tool: "search_records" },
   { q: "How much has Newfoundland Power received from all levels of government, and what were the largest amounts?", tool: "get_supplier" },
   { q: "Which MHAs claimed the most for travel in 2024-25, and what did the average member claim?", tool: "get_members" },
+  { q: "Did the province spend more or less than it budgeted in 2024-25, and what were the deficit and the net debt?", tool: "get_budget" },
   { q: "How did Health and Community Services spending in 2024-25 compare with its budget, program by program?", tool: "get_department" },
   { q: "Which contracts grew the most after they were awarded? Explain how that is measured.", tool: "get_flag" },
   { q: "What does $50 million work out to per person and per household in Newfoundland and Labrador, and how long would it take to earn on the median wage?", tool: "human_scale" },

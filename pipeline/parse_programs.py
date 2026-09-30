@@ -29,7 +29,8 @@ OBJECT = re.compile(r"^\s+(\d{2})\.\s*(.+?)$")  # "01.Salaries" is printed witho
 # An object printed with no amounts of its own ("11. Debt Expenses:", "10. Grants and Subsidies"):
 # its amounts are the lines printed under it.
 OBJECT_HEAD = re.compile(r"^\s+(\d{2})\.\s*([A-Z][A-Za-z ,&'’\-]+?):?\s*$")
-FUNDING_TOTAL = re.compile(rf"^\s*TOTAL: PROGRAM ESTIMATES\s+{AMT}\s+{AMT}\s+{AMT}\s*$", re.M)
+# Current, Capital and Total; a department with no capital account prints the Current column alone.
+FUNDING_TOTAL = re.compile(rf"^\s*TOTAL: PROGRAM ESTIMATES\s+{AMT}(?:\s+{AMT}\s+{AMT})?\s*$", re.M)
 TOTAL = re.compile(r"^\s+Total:\s+(.+)$")
 SUMMARY_DEPT = re.compile(rf"^\s{{2,4}}([A-Z][A-Za-z ,\-&'’]+?)\s{{2,}}{AMT}\s+{AMT}\s+{AMT}\s+{AMT}\s+{AMT}\s*$")
 
@@ -168,7 +169,8 @@ def parse(path, kind: str, fy: str, rel: str, url: str):
             m = FUNDING_TOTAL.search(text)
             if m:
                 summary[(dept.lower(), "CURRENT")] = (num(m[1]), pno)
-                summary[(dept.lower(), "CAPITAL")] = (num(m[2]), pno)
+                if m[2]:
+                    summary[(dept.lower(), "CAPITAL")] = (num(m[2]), pno)
             continue
         # department header: lines between the rule and "Statement of Expenditure and Related Revenue"
         for i, ln in enumerate(lines[:14]):

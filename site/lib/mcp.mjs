@@ -6,7 +6,7 @@ import { SITE, money, moneyWords, workTime, perPerson, perHousehold, DATASET_LAB
 
 const PROTOCOLS = ["2025-11-25", "2025-06-18", "2025-03-26", "2024-11-05"];
 
-const INSTRUCTIONS = `NL Ledger: public spending records for Newfoundland and Labrador. It covers provincial contract awards, minister and MHA expenses, public sector pay over $100,000, department and program spending, federal contracts, grants and transfers in the province.
+const INSTRUCTIONS = `NL Ledger: public spending records for Newfoundland and Labrador. It covers provincial contract awards, minister and MHA expenses, public sector pay over $100,000, department and program spending, the budget against actual spending with the deficit and net debt, federal contracts, grants and transfers in the province.
 
 Rules for answers:
 - Answer only from tool results. If the records do not answer the question, say so.
@@ -15,7 +15,7 @@ Rules for answers:
 - Patterns ("flags") are questions, not findings. Never call a flagged record wrongdoing, waste or corruption.
 - Amounts are in Canadian dollars. Contract and grant values can span several years.
 
-How to start: use search_records for words or names, get_supplier for one company or recipient, get_department for provincial budgets, get_members to compare MHA or minister expenses, list_flags for patterns, human_scale to make an amount easy to picture.`;
+How to start: use search_records for words or names, get_supplier for one company or recipient, get_budget for what was budgeted against what was spent, the deficit and net debt, get_department for one department's programs, get_members to compare MHA or minister expenses, list_flags for patterns, human_scale to make an amount easy to picture.`;
 
 const PAGE = 25;
 const READ_ONLY = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
@@ -58,9 +58,19 @@ export const TOOLS = [
   {
     name: "get_department",
     title: "Get a provincial department's spending",
-    description: "Get a provincial department's gross spending by program: actual against amended and original estimates, for a fiscal year from 2019-20 to 2024-25, or the 2026-27 estimates. Leave out name to list the departments and years.",
+    description: "Get a provincial department's gross spending by program: actual against amended and original estimates, for a fiscal year from 2019-20 to 2024-25, or the 2025-26 and 2026-27 estimates. Leave out name to list the departments and years.",
     inputSchema: { type: "object", properties: { name: { type: "string", description: "Department name or part of it, e.g. 'Health'." }, year: { type: "string", pattern: "^\\d{4}-\\d{2}$", description: "Fiscal year, e.g. 2024-25 or 2026-27. Default: the latest year with actual spending." } } },
     annotations: { title: "Get a provincial department's spending", ...READ_ONLY },
+  },
+  {
+    name: "get_budget",
+    title: "Budget against actual, the deficit and net debt",
+    description: "Get what the province budgeted and what it spent in a fiscal year, the difference, the annual surplus or deficit, net debt, and every department's budget against its spending, largest difference first. Years from 2019-20; the newest budgets have no published results yet. Two bases that must not be added together: departments_spending is modified cash (the Estimates given to the House against the Report on the Program Expenditures and Revenues); whole_government is the audited Public Accounts (accrual, all government bodies), the only source for the surplus or deficit and net debt. Every figure has its source link. Leave out year for the latest year with published results.",
+    inputSchema: { type: "object", properties: {
+      year: { type: "string", pattern: "^\\d{4}-\\d{2}$", description: "Fiscal year, e.g. 2024-25. Default: the latest year with published results." },
+      department: { type: "string", description: "Part of a department name, to return only matching departments, e.g. 'Health'." },
+    } },
+    annotations: { title: "Budget against actual, the deficit and net debt", ...READ_ONLY },
   },
   {
     name: "get_members",
@@ -117,6 +127,8 @@ export const PROMPTS = [
     text: (a) => `Using NL Ledger, what did Newfoundland and Labrador public bodies award without an open call in ${a.year || "the most recent full year"}? List the largest awards with buyer, supplier and amount, and cite the source of each.` },
   { name: "follow_the_money", title: "Follow one company's money", description: "Everything one company or group received, from every level of government.", arguments: [{ name: "name", description: "Company or recipient name", required: true }],
     text: (a) => `Using NL Ledger, show everything ${a.name || "this company"} received from provincial and federal governments, by source and year. Cite the largest records.` },
+  { name: "budget_check", title: "Was that the plan?", description: "What the province budgeted against what it spent, with the deficit and net debt.", arguments: [{ name: "year", description: "Fiscal year, e.g. 2024-25", required: false }],
+    text: (a) => `Using NL Ledger, what did Newfoundland and Labrador budget for ${a.year || "the latest year with published results"}, what did it spend, and what were the deficit and net debt? Name the departments furthest over and under their budgets, say which figures are on which basis of accounting, and cite each source.` },
   { name: "mha_travel", title: "MHA travel", description: "How MHA travel spending compares across members.", arguments: [],
     text: () => "Using NL Ledger, which MHAs charged the most travel to their allowances in 2024-25, and how does that compare with the average member? Cite the reports." },
   { name: "make_it_human", title: "Make an amount human", description: "Turn any amount into per person, per household and time to earn.", arguments: [{ name: "amount", description: "Amount in dollars", required: true }],
@@ -126,7 +138,7 @@ export const PROMPTS = [
 // ---- discovery: MCP registry server.json and the (draft) MCP server card
 export const REGISTRY_NAME = "ca.nlledger/nl-ledger";
 const DESCRIPTION = "Read-only public spending records for Newfoundland and Labrador, each with its source.";
-export const SERVER_VERSION = "0.2.1";
+export const SERVER_VERSION = "0.3.0";
 // The logo, for clients that show one beside the server's name (icons in server info, server.json and the server card).
 export const ICONS = () => [
   { src: `${SITE.url}/nl-ledger-icon-256.png`, mimeType: "image/png", sizes: ["256x256"] },
@@ -325,6 +337,23 @@ async function call(name, args, io) {
       const y = dep[year];
       if (!y) return problem(`No figures for ${year}.`, { years: Object.keys(dep) });
       return { department: key, fiscal_year: year, ...y, page_url: `${SITE.url}/department/${y.slug}/` };
+    }
+    case "get_budget": {
+      const b = await io.json("/data/budget.json");
+      if (!b) return problem("Budget figures are not available right now.");
+      const year = args.year || b.latest_year;
+      const y = b.years[year];
+      if (!y) return problem(`No figures for ${year}.`, { years: Object.keys(b.years) });
+      const want = String(args.department || "").toLowerCase();
+      const departments = want ? y.departments.filter((d) => d.department.toLowerCase().includes(want)) : y.departments;
+      if (want && !departments.length) return problem("No department by that name.", { departments: y.departments.map((d) => d.department) });
+      return {
+        fiscal_year: year, years: Object.keys(b.years), bases: b.bases,
+        departments_spending: y.departments_spending, whole_government: y.whole_government, departments,
+        page_url: `${SITE.url}/budget/${year === b.latest_year || !y.departments_spending || y.departments_spending.actual_status !== "published" ? "" : `${year}/`}`,
+        method_url: `${SITE.url}/method/budget/`,
+        caution: CAUTION,
+      };
     }
     case "get_members": {
       const M = await io.json("/data/members.json");

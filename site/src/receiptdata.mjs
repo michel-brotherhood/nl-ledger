@@ -23,10 +23,8 @@ export function buildReceiptData(D) {
   const pages = [...new Set(depts.flatMap((d) => [...d.pages]))].sort((a, b) => a - b);
 
   const departments = depts.map((d) => {
-    const original = D.one(
-      "SELECT sum(col3) v FROM programs WHERE fiscal_year=? AND kind='actual' AND line_type='object' AND lower(department)=lower(?)",
-      fy, d.name
-    ).v;
+    // Budgeted: the department's total in the Estimates as tabled (parse_fiscal.py), the one figure used across the site.
+    const original = D.one("SELECT budget v FROM dept_budget WHERE fiscal_year=? AND lower(department)=lower(?)", fy, d.name)?.v ?? null;
     const examples = [];
     const keys = bodyKeysFor(D, d.name);
     if (keys.length) {
@@ -77,7 +75,7 @@ export function buildReceiptData(D) {
     return { name, amount: r.amount, href: `/supplier/${D.keyHash(r.supplier_key)}/`, sources: r.ds.split(",").map((x) => labels[x]).join(", ") };
   });
 
-  const checks = D.one("SELECT sum(ok) ok, count(*) n FROM dept_summary");
+  const checks = D.one("SELECT sum(ok) ok, count(*) n FROM dept_summary WHERE kind='actual'");
   const broken = D.issues.filter((i) => /404|web page/.test(i.issue)).length;
   const late = D.flagSummary["late-publication"]?.items || 0;
   const badDates = D.flagSummary["date-check"]?.items || 0;
