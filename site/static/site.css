@@ -2735,3 +2735,84 @@ article a,
 @media print {
   .fb, .fb-link { display: none !important; }
 }
+
+/* A native disclosure keeps phone navigation available without JavaScript.
+   The desktop row and its existing sizing stay unchanged from 60rem up. */
+.phone-menu { display: none; }
+@media (max-width: 59.999rem) {
+  .mast-in {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    padding-block: 0.5rem;
+    min-block-size: 3.75rem;
+  }
+  .mast .nav, .mast > .mast-in > .fb-link, .mast .gh { display: none; }
+  .mast .brand { min-inline-size: 0; flex: 1 0 5.5rem; padding-block: 0; }
+  .mast .brand .wordmark { max-inline-size: 100%; block-size: auto; inline-size: 8.3rem; }
+  .mast .mast-search {
+    visibility: visible;
+    inline-size: 44px;
+    margin-block: 0;
+    background: none;
+    border: 0;
+  }
+  .mast .mast-search input { display: none; }
+  .mast .mast-search button, .mast .theme { inline-size: 44px; block-size: 44px; }
+  .mast .theme .ic { inline-size: 22px; block-size: 22px; }
+  .phone-menu { display: block; margin-inline-start: auto; }
+  .phone-menu summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-block-size: 44px;
+    padding-inline: 8px;
+    color: var(--on-blue);
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    list-style: none;
+    border: 1px solid rgb(255 255 255 / 0.4);
+    border-radius: var(--radius);
+  }
+  .phone-menu summary::-webkit-details-marker { display: none; }
+  .phone-menu summary .ic { flex: none; }
+  .phone-menu summary:hover, .phone-menu[open] summary { background: rgb(255 255 255 / 0.14); }
+  .phone-nav {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: 100%;
+    max-block-size: var(--menu-space, 60dvh);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-color: var(--on-blue-2) var(--blue);
+    background: var(--blue);
+    border-block-start: 1px solid rgb(255 255 255 / 0.3);
+    border-block-end: 3px double var(--on-blue-2);
+    padding: 0.5rem var(--gutter) max(0.75rem, env(safe-area-inset-bottom));
+  }
+  .phone-nav a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-block-size: 3rem;
+    padding: 0.75rem 0.75rem;
+    color: var(--on-blue);
+    font-size: 1.0625rem;
+    font-weight: 700;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    border-block-end: 1px solid rgb(255 255 255 / 0.18);
+  }
+  .phone-nav a:hover { background: rgb(255 255 255 / 0.1); text-decoration: underline; }
+  .phone-nav a[aria-current] { background: var(--on-blue); color: var(--blue); text-decoration: underline; text-underline-offset: 0.2em; }
+  .phone-nav a:focus-visible, .phone-menu summary:focus-visible { outline: 3px solid var(--on-blue); outline-offset: -3px; }
+  .phone-nav a[aria-current]:focus-visible { outline-color: var(--blue); }
+  .phone-nav .phone-source { margin-block-start: 0.5rem; border-block-end: 0; font-weight: 400; }
+  .phone-source .ic { flex: none; }
+}
+@media (max-width: 22rem) {
+  .phone-menu summary { padding-inline: 6px; gap: 5px; }
+}

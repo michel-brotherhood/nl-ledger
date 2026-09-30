@@ -16,6 +16,58 @@
     });
   }
 
+  // Phone navigation is a non-modal native disclosure: no scroll lock or focus trap.
+  const menu = document.querySelector("[data-menu]");
+  if (menu) {
+    const trigger = menu.querySelector("summary");
+    const panel = menu.querySelector("nav");
+    const narrow = matchMedia("(max-width: 59.999rem)");
+    const sync = () => trigger.setAttribute("aria-expanded", String(menu.open));
+    const size = () => {
+      const viewport = window.visualViewport;
+      const bottom = viewport ? viewport.offsetTop + viewport.height : innerHeight;
+      panel.style.setProperty("--menu-space", `${Math.max(0, bottom - document.querySelector(".mast").getBoundingClientRect().bottom)}px`);
+    };
+    const close = (restore = true) => {
+      if (!menu.open) return;
+      menu.open = false;
+      sync();
+      if (restore) trigger.focus({ preventScroll: true });
+    };
+    sync();
+    menu.addEventListener("toggle", () => { sync(); if (menu.open) size(); });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && menu.open) { event.preventDefault(); close(); }
+    });
+    let outsidePress = false;
+    document.addEventListener("pointerdown", (event) => {
+      outsidePress = menu.open && !menu.contains(event.target);
+    });
+    document.addEventListener("pointercancel", () => { outsidePress = false; });
+    document.addEventListener("click", (event) => {
+      if (menu.open && !menu.contains(event.target)) close();
+      outsidePress = false;
+    });
+    panel.addEventListener("click", (event) => {
+      if (event.target.closest("a")) close();
+    });
+    // Tabbing onward leaves the document in its normal order, with no covered focus.
+    document.addEventListener("focusin", (event) => {
+      if (menu.open && !outsidePress && !menu.contains(event.target)) close(false);
+    });
+    const resize = () => {
+      if (!narrow.matches) close(false);
+      else if (menu.open) size();
+    };
+    addEventListener("resize", resize);
+    addEventListener("scroll", () => { if (menu.open) size(); }, { passive: true });
+    window.visualViewport?.addEventListener("resize", resize);
+    window.visualViewport?.addEventListener("scroll", resize);
+    addEventListener("pagehide", () => close(false));
+    addEventListener("pageshow", () => { close(false); sync(); });
+    addEventListener("popstate", () => close());
+  }
+
   // Live receipt: recompute in the browser as the income changes.
   const out = document.querySelector("[data-receipt-out]");
   const forms = document.querySelectorAll("[data-receipt-form]");
