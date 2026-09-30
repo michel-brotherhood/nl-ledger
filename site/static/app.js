@@ -216,3 +216,152 @@
     });
   }
 })();
+
+// The feedback box: sends the note without leaving the page. Without this script the form posts as any form does.
+(() => {
+  for (const form of document.querySelectorAll("[data-feedback]")) {
+    const status = form.querySelector("[data-feedback-status]");
+    const check = form.querySelector("[data-feedback-check]");
+    const btn = form.querySelector("button[type=submit]");
+    const note = form.elements.note;
+    const at = form.elements.page;
+    // File the note under the address in the address bar: a search keeps its words.
+    if (!location.pathname.startsWith("/feedback")) at.value = location.pathname + location.search;
+    const here = at.value;
+
+    // Characters left, once the limit is near.
+    const count = document.createElement("span");
+    count.className = "fb-count";
+    count.setAttribute("aria-live", "polite");
+    form.querySelector("#fb-note-help").append(" ", count);
+    note.addEventListener("input", () => {
+      const left = note.maxLength - note.value.length;
+      count.textContent = left <= 200 ? `${left} characters left.` : "";
+    });
+
+    // A kind is optional, so a second press on the chosen one takes it back.
+    for (const radio of form.querySelectorAll("input[name=kind]")) {
+      let was = radio.checked;
+      radio.addEventListener("pointerdown", () => (was = radio.checked));
+      radio.addEventListener("click", (e) => {
+        if (was && e.detail) radio.checked = false;
+        was = radio.checked;
+      });
+    }
+
+    const say = (text, error) => {
+      status.textContent = text;
+      status.classList.toggle("is-error", !!error);
+    };
+    let sending = false;
+    const busy = (on) => {
+      sending = on;
+      btn.setAttribute("aria-disabled", String(on));
+      btn.textContent = on ? "Sending…" : "Send";
+    };
+    // Back from the check page: the form is usable again.
+    addEventListener("pageshow", () => busy(false));
+
+    // The check that a person is sending it (Cloudflare Turnstile) loads only once someone starts a note:
+    // the first character typed, the first kind picked, or Send.
+    let token = "";
+    let widget = null;
+    let loading = null;
+    let asked = false; // Turnstile is showing its box and waiting for a click
+    const load = () =>
+      (loading ||= new Promise((resolve) => {
+        const s = document.createElement("script");
+        s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+        s.async = true;
+        s.onload = () => {
+          try {
+            widget = window.turnstile.render(check, {
+              sitekey: form.dataset.sitekey,
+              appearance: "interaction-only",
+              size: "flexible",
+              theme: document.documentElement.dataset.theme || "auto",
+              "response-field": false,
+              callback: (t) => ((token = t), (asked = false)),
+              "expired-callback": () => (token = ""),
+              "error-callback": () => ((token = ""), (asked = false), true),
+              "before-interactive-callback": () => {
+                asked = true;
+                if (sending) say("One more step: tick the box above. The note is sent as soon as you do.");
+              },
+            });
+          } catch (e) {}
+          resolve();
+        };
+        s.onerror = () => resolve();
+        document.head.append(s);
+      }));
+    form.addEventListener("input", load, { once: true });
+    form.addEventListener("change", load, { once: true });
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    // The token, or "" when Turnstile cannot give one in `ms` (two minutes while it waits for a click).
+    const waitToken = async (ms) => {
+      await Promise.race([load(), wait(ms)]);
+      for (let t = 0; !token && widget !== null && t < (asked ? 120000 : ms); t += 100) await wait(100);
+      return token;
+    };
+    const renew = () => {
+      token = "";
+      try { window.turnstile.reset(widget); } catch (e) {}
+    };
+
+    const thanks = () => {
+      const done = document.createElement("div");
+      done.className = "fb-done";
+      done.innerHTML = `<h3 tabindex="-1">Thank you. Your note was sent.</h3>
+        <p>Every note is read by a person. A question gets a reply at the email address left with it; without an address there is no way to reply.</p>
+        <p><button type="button" class="btn solo ghost">Send another note</button></p>`;
+      done.querySelector("button").addEventListener("click", () => {
+        form.reset();
+        at.value = here;
+        count.textContent = "";
+        say("");
+        form.hidden = false;
+        done.remove();
+        note.focus();
+      });
+      form.hidden = true;
+      form.after(done);
+      done.querySelector("h3").focus();
+    };
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (sending) return;
+      for (const el of form.querySelectorAll("[aria-invalid]")) {
+        el.removeAttribute("aria-invalid");
+        if (el !== note) el.removeAttribute("aria-describedby");
+        else el.setAttribute("aria-describedby", "fb-note-help");
+      }
+      busy(true);
+      say("");
+      const t = await waitToken(8000);
+      // No check available (blocked, offline, slow): post the plain form, and the server asks for one more press.
+      if (!t) return form.submit();
+      const body = new URLSearchParams(new FormData(form));
+      body.set("cf-turnstile-response", t);
+      try {
+        const res = await fetch(form.action, { method: "POST", headers: { accept: "application/json" }, body, signal: AbortSignal.timeout(20000) });
+        const j = await res.json();
+        if (j.ok) return thanks();
+        if (j.fallback) return form.submit();
+        say(j.error || "The note was not sent. Press Send again.", true);
+        const el = j.field && form.elements[j.field];
+        if (el) {
+          el.setAttribute("aria-invalid", "true");
+          el.setAttribute("aria-describedby", `${el === note ? "fb-note-help " : ""}fb-status`);
+          el.focus();
+        }
+      } catch (err) {
+        say("The note was not sent: the site could not be reached. Your note is still here. Check the connection and press Send again.", true);
+      } finally {
+        renew();
+        busy(false);
+      }
+    });
+  }
+})();

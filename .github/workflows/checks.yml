@@ -25,6 +25,9 @@ jobs:
       - name: Search checks on the sample
         # Spelling help, the meaning list and its fallbacks, with stand-ins for Workers AI and Vectorize.
         run: node site/check-search.mjs
+      - name: Feedback box checks
+        # The endpoint's rules (what is stored, what is refused, nothing echoed), with stand-ins for D1, mail and Turnstile.
+        run: node site/check-feedback.mjs
       - name: Guardrails on site code
         # The full build needs data/build/ledger.db, which only the pipeline creates, and CI does
         # not download every source. So this scans the site code: lib/, routes/, worker.mjs and

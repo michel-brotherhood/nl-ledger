@@ -4,6 +4,7 @@ import * as search from "./routes/search/index.js";
 import * as supplier from "./routes/supplier/[h].js";
 import * as item from "./routes/item/[id].js";
 import * as receipt from "./routes/receipt/index.js";
+import * as feedback from "./routes/feedback.js";
 import * as mcp from "./routes/mcp.js";
 import * as serverCard from "./routes/mcp/server-card.js";
 import * as aiCatalog from "./routes/.well-known/ai-catalog.json.js";
@@ -13,6 +14,8 @@ const ROUTES = [
   [/^\/supplier\/(?<h>[^/]+)\/?$/, supplier],
   [/^\/item\/(?<id>[^/]+)\/?$/, item],
   [/^\/receipt\/?$/, receipt],
+  [/^\/feedback\/?$/, feedback],
+  [/^\/feedback\/sent\/?$/, feedback.sent],
   [/^\/mcp\/?$/, mcp],
   [/^\/mcp\/server-card$/, serverCard],
   [/^\/\.well-known\/ai-catalog\.json$/, aiCatalog],

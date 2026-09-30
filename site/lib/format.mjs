@@ -6,6 +6,8 @@ export const SITE = {
   tagline: "Where Newfoundland and Labrador's public money goes",
   url: "https://nlledger.ca",
   corrections: "corrections@nlledger.ca",
+  // The address a visitor is pointed to when the feedback box cannot take a note.
+  contact: "info@nlledger.ca",
 };
 
 // A share-card description: whole sentences that fit `max` characters, never cut off with an ellipsis.

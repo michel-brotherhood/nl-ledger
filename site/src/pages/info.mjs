@@ -6,6 +6,7 @@ import { DATASETS } from "../../lib/search.mjs";
 import { pagehead, caveat, datasetLabel } from "../common.mjs";
 import { connectPage } from "./connect.mjs";
 import { LICENCES, SOURCE_LICENCE } from "../licences.mjs";
+import { ASKED, ASKED_STATE } from "../asked.mjs";
 
 
 
@@ -265,15 +266,38 @@ export function info(D, R) {
     <li>It makes no accusations. The patterns it shows are questions people ask about public spending, counted from the records. Each has its method written down, and none is evidence that anything wrong happened.</li>
     <li>It is not affiliated with any government, party or campaign.</li>
   </ul>
-  <h2>Privacy</h2>
+  <h2 id="privacy">Privacy</h2>
   <p>Visits are counted with Cloudflare Web Analytics, which sets no cookies and does not track individual visitors. The site has no accounts, no sign-in and no advertising.</p>
+  <h3>The feedback box</h3>
+  <ul>
+    <li><strong>What is kept.</strong> A note sent from the box at the foot of a page is stored with the kind chosen, the text, the address of the page it was sent from, the time, which of the two checks the sender passed, and an email address only when one was typed in. The same is emailed to the people who run the site.</li>
+    <li><strong>What is not kept.</strong> No network (IP) address, browser details or cookie is stored with a note. To limit one connection to ten notes a day, a one-way code made from the network address is kept in a separate list, and deleted once it is more than a day old, when the next note arrives. The address cannot be read back from the code without the site's secret key, and the list does not say which note came from it. Cloudflare, which runs the site, keeps a log of each request the site's program handles, a note or a search alike: the time, the address requested, the network address and browser details. Those logs are kept for a limited time, and the text of a note is not in them.</li>
+    <li><strong>Who sees it.</strong> The people who run the site. Notes are held in the site's database at Cloudflare and in the mailbox they are emailed to. A note is never shown on the site. A change made because of one is listed on <a href="/asked/">What people asked for</a>, in the site's words and without names.</li>
+    <li><strong>The check that a person is sending it.</strong> When someone starts a note (the first letter typed, or a kind picked), the page loads Cloudflare Turnstile, which checks the browser for signs of an automated program. It is not loaded before that, and it sets no cookie on this site. What it collects is in Cloudflare's <a href="https://www.cloudflare.com/turnstile-privacy-policy/" rel="noopener">Turnstile Privacy Addendum</a>. With JavaScript off it never loads; the site asks for one more press of a button instead.</li>
+    <li><strong>How long.</strong> Notes are kept as a record of what was asked. To have a note or an email address removed, write to <a href="mailto:${SITE.contact}">${SITE.contact}</a>.</li>
+  </ul>
   <h2>Status</h2>
   <p>This is a prototype. The name, the scope and the sources will change, and parts of it may be wrong. Mistakes that are found are listed on the <a href="/corrections/">Corrections</a> page. Data was last gathered on ${fmtDate(D.gathered)}.</p>
   <h2 id="corrections">Corrections</h2>
-  <p>To ask for a correction, email <a href="mailto:${SITE.corrections}?subject=Correction%20request">${SITE.corrections}</a>. If you are a person or a company named in a record, say which page and what is wrong. Send the page address, what it shows and what you believe is correct, with a document if you have one.</p>
+  <p>To ask for a correction, use the <a href="#feedback">box at the foot of any page</a> or email <a href="mailto:${SITE.corrections}?subject=Correction%20request">${SITE.corrections}</a>. If you are a person or a company named in a record, say which page and what is wrong. Send the page address, what it shows and what you believe is correct, with a document if you have one.</p>
   <p>Each record links to the government document it came from. If the record here differs from that document, the error is on this site and will be fixed and logged on the <a href="/corrections/">Corrections</a> page. If the document itself is wrong, only the publisher can change it: contact the department, agency, House of Assembly, town or city named on the record.</p>
   <h2>Help build it</h2>
   <p>Anyone can suggest a source, question a method, report a figure that does not match its source, or ask for records that are not published. Most of that needs no programming. <a href="/help/">Help build this ${icon("arrow")}</a></p>
+</div></section>`,
+  }]);
+
+  // ---- what people asked for (content: src/asked.mjs)
+  out.push(["/asked/", {
+    title: "What people asked for",
+    description: desc("Suggestions readers have sent about NL Ledger and what was done about each one, without names. Anyone can add one from the box on any page."),
+    body: html`${pagehead({ crumbs: [["/", "Home"], [null, "What people asked for"]], title: "What people asked for", lede: "Suggestions from readers, and what was done about each. Names are left out." })}
+<section class="section"><div class="wrap">
+  <ul class="asked">${ASKED.map((a) => html`<li>
+    <h3>${esc(a.asked)}</h3>
+    <span class="state ${a.state === "done" ? "" : "open"}">${ASKED_STATE[a.state]}</span>
+    <p>${esc(a.what)}${a.href ? ` <a href="${esc(a.href)}">See it</a>.` : ""} <span class="small muted">${fmtDate(a.date)}</span></p>
+  </li>`)}</ul>
+  <p style="margin-block-start:2rem">To add one, write it in the <a href="#feedback">box below</a>. No account is needed.</p>
 </div></section>`,
   }]);
 
