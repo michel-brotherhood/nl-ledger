@@ -120,7 +120,62 @@ const NAV = [
 ];
 
 // The "Spot an error?" line at the foot of supplier, people and record pages.
-export const spotError = () => `<p class="spot-error small muted"><span>Spot an error?</span> Email <a href="mailto:${SITE.corrections}?subject=Correction%20request">${SITE.corrections}</a>. <a href="/about/#corrections">What to send</a>.</p>`;
+export const spotError = () => `<p class="spot-error small muted"><span>Spot an error?</span> <a href="#feedback">Say so in the box below</a>, or email <a href="mailto:${SITE.corrections}?subject=Correction%20request">${SITE.corrections}</a>. <a href="/about/#corrections">What to send</a>.</p>`;
+
+// ---- the feedback box (routes/feedback.js receives it; NOTES.md "Feedback box")
+export const FEEDBACK_KINDS = [
+  ["wrong", "Something's wrong"],
+  ["idea", "I have an idea"],
+  ["confused", "This confused me"],
+  ["question", "A question"],
+];
+export const FEEDBACK_MAX = 2000;
+// Turnstile site key: public by design, it only names the widget. The test key (always passes, for ./dev.sh)
+// comes from the environment; the matching secret is the Worker secret TURNSTILE_SECRET.
+const TURNSTILE_SITEKEY = globalThis.process?.env?.NL_LEDGER_TURNSTILE_SITEKEY || "0x4AAAAAAFKKld3Sh1vJesTV";
+
+// The form itself. `page` is the address the note is about; `note`, `email`, `kind` and `error` are set only
+// when the server hands a visitor's own note back to them to fix.
+export function feedbackForm({ page = "/", note = "", email = "", kind = "", error = "", field = "" } = {}) {
+  return `<form class="fb-form" action="/feedback" method="post" data-feedback data-sitekey="${TURNSTILE_SITEKEY}">
+    <input type="hidden" name="page" value="${esc(page)}">
+    ${error ? `<p class="fb-error" role="alert">${icon("query")}<span>${esc(error)}</span></p>` : ""}
+    <fieldset class="fb-kinds">
+      <legend>What kind of note is it? <span class="fb-opt">Optional</span></legend>
+      <div class="fb-chips">${FEEDBACK_KINDS.map(([v, label]) => `<label><input type="radio" name="kind" value="${v}"${v === kind ? " checked" : ""}><span>${esc(label)}</span></label>`).join("")}</div>
+    </fieldset>
+    <div class="fb-field">
+      <label for="fb-note">Your note</label>
+      <textarea id="fb-note" name="note" rows="5" maxlength="${FEEDBACK_MAX}" required aria-describedby="fb-note-help"${field === "note" ? ' aria-invalid="true"' : ""}>${esc(note)}</textarea>
+      <p class="fb-help" id="fb-note-help">The address of this page is sent with it, so there is no need to say where you were.</p>
+    </div>
+    <div class="fb-field">
+      <label for="fb-email">Email, if you want a reply <span class="fb-opt">Optional</span></label>
+      <input id="fb-email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" maxlength="254" value="${esc(email)}"${field === "email" ? ' aria-invalid="true"' : ""}>
+    </div>
+    <p class="fb-hp" aria-hidden="true"><label>Leave this one empty <input type="text" name="hp_leave_empty" tabindex="-1" autocomplete="off"></label></p>
+    <div class="fb-check" data-feedback-check></div>
+    <p class="fb-status" role="status" data-feedback-status></p>
+    <div class="fb-act">
+      <button class="btn solo" type="submit">Send</button>
+      <p class="fb-help">Notes are read by the people who run the site. They are never shown on it. <a href="/about/#privacy">Privacy</a></p>
+    </div>
+  </form>`;
+}
+
+// The box at the foot of every page.
+export function feedbackBox(page) {
+  return `<section class="fb" id="feedback" aria-labelledby="fb-h">
+  <div class="fb-in">
+    <div class="fb-say">
+      <h2 id="fb-h">Something missing, wrong or confusing?</h2>
+      <p>Say so here. No account is needed, and no email program. Every note is read.</p>
+      <p class="fb-asked"><a href="/asked/">What people asked for, and what was done ${icon("arrow")}</a></p>
+    </div>
+    ${feedbackForm({ page })}
+  </div>
+</section>`;
+}
 
 // ---- structured data (JSON-LD). Escaped so a record's text can never close the script tag.
 export const ldScript = (obj) => `<script type="application/ld+json">${JSON.stringify(obj).replace(/</g, "\\u003c").replace(/\u2028/g, "\\u2028").replace(/\u2029/g, "\\u2029")}</script>`;
@@ -142,7 +197,9 @@ export function breadcrumbList(body, path) {
   };
 }
 
-export function layout({ title, description, path = "/", body, notes, bodyClass = "", head = "", scripts = "", updated, jsonld = [], robots = "" }) {
+// `feedback: false` leaves the box out (pages that carry the form in their own body); `at` is the address a note
+// from this page is filed under, when it differs from the canonical path (a search with its query).
+export function layout({ title, description, path = "/", body, notes, bodyClass = "", head = "", scripts = "", updated, jsonld = [], robots = "", feedback = true, at }) {
   const full = title ? `${title} · ${SITE.name}` : `${SITE.name}: ${SITE.tagline}`;
   const desc = description || "Every provincial award, federal contract and grant, expense claim and public pay record in Newfoundland and Labrador, each linked to its source.";
   const crumbs = breadcrumbList(body, path);
@@ -198,6 +255,7 @@ ${globalThis.process?.env?.NL_SAMPLE ? `<aside class="proto" aria-label="Sample 
       <input id="mq" name="q" type="search" placeholder="Search payments" autocomplete="off" enterkeyhint="search">
       <button type="submit" aria-label="Search">${icon("search")}</button>
     </form>
+    <a class="fb-link" href="${feedback ? "" : "/feedback/"}#feedback">${icon("chat")}<span>Feedback</span></a>
     <button class="theme" type="button" aria-label="Switch light or dark" data-theme-toggle hidden>${icon("moon", "i-moon")}${icon("sun", "i-sun")}</button>
     <a class="gh" href="https://github.com/steveclarke/nl-ledger" aria-label="Source code on GitHub" title="Source code on GitHub"><svg class="ic" viewBox="0 0 16 16" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg></a>
   </div>
@@ -206,6 +264,7 @@ ${globalThis.process?.env?.NL_SAMPLE ? `<aside class="proto" aria-label="Sample 
 ${body}
 ${notes ? notes.render() : ""}
 </main>
+${feedback ? feedbackBox(at || path) : ""}
 <footer class="foot">
   <div class="foot-in">
     <div class="foot-statement">
@@ -214,7 +273,7 @@ ${notes ? notes.render() : ""}
     <p class="foot-open"><strong>Open source.</strong> The code, the data pipeline and the methods are public under the MIT licence, and anyone can help: <a href="${REPO}">read the code on GitHub</a> or <a href="/help/">see how to help</a>.</p>
     </div>
     <nav class="foot-nav" aria-label="About this site">
-      <a href="/about/">What is this?</a><a href="/sources/">Sources and report card</a><a href="/method/">Methods</a><a href="/corrections/">Corrections</a><a href="/data/">Ask your AI</a><a href="/help/">Help build this</a>
+      <a href="/about/">What is this?</a><a href="/sources/">Sources and report card</a><a href="/method/">Methods</a><a href="/corrections/">Corrections</a><a href="/asked/">What people asked for</a><a href="/data/">Ask your AI</a><a href="/help/">Help build this</a>
     </nav>
     <p class="foot-meta">Contains information licensed under the Open Government Licence – Canada. Provincial and House of Assembly records are used under each publisher's own terms, and Statistics Canada figures are adapted from its tables; this does not constitute an endorsement by Statistics Canada of this product. <a href="/sources/#licences">Licences and sources</a>.</p>
     ${updated ? `<p class="foot-meta">Data gathered ${esc(fmtDate(updated))}.</p>` : ""}

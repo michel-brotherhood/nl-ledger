@@ -4,7 +4,7 @@ import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
 const DIST = join(import.meta.dirname, "dist");
-const RENDERED = /^\/(search|supplier|item|receipt|mcp|data|\.well-known)(\/|$)/; // rendered on request or data files, not in dist as pages
+const RENDERED = /^\/(search|supplier|item|receipt|feedback|mcp|data|\.well-known)(\/|$)/; // rendered on request or data files, not in dist as pages
 const files = [];
 (function walk(d) { for (const e of readdirSync(d, { withFileTypes: true })) { const p = join(d, e.name); e.isDirectory() ? walk(p) : p.endsWith(".html") && files.push(p); } })(DIST);
 

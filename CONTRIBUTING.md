@@ -12,6 +12,7 @@ People who use an AI assistant to prepare a change are equally welcome. The same
 | Question how something is counted, flagged or worded | The **Challenge a method** issue form |
 | Report a figure that does not match its source | The **Figure does not match its source** issue form |
 | Ask for records that are not published anywhere | The **Request unpublished data** issue form |
+| Say anything else, without a GitHub account | The box at the foot of any page on [nlledger.ca](https://nlledger.ca) |
 
 All four are at [Issues, New issue](https://github.com/steveclarke/nl-ledger/issues/new/choose). Sources already known but not yet loaded are in [`docs/wishlist.md`](docs/wishlist.md); check there first, and pick one up if it interests you.
 

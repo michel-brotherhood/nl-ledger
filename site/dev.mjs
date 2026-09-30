@@ -47,6 +47,7 @@ if (sample) console.log("Using the sample data. Run the pipeline (see the README
 
 // 2. Static pages.
 console.log("Building the pages...");
+process.env.NL_LEDGER_TURNSTILE_SITEKEY ||= "1x00000000000000000000AA";
 const built = spawnSync(process.execPath, ["build.mjs"], { cwd: HERE, stdio: "inherit", env: { ...process.env, ...(sample ? { NL_SAMPLE: "1" } : {}) } });
 if (built.status !== 0) process.exit(built.status ?? 1);
 if (sample) process.env.NL_SAMPLE = "1";
@@ -74,15 +75,19 @@ if (!existsSync(searchPath) || statSync(searchPath).mtimeMs < statSync(docsPath)
   s.close();
 }
 const search = new DatabaseSync(searchPath, { readOnly: true });
+// Notes from the feedback box go to their own local file, with the same table the live database has.
+const notes = new DatabaseSync(join(BUILD, "local-feedback.db"));
+notes.exec(readFileSync(join(HERE, "feedback.sql"), "utf8"));
 
 // 4. A small stand-in for D1 and for the static-assets binding, then the Worker itself.
 const d1 = {
   prepare(sql) {
-    const st = search.prepare(sql);
+    const feedback = /\bfeedback/.test(sql);
+    const st = (feedback ? notes : search).prepare(sql);
     const run = (args) => ({
       all: async () => ({ results: st.all(...args) }),
       first: async () => st.get(...args) ?? null,
-      run: async () => ({ success: true }),
+      run: async () => (feedback && st.run(...args), { success: true }),
     });
     return { ...run([]), bind: (...args) => run(args) };
   },
@@ -103,7 +108,9 @@ async function assetsFetch(request) {
 }
 globalThis.caches = { default: { match: async () => undefined, put: async () => {} } };
 const { default: worker } = await import("./worker.mjs");
-const env = { DB: d1, ASSETS: { fetch: (r) => assetsFetch(r instanceof Request ? r : new Request(r)) } };
+// The feedback box runs here with Cloudflare's published Turnstile test keys (they always pass) and no mail
+// binding: a note is stored in data/build/local-feedback.db and marked "not sent".
+const env = { DB: d1, ASSETS: { fetch: (r) => assetsFetch(r instanceof Request ? r : new Request(r)) }, TURNSTILE_SECRET: "1x0000000000000000000000000000000AA" };
 // Search by meaning needs Workers AI and Vectorize, so it is off locally. NL_LEDGER_MEANING=1 turns it on
 // through the Cloudflare API with the local `cf` login (a maintainer's machine, after vectorize_sync.py has run).
 if (process.env.NL_LEDGER_MEANING === "1") {
@@ -121,7 +128,7 @@ if (process.env.NL_LEDGER_MEANING === "1") {
   env.MEANING = { query: (vector, opts) => api("/vectorize/v2/indexes/nl-ledger-meaning/query", { vector, ...opts }) };
   console.log("Search by meaning: on, through the Cloudflare API.");
 }
-const RUN_FIRST = [/^\/search(\/|$)/, /^\/supplier\//, /^\/item\//, /^\/receipt(\/|$)/, /^\/mcp(\/|$)/, /^\/\.well-known\/ai-catalog\.json$/];
+const RUN_FIRST = [/^\/search(\/|$)/, /^\/supplier\//, /^\/item\//, /^\/receipt(\/|$)/, /^\/feedback(\/|$)/, /^\/mcp(\/|$)/, /^\/\.well-known\/ai-catalog\.json$/];
 
 createServer(async (req, res) => {
   try {

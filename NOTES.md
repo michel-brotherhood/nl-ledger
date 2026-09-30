@@ -9,7 +9,7 @@ How the live site is hosted, built, deployed and checked. The README covers what
 | Site | https://nlledger.ca (`www.nlledger.ca` redirects to it) |
 | MCP server | https://nlledger.ca/mcp |
 | Worker | `nlledger` (workers.dev address turned off; the domain is the only address) |
-| D1 database | `nl-ledger` (search index, 29,035 documents for 143,133 line items) |
+| D1 database | `nl-ledger` (search index, 29,035 documents for 143,133 line items; notes from the feedback box) |
 | Vectorize index | `nl-ledger-meaning` (one vector per search document, for search by meaning; see "Search") |
 
 The Cloudflare account ID and D1 database ID are not in the repository. Deploys and the D1 sync read them from `CLOUDFLARE_ACCOUNT_ID` and `NL_LEDGER_D1_ID`, in the environment or in `site/.env` (ignored by git; see `site/.env.example`). Building and checking the site locally needs neither.
@@ -214,6 +214,63 @@ cf deploy --dry-run            # build and checks only
 - Structured data (JSON-LD, `site/src/seo.mjs`): `BreadcrumbList` on every page with a breadcrumb line, `WebSite` with `SearchAction` and `Organization` on the home page, `Dataset` on `/data/`, `/priorities/`, `/members/`, `/federal/` and `/pay/*` (licence is the publisher's, not the code's), `Person` on MHA and minister pages, `Organization` on public body pages. No `Organization` on supplier pages (a payee can be an individual).
 - `site/check.sh` runs `check-dist.mjs` on the built pages: internal links, JSON-LD parses, unique descriptions, sitemap and robots.
 - Not in the repository: Google Search Console and Bing Webmaster verification (a TXT record on the domain), submitting the sitemap, IndexNow.
+
+## Feedback box
+
+Every page ends with a box ("Something missing, wrong or confusing?") and the top bar links to it. A note is stored in D1 and emailed. `/asked/` lists what people asked for and what was done.
+
+| Part | Where |
+|---|---|
+| Form and box | `feedbackForm`, `feedbackBox` in `site/lib/html.mjs`; `layout()` adds the box to every page (`feedback: false` leaves it out) |
+| Endpoint | `site/routes/feedback.js`: `POST /feedback`, the form on its own page at `/feedback/`, the thank-you at `/feedback/sent/` |
+| In-page sending | the last block of `site/static/app.js`; without JavaScript the form posts as any form does |
+| Tables | `feedback` (the notes) and `feedback_seen` (the per-address day count), defined in `site/feedback.sql`. The weekly sync reads and writes only `docs` and `meta` |
+| "What people asked for" | content in `site/src/asked.mjs`; edit that file and deploy |
+| Checks | `node site/check-feedback.mjs` (CI): what is stored, what is refused, nothing shown to anyone but the sender |
+
+### Reading and clearing notes
+
+```sh
+cd site
+./notes.sh             # the 20 newest notes (./notes.sh 100 for more)
+./notes.sh done 12     # mark note 12 as dealt with
+./notes.sh delete 12   # delete note 12
+```
+
+- Each note shows its kind, the page it was sent from, the reply address if one was left, how the sender was checked (`turnstile` or `confirm`) and what the mail system answered (`sent <message id>` or `failed: ...`).
+- A note whose mail failed is still in the table; the list is the record, the email is the notice.
+- Replying to the email writes to the visitor when they left an address (it is the message's Reply-To).
+
+### What stops junk
+
+| Guard | What |
+|---|---|
+| Turnstile | Cloudflare Turnstile widget "NL Ledger feedback box" (managed, shown only when it needs a click, no clearance cookie). The script loads when someone first focuses the form, never on page load. The server verifies the token before storing |
+| Check page | No token (JavaScript off, Turnstile blocked or failed): the note is shown back on a page with a "Send this note" button. That page carries a token signed with the Worker's secret over the note and the time; it stores once, not within 2 seconds, not after 30 minutes, and not for a different note |
+| Trap field | A field people never see. A post that fills it gets the thank-you and stores nothing |
+| Rate limit | `FEEDBACK_LIMIT`: 4 posts a minute per network address. Cloudflare counts this per location and loosely; measured on 2026-09-30, a run of 14 quick posts had 5 refused by it. It slows a flood; the check above is what keeps notes out |
+| Per address, per day | 10 stored notes. Counted in `feedback_seen` under a keyed one-way code of the address (an IPv6 address counts as its /64); rows are deleted after two days |
+| Per day, everyone | 300 stored notes in 24 hours; past that the form says to email instead |
+| Size | 2,000 characters a note; a request over 16,000 bytes is refused unread |
+| Origin | A post whose `Origin` is another site is refused |
+| Nothing echoed | A note is shown only to its sender (the check page, or the form handed back with what to fix), in a response marked `no-store`. No page lists notes |
+
+### Secrets and mail
+
+- The Worker holds two secrets, named in `site/cloudflare.config.ts` so a deploy keeps them. A deploy stops with "required secrets have not been set" when either is missing. A deploy from a config that does not name them removes them.
+- `TURNSTILE_SECRET`: the widget's secret key (Cloudflare dashboard, Turnstile, the widget, or `cf turnstile widgets get <site key>`). It also signs the check page's token and the per-address code. Without it the endpoint answers "Notes cannot be taken right now".
+- `FEEDBACK_TO`: the mailbox notes are emailed to. The `send_email` binding delivers only to an address verified under Email Routing, Destination addresses; `info@nlledger.ca` is a routing rule, not a verified address, and is refused (`E_RECIPIENT_NOT_ALLOWED`).
+- Set one: `cf workers secrets update FEEDBACK_TO --worker nlledger --body '{"name":"FEEDBACK_TO","type":"secret_text","text":"<address>"}'`.
+- Mail is sent from `feedback@nlledger.ca` (any address on the domain works while Email Routing is on).
+- The site key is public and is in `site/lib/html.mjs`. `./dev.sh` uses Cloudflare's published test keys, stores notes in `data/build/local-feedback.db` and sends no mail.
+- `./notes.sh setup` creates the tables (once per database; safe to repeat).
+
+### Preview copy
+
+`NL_LEDGER_PREVIEW=1 cf deploy` (in `site/`) deploys the same code and bindings as a second Worker, `nlledger-preview`, on its workers.dev address, and leaves the live site alone. It reads and writes the live D1 database.
+
+- Before the first deploy: set both secrets on `nlledger-preview` and add its hostname to the Turnstile widget's domains.
+- Afterwards: delete the Worker (`cf workers delete nlledger-preview`), take the hostname off the widget, and delete the test notes.
 
 ## D1 write budget
 

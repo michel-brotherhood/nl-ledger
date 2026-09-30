@@ -11,8 +11,10 @@ export async function assets(ctx) {
   return cache;
 }
 
-export function page(ctx, a, { title, description, body, status = 200, path, maxAge = 3600, jsonld, robots }) {
-  const htmlText = layout({ title, description, body, path: path || new URL(ctx.request.url).pathname, updated: a.updated, jsonld, robots });
+export function page(ctx, a, { title, description, body, status = 200, path, maxAge = 3600, jsonld, robots, feedback }) {
+  const u = new URL(ctx.request.url);
+  // `at`: a note sent from this page is filed under the address asked for, query included (a search, a receipt).
+  const htmlText = layout({ title, description, body, path: path || u.pathname, updated: a.updated, jsonld, robots, feedback, at: u.pathname + u.search });
   return new Response(htmlText, {
     status,
     headers: { "content-type": "text/html; charset=utf-8", "cache-control": `public, max-age=${maxAge}` },
