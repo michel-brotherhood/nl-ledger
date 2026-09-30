@@ -26,7 +26,7 @@ export function members(D, R) {
   const ranked = mhas.filter((m) => perYear.get(m.person)?.[latestFull]).sort((a, b) => perYear.get(b.person)[latestFull] - perYear.get(a.person)[latestFull]);
   const rmax = ranked[0] ? perYear.get(ranked[0].person)[latestFull] : 1;
 
-  const idxBody = html`${pagehead({ crumbs: [["/", "Home"], [null, "Members"]], title: "MHA expenses and minister expense claims", lede: "What each Member of the House of Assembly (MHA) claimed against their office, travel and constituency allowances, and what each minister claimed in expenses, line by line as the House and Executive Council publish it." })}
+  const idxBody = html`${pagehead({ flagged: true, crumbs: [["/", "Home"], [null, "Members"]], title: "MHA expenses and minister expense claims", lede: "What each Member of the House of Assembly (MHA) claimed against their office, travel and constituency allowances, and what each minister claimed in expenses, line by line as the House and Executive Council publish it." })}
 <section class="section"><div class="wrap grid-2">
   <div><div class="section-head"><h2>MHA spending, ${latestFull}</h2><p>Office, travel and constituency allowances. The House publishes a limit for most categories; <a href="/flags/over-allowance/">no member went past one</a>. Members who served part of the year, or who are ministers or party leaders with other budgets, spend less from these allowances, so the list is not a ranking of thrift.</p></div>
   ${schedule({ compact: true, cols: [{ label: "Member" }, { label: "", w: "36%" }, { label: "Spent", num: true }], rows: ranked.map((m) => ({ cells: [`<a href="/mha/${D.slug(m.person)}/">${esc(nameOrder(m.person))}</a><span class="meta">${esc(m.district || "")}</span>`, bar(perYear.get(m.person)[latestFull], rmax), money(perYear.get(m.person)[latestFull])] })) })}
@@ -58,7 +58,7 @@ export function members(D, R) {
     const vendors = D.q("SELECT supplier, supplier_key, count(*) n, sum(amount) a FROM items WHERE dataset='mha' AND person=? AND supplier IS NOT NULL GROUP BY supplier_key ORDER BY a DESC LIMIT 12", m.person);
     const big = lines.slice().sort((a, b) => (b.amount || 0) - (a.amount || 0)).slice(0, 25);
     const phash = D.keyHash(m.person.toLowerCase());
-    const body = html`${pagehead({ crumbs: [["/", "Home"], ["/members/", "Members"], [null, nameOrder(m.person)]], title: esc(nameOrder(m.person)), lede: `Member of the House of Assembly for ${esc(m.district || "a district")}. ${num(m.n)} expense lines from ${m.y0} to ${m.y1}, ${money(m.amount)} in all.` })}
+    const body = html`${pagehead({ flagged: true, crumbs: [["/", "Home"], ["/members/", "Members"], [null, nameOrder(m.person)]], title: esc(nameOrder(m.person)), lede: `Member of the House of Assembly for ${esc(m.district || "a district")}. ${num(m.n)} expense lines from ${m.y0} to ${m.y1}, ${money(m.amount)} in all.` })}
 <section class="section"><div class="wrap">
   ${yrs.map((y) => {
     const cats = [...byYearCat.values()].filter((e) => e.y === y).sort((a, b) => b.a - a.a);
@@ -95,7 +95,7 @@ export function members(D, R) {
       const x = JSON.parse(c.extra || "{}");
       for (const k of Object.keys(cats)) cats[k] += x[k] || 0;
     }
-    const body = html`${pagehead({ crumbs: [["/", "Home"], ["/members/", "Members"], [null, m.person]], title: esc(m.person), lede: `Minister's expense claims paid from ${fmtDate(m.d0)} to ${fmtDate(m.d1)}: ${num(m.n)} lines, ${money(m.amount, { cents: true })}. Departments: ${depts.map(esc).join("; ")}.` })}
+    const body = html`${pagehead({ flagged: true, crumbs: [["/", "Home"], ["/members/", "Members"], [null, m.person]], title: esc(m.person), lede: `Minister's expense claims paid from ${fmtDate(m.d0)} to ${fmtDate(m.d1)}: ${num(m.n)} lines, ${money(m.amount, { cents: true })}. Departments: ${depts.map(esc).join("; ")}.` })}
 <section class="section"><div class="wrap grid-2">
   <div><h2 style="margin-block-end:1rem">What the travel claims were for</h2>
   ${leaders([

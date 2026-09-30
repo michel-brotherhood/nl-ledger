@@ -1,5 +1,5 @@
 // Views rendered on request by the Worker routes: search results, one record, one supplier.
-import { esc, html, icon, receipt, query, schedule, leaders, bar, pager, spotError } from "./html.mjs";
+import { esc, html, icon, flagItem, standing, receipt, query, schedule, leaders, bar, pager, spotError } from "./html.mjs";
 import { money, moneyWords, num, pct, date as fmtDate, workTime, perPerson, DATASET_LABEL, LEVEL_LABEL, fit } from "./format.mjs";
 import { DATASETS } from "./search.mjs";
 
@@ -68,6 +68,7 @@ export function searchPage({ params, result, flags, page }) {
     </div>
     ${active.length ? `<p class="small">Filtered to one ${active.includes("n") ? "printed name of a supplier" : active.includes("s") ? "supplier" : active.includes("b") ? "public body" : "person"}. <a href="/search/?${new URLSearchParams(Object.entries(p).filter(([k, v]) => v && !active.includes(k))).toString()}">Remove</a></p>` : ""}
   </form>
+  ${p.q ? standing() : ""}
 </div></header>
 <section class="section" style="padding-block-start:2rem"><div class="wrap">
   ${empty ? html`<p class="lede">Try one of these:</p><ul class="chips">${examples.map((e) => `<li><a href="/search/?q=${encodeURIComponent(e)}">${esc(e)}</a></li>`)}</ul>
@@ -150,6 +151,7 @@ export function itemPage(it, { flags, stats, links }) {
   <p class="crumbs"><a href="/">Home</a> / <a href="/search/">Search</a> / Record</p>
   <h1>${esc(title)}</h1>
   ${it.d && (it.s || it.p) ? `<p class="lede">${esc(it.d)}</p>` : ""}
+  ${standing()}
 </div></header>
 <section class="section"><div class="wrap grid-2">
   <div>
@@ -165,8 +167,7 @@ export function itemPage(it, { flags, stats, links }) {
       ${x.machine_read ? `<p class="small">Machine-read from a scanned image; compare with the page before quoting.</p>` : ""}
       ${x.note ? `<p class="small">${esc(x.note)}</p>` : ""}
     </div>
-    ${fl.length ? html`<h3 style="margin-block:2rem .6rem">Patterns</h3><ul class="flaglist">${fl.map((f) => html`<li><a class="q" href="/flags/${f.id}/" aria-hidden="true" tabindex="-1">${icon("query")}</a><h3><a href="/flags/${f.id}/">${esc(f.title)}</a></h3><span></span><p>${esc(f.short)} <a href="/method/${f.id}/">Method</a></p></li>`)}</ul>
-      <p class="small muted">A flag is a question, not a finding. It is not evidence that anything wrong happened.</p>` : ""}
+    ${fl.length ? html`<h3 style="margin-block:2rem .6rem">Patterns</h3><ul class="flaglist">${fl.map((f) => flagItem(f, { method: true }))}</ul>` : ""}
   </div>
 </div></section>
 <div class="wrap">${spotError()}</div>`;
@@ -191,6 +192,7 @@ export function supplierPage(s, { flags, stats, hash, links }) {
   <h1>${esc(s.name)}</h1>
   <p class="lede">${num(s.n)} records across provincial and federal sources: ${moneyWords(s.total)} in contract awards, grant agreements and payments${s.overlap ? `, plus ${moneyWords(s.overlap)} in federal payment and notice records that repeat money already counted` : ""}${s.city ? `. Listed in ${esc(s.city)}` : ""}.${s.names ? ` Also printed as: ${s.names.filter((n) => n !== s.name).map(esc).join("; ")}.` : ""}</p>
   ${s.combined ? combinedNames(s, hash) : ""}
+  ${standing()}
 </div></header>
 <section class="section"><div class="wrap">
   <div class="figs">
@@ -203,7 +205,7 @@ export function supplierPage(s, { flags, stats, hash, links }) {
       ${s.buyers?.length ? schedule({ compact: true, caption: "Paid by", cols: [{ label: "Public body" }, { label: "Level" }, { label: "Records", num: true }, { label: "Value", num: true }], rows: s.buyers.map((b) => ({ cells: [bodyLink(b.name, links), esc(LEVEL_LABEL[b.level] || ""), num(b.n), moneyWords(b.amount)] })) }) : ""}
     </div>
     <div>${years.length > 1 ? schedule({ compact: true, caption: "By year", cols: [{ label: "Year" }, { label: "", w: "55%" }, { label: "Value", num: true }], rows: years.map(([y, v]) => ({ cells: [y, bar(v, ymax), moneyWords(v)] })) }) : ""}
-      ${flagRows.length ? html`<h3 style="margin-block:1.5rem .6rem">Patterns</h3><ul class="flaglist">${flagRows.map((x) => html`<li><a class="q" href="/flags/${x.f.id}/" aria-hidden="true" tabindex="-1">${icon("query")}</a><h3><a href="/flags/${x.f.id}/">${esc(x.f.title)}</a></h3><span class="count">${num(x.n)}</span><p>${esc(x.f.short)}</p></li>`)}</ul><p class="small muted">A flag is a question, not a finding.</p>` : ""}
+      ${flagRows.length ? html`<h3 style="margin-block:1.5rem .6rem">Patterns</h3><ul class="flaglist">${flagRows.map((x) => flagItem(x.f, { count: `${num(x.n)} ${x.n === 1 ? "record" : "records"}`, method: true }))}</ul>` : ""}
     </div>
   </div>
 </div></section>

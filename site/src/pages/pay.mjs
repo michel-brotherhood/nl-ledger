@@ -20,7 +20,7 @@ export function pay(D, R) {
   const sevPeople = grp("severance").reduce((s, x) => s + x.people, 0);
   const sevAmt = grp("severance").reduce((s, x) => s + x.severance, 0);
   const broken = D.issues.filter((i) => i.source === "Compensation disclosure");
-  const idx = html`${pagehead({ crumbs: [["/", "Home"], [null, "Pay over $100,000"]], title: "Public sector salaries over $100,000: the sunshine list", lede: "Often called the sunshine list: every public employee paid more than $100,000 in a calendar year, salary, overtime and other pay together, as the Public Sector Compensation Transparency Act requires each employer to publish. Amounts are rounded to $100 by the publisher." })}
+  const idx = html`${pagehead({ flagged: true, crumbs: [["/", "Home"], [null, "Pay over $100,000"]], title: "Public sector salaries over $100,000: the sunshine list", lede: "Often called the sunshine list: every public employee paid more than $100,000 in a calendar year, salary, overtime and other pay together, as the Public Sector Compensation Transparency Act requires each employer to publish. Amounts are rounded to $100 by the publisher." })}
 <section class="section"><div class="wrap">
   <div class="figs">
     <div><span class="big">${num(grid.size ? [...grid.values()].reduce((s, g) => s + (g[latest]?.n || 0), 0) : 0)}</span><span class="what">people on the ${latest} lists</span></div>
@@ -46,7 +46,7 @@ export function pay(D, R) {
     const titles = D.q(`SELECT description, count(*) n, sum(amount) a, avg(amount) avg FROM items WHERE dataset='sunshine' AND buyer=? AND fiscal_year=? GROUP BY description ORDER BY n DESC LIMIT 15`, e.buyer, `calendar ${perYear[perYear.length - 1]}`);
     const src = D.q(`SELECT DISTINCT substr(fiscal_year,10) y, source_url FROM items WHERE dataset='sunshine' AND buyer=? ORDER BY y`, e.buyer);
     const bh = D.keyHash(D.one("SELECT buyer_key k FROM items WHERE dataset='sunshine' AND buyer=? LIMIT 1", e.buyer).k);
-    const body = html`${pagehead({ crumbs: [["/", "Home"], ["/pay/", "Pay over $100,000"], [null, e.buyer]], title: esc(e.buyer), lede: `Compensation disclosure lists for ${perYear.join(", ")}. ${src.map((s) => `<a href="${esc(s.source_url)}">${s.y} list</a>`).join(" · ")}` })}
+    const body = html`${pagehead({ flagged: true, crumbs: [["/", "Home"], ["/pay/", "Pay over $100,000"], [null, e.buyer]], title: esc(e.buyer), lede: `Compensation disclosure lists for ${perYear.join(", ")}. ${src.map((s) => `<a href="${esc(s.source_url)}">${s.y} list</a>`).join(" · ")}` })}
 <section class="section"><div class="wrap grid-2">
   <div>${schedule({ compact: true, caption: "By year", cols: [{ label: "Year" }, { label: "People", num: true }, { label: "Total pay", num: true }], rows: perYear.map((y) => { const g = grid.get(e.buyer)[y]; return { cells: [y, num(g.n), moneyWords(g.a)] }; }) })}</div>
   <div>${schedule({ compact: true, caption: `Most common job titles, ${perYear[perYear.length - 1]}`, cols: [{ label: "Title as published" }, { label: "People", num: true }, { label: "Average", num: true }], rows: titles.map((t) => ({ cells: [esc(t.description), num(t.n), money(t.avg)] })) })}</div>

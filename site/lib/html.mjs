@@ -84,6 +84,15 @@ export function bar(value, max, cls = "") {
   return `<span class="bar ${cls}" aria-hidden="true"><span style="inline-size:${w.toFixed(2)}%"></span></span>`;
 }
 
+// The site's standing statement, shown in the page head wherever a reader meets flags or named people.
+export const STANDING = "A flag is a question, not a finding. It is not evidence that anything wrong happened.";
+export const standing = () => `<p class="standing">${icon("query")}<span>${STANDING}</span></p>`;
+
+// One row of a list of patterns: the title is the way in, the method link is the aside.
+export function flagItem(f, { count = "", method = false } = {}) {
+  return `<li class="flagitem"><span class="q" aria-hidden="true">${icon("query")}</span><h3><a href="/flags/${f.id}/">${esc(f.title)}${icon("arrow")}</a></h3><span class="count">${count}</span><p>${esc(f.short)}${method ? ` <a class="method" href="/method/${f.id}/">Method<span class="vh"> for ${esc(f.title)}</span></a>` : ""}</p></li>`;
+}
+
 // ---- layout
 const NAV = [
   ["/priorities/", "Priorities"],
@@ -163,7 +172,7 @@ ${ld}
 <body class="${bodyClass}">
 <a class="skip" href="#main">Skip to content</a>
 ${globalThis.process?.env?.NL_SAMPLE ? `<aside class="proto" aria-label="Sample data"><p><strong>Sample data.</strong> This local copy holds a small random sample of the records, so totals, rankings and search results are partial. Run the pipeline for the full data.</p></aside>` : ""}
-<aside class="proto" aria-label="About this prototype" data-nosnippet><p><strong>Prototype.</strong> A thought experiment in what public records can show. Figures are gathered and combined by automated scripts and have not been independently vetted. <a href="/about/">What is this?</a></p></aside>
+<aside class="proto" aria-label="About this prototype" data-nosnippet><p><strong>Prototype</strong> A thought experiment in what public records can show. Figures are gathered and combined by automated scripts and have not been independently vetted. <a href="/about/">What is this?</a></p></aside>
 <header class="mast">
   <div class="mast-in">
     <a class="brand" href="/">${WORDMARK}</a>
@@ -182,8 +191,10 @@ ${notes ? notes.render() : ""}
 </main>
 <footer class="foot">
   <div class="foot-in">
-    <p class="foot-lede">${SITE.name} is an independent prototype. It republishes public records from the Government of Newfoundland and Labrador, the Government of Canada, and the House of Assembly. Every figure links to the record it came from.</p>
-    <p class="foot-flag">${icon("query")} A flag is a question, not a finding. It is not evidence that anything wrong happened.</p>
+    <div class="foot-statement">
+    <p class="foot-lede"><strong>${SITE.name} is an independent prototype.</strong> It republishes public records from the Government of Newfoundland and Labrador, the Government of Canada, and the House of Assembly. Every figure links to the record it came from.</p>
+    <p class="foot-flag">${icon("query")}<span>${STANDING}</span></p>
+    </div>
     <nav class="foot-nav" aria-label="About this site">
       <a href="/about/">What is this?</a><a href="/sources/">Sources and report card</a><a href="/method/">Methods</a><a href="/corrections/">Corrections</a><a href="/data/">Ask your AI</a><a href="/help/">Help build this</a>
     </nav>
