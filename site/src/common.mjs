@@ -1,5 +1,5 @@
 // Helpers shared by the page builders.
-import { esc, receipt, query, icon } from "../lib/html.mjs";
+import { esc, receipt, query, icon, standing } from "../lib/html.mjs";
 import { money, date as fmtDate, DATASET_LABEL } from "../lib/format.mjs";
 
 export function supplierHref(D, supplierKey) {
@@ -63,9 +63,9 @@ export function caveat(text) {
   return `<div class="caveat">${icon("query")}<p>${text}</p></div>`;
 }
 
-export function pagehead({ crumbs = [], title, lede, extra = "" }) {
+export function pagehead({ crumbs = [], title, lede, extra = "", flagged = false }) {
   const c = crumbs.length
     ? `<p class="crumbs">${crumbs.map(([href, label]) => (href ? `<a href="${href}">${esc(label)}</a>` : esc(label))).join(" / ")}</p>`
     : "";
-  return `<header class="pagehead"><div class="wrap">${c}<h1>${title}</h1>${lede ? `<p class="lede">${lede}</p>` : ""}${extra}</div></header>`;
+  return `<header class="pagehead"><div class="wrap">${c}<h1>${title}</h1>${lede ? `<p class="lede">${lede}</p>` : ""}${flagged ? standing() : ""}${extra}</div></header>`;
 }

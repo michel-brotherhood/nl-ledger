@@ -38,7 +38,7 @@ export function bodies(D, R) {
     });
 
     const body = html`
-${pagehead({ crumbs: [["/", "Home"], ["/bodies/", "Public bodies"], [null, b.buyer]], title: esc(b.buyer), lede: `${num(b.n)} records, ${moneyWords(b.amount)} in all, from ${sets.map(datasetLabel).map((s) => s.toLowerCase()).join(", ")}.${dept ? ` <a href="/department/${D.slug(dept.name)}/">Program spending for ${esc(dept.name)}</a>.` : ""}` })}
+${pagehead({ flagged: true, crumbs: [["/", "Home"], ["/bodies/", "Public bodies"], [null, b.buyer]], title: esc(b.buyer), lede: `${num(b.n)} records, ${moneyWords(b.amount)} in all, from ${sets.map(datasetLabel).map((s) => s.toLowerCase()).join(", ")}.${dept ? ` <a href="/department/${D.slug(dept.name)}/">Program spending for ${esc(dept.name)}</a>.` : ""}` })}
 <section class="section"><div class="wrap grid-2">
   <div>
     <h2 style="margin-block-end:1rem">What is on record</h2>

@@ -1162,7 +1162,7 @@ sup.fn a {
   }
 }
 
-/* flags list */
+/* flags list: the title is the way in, the method link is the aside */
 .flaglist {
   list-style: none;
   margin: 0;
@@ -1171,26 +1171,60 @@ sup.fn a {
   gap: 0;
 }
 .flaglist li {
+  position: relative;
   display: grid;
   grid-template-columns: 2rem minmax(0, 1fr) auto;
   gap: 0.2rem 0.8rem;
-  padding-block: 1rem;
+  padding: 1rem 0.6rem;
+  margin-inline: -0.6rem;
   border-block-end: 1px solid var(--hair);
   align-items: baseline;
+  border-radius: var(--radius);
+}
+.flaglist li:hover {
+  background: var(--paper-2);
 }
 .flaglist .q {
   margin: 0;
   vertical-align: 0;
+  pointer-events: none;
 }
 .flaglist h3 {
-  font-size: 1.05rem;
+  font-size: 1.15rem;
 }
 .flaglist h3 a {
-  color: inherit;
-  text-decoration: none;
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.2em;
+}
+.flaglist h3 a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
 }
 .flaglist h3 a:hover {
-  text-decoration: underline;
+  text-decoration-thickness: 3px;
+}
+.flaglist h3 a:focus-visible {
+  outline: none;
+}
+.flaglist h3 a:focus-visible::after {
+  outline: 3px solid var(--gold);
+  outline-offset: -3px;
+  border-radius: var(--radius);
+}
+.flaglist h3 .ic {
+  float: none;
+  display: inline-block;
+  vertical-align: -0.12em;
+  margin-inline-start: 0.35em;
+  inline-size: 0.85em;
+  block-size: 0.85em;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.flaglist li:hover h3 .ic {
+  transform: translateX(0.2em);
 }
 .flaglist p {
   grid-column: 2 / -1;
@@ -1198,11 +1232,41 @@ sup.fn a {
   color: var(--ink-2);
   font-size: 0.95rem;
 }
+.flaglist .method {
+  position: relative;
+  z-index: 1;
+  color: var(--ink-3);
+  font-size: 0.85rem;
+  text-decoration: underline dotted;
+  text-underline-offset: 0.2em;
+  white-space: nowrap;
+}
+.flaglist .method:hover {
+  color: var(--link);
+  text-decoration-style: solid;
+}
 .flaglist .count {
   font-variant-numeric: tabular-nums;
   font-weight: 700;
   white-space: nowrap;
   text-align: end;
+}
+@media (max-width: 40rem) {
+  .flaglist li {
+    grid-template-columns: 1.5rem minmax(0, 1fr);
+    column-gap: 0.6rem;
+  }
+  .flaglist .count {
+    grid-column: 2;
+    text-align: start;
+    font-size: 0.9rem;
+    color: var(--ink-2);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flaglist h3 .ic {
+    transition: none;
+  }
 }
 
 .caveat {
@@ -1390,23 +1454,42 @@ pre {
 .foot a {
   color: inherit;
 }
+.foot-statement {
+  display: grid;
+  gap: 0.6rem;
+  padding-block-end: 1.5rem;
+  margin-block-end: 0.5rem;
+  border-block-end: 1px solid color-mix(in oklab, currentColor, transparent 75%);
+}
 .foot-lede {
-  max-inline-size: 70ch;
-  opacity: 0.9;
+  max-inline-size: 62ch;
+  font-size: 1.125rem;
+  line-height: 1.5;
+  margin: 0;
 }
 .foot-flag {
   display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  font-weight: 600;
+  gap: 0.6rem;
+  align-items: flex-start;
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
 }
+.foot-flag .ic {
+  flex: none;
+  inline-size: 1.4rem;
+  block-size: 1.4rem;
+  margin-block-start: 0.1rem;
+  color: var(--gold);
+}
+
 .foot-nav {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem 1.4rem;
 }
 .foot-meta {
-  opacity: 0.7;
+  opacity: 0.8;
   font-size: 0.85rem;
   max-inline-size: 80ch;
 }
@@ -1658,8 +1741,14 @@ article a,
 
 /* Prototype notice, every page */
 .proto { background: var(--paper-3); color: var(--ink); border-block-end: 1px solid var(--hair); }
-.proto p { margin: 0 auto; max-inline-size: 72rem; padding: .55rem 1rem; font-size: .875rem; line-height: 1.45; text-align: center; }
+.proto p { margin: 0 auto; max-inline-size: 72rem; padding: .6rem 1rem; font-size: .95rem; line-height: 1.5; text-align: center; }
+.proto strong { display: inline-block; margin-inline-end: .4rem; padding: .05rem .5rem; border-radius: var(--radius); background: var(--gold); color: var(--on-gold); font-size: .8rem; font-weight: 800; font-stretch: 80%; letter-spacing: .07em; text-transform: uppercase; vertical-align: .05em; }
 .proto a { color: inherit; font-weight: 600; text-underline-offset: .15em; }
+
+/* The standing statement in a page head, where flags or named people are listed */
+.standing { display: flex; gap: .6rem; align-items: flex-start; max-inline-size: 62ch; margin-block: 1.25rem 0; font-size: 1.05rem; font-weight: 700; line-height: 1.4; color: var(--on-blue); }
+.standing .ic { flex: none; inline-size: 1.3rem; block-size: 1.3rem; margin-block-start: .1rem; color: var(--gold); }
+.standing span { min-inline-size: 0; }
 
 /* ---------- Ask your AI (/data/) and the home section ---------- */
 .copy {

@@ -1,5 +1,5 @@
 // Home: the cover, your receipt, a working life, priorities, where it went, patterns, receipts.
-import { esc, html, icon, Notes, leaders, oneToOne, bar, receipt } from "../../lib/html.mjs";
+import { esc, html, icon, flagItem, Notes, leaders, oneToOne, bar, receipt } from "../../lib/html.mjs";
 import { money, moneyWords, num, pct, workTime, perPerson, perHousehold, yearsOfWage, nlIncomeTax, date as fmtDate } from "../../lib/format.mjs";
 import { renderReceipt } from "../../lib/receipt.mjs";
 import { caveat } from "../common.mjs";
@@ -186,7 +186,7 @@ export function home(D, R) {
     <ul class="flaglist" style="margin-block-start:1rem">${D.catalog.flags.slice(0, 8).map((f) => {
       const s = D.flagSummary[f.id] || {};
       const count = s.items ? `${num(s.items)} items` : s.subjects ? `${num(s.subjects)} found` : "none found";
-      return html`<li><a class="q" href="/flags/${f.id}/" aria-hidden="true" tabindex="-1">${icon("query")}</a><h3><a href="/flags/${f.id}/">${esc(f.title)}</a></h3><span class="count">${count}</span><p>${esc(f.short)}</p></li>`;
+      return flagItem(f, { count });
     })}</ul>
     <p style="margin-block-start:1.5rem"><a href="/flags/">All ${D.catalog.flags.length} patterns and how each is worked out ${icon("arrow")}</a></p>
   </div>

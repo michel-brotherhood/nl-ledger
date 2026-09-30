@@ -1,5 +1,5 @@
 // Patterns: an index, a results page per flag, and a method page per flag.
-import { esc, html, icon, Notes, schedule, receipt, bar } from "../../lib/html.mjs";
+import { esc, html, icon, Notes, schedule, receipt, bar, flagItem } from "../../lib/html.mjs";
 import { money, moneyWords, num, pct, date as fmtDate } from "../../lib/format.mjs";
 import { desc } from "../seo.mjs";
 import { pagehead, itemRow, ITEM_COLS, caveat, datasetLabel, bodyAnchor } from "../common.mjs";
@@ -27,7 +27,7 @@ export function flagPages(D, R) {
     body: html`${pagehead({ crumbs: [["/", "Home"], [null, "Patterns"]], title: "Patterns people ask about", lede: "Patterns in the records that people often ask about: deals made without competition, contracts that grew, amounts just under a limit, spending bunched at year end, and more. Each is counted from the records with its method written down. None is a finding of wrongdoing." })}
 <section class="section"><div class="wrap">
   ${caveat(esc(cat.caveat))}
-  <ul class="flaglist" style="margin-block-start:1.5rem">${cat.flags.map((f) => html`<li><a class="q" href="/flags/${f.id}/" aria-hidden="true" tabindex="-1">${icon("query")}</a><h3><a href="/flags/${f.id}/">${esc(f.title)}</a></h3><span class="count">${countLine(D, f)}</span><p>${esc(f.short)} <a href="/method/${f.id}/">Method</a></p></li>`)}</ul>
+  <ul class="flaglist" style="margin-block-start:1.5rem">${cat.flags.map((f) => flagItem(f, { count: countLine(D, f), method: true }))}</ul>
   <p class="small muted" style="margin-block-start:1.5rem">Some patterns cannot be checked with Newfoundland and Labrador data: single bids, disqualified rivals and identical bids need bid-level records, which the province does not publish.</p>
 </div></section>`,
   }]);
