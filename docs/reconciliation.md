@@ -1,6 +1,6 @@
 # Reconciliation
 
-Generated 2026-09-29 by `pipeline/reconcile.py` from `data/build/ledger.db`.
+Generated 2026-09-30 by `pipeline/reconcile.py` from `data/build/ledger.db`.
 
 
 ## Items loaded
@@ -103,13 +103,50 @@ Major federal transfers to NL, 2024-25 (Public Accounts, $ millions as published
 
 ## Department and program spending
 
-- Check: for each department and account (current, capital), gross expenditure summed from the parsed object lines equals the department's gross expenditure in the report's own summary statement (rounded to $000). 173 of 175 match.
-  - 2019-20 transportation and works (CURRENT): summary $349,181,000.00, parsed $347,848,250.00.
+- Check: for each department and account (current, capital), gross expenditure summed from the parsed object lines equals the department's gross expenditure in the report's own summary statement (rounded to $000). 174 of 175 match.
+- Check, Estimates: each department's program lines add to the "Total: Program Estimates" line of its Program Funding Summary, current and capital, to the dollar. 184 of 184 match (8 years of Estimates).
   - 2024-25 labrador affairs (CURRENT): summary $16,697,000.00, parsed nothing. The 2024-25 report prints Labrador Affairs detail pages with only a heading and '#MISSING'; the source has no lines to parse.
-- 2019-20 actual: gross expenditure $8,212,926,310.00
+- 2019-20 actual: gross expenditure $8,214,258,993.00
+- 2019-20 estimates: gross expenditure $8,654,325,200.00
 - 2020-21 actual: gross expenditure $7,929,214,100.00
+- 2020-21 estimates: gross expenditure $8,514,893,000.00
 - 2021-22 actual: gross expenditure $8,880,154,489.00
+- 2021-22 estimates: gross expenditure $9,102,803,400.00
 - 2022-23 actual: gross expenditure $9,110,447,041.00
+- 2022-23 estimates: gross expenditure $9,087,284,900.00
 - 2023-24 actual: gross expenditure $9,571,838,311.00
+- 2023-24 estimates: gross expenditure $9,912,038,000.00
 - 2024-25 actual: gross expenditure $10,628,156,038.00
-- 2026-27 estimates: gross expenditure $12,903,424,100.00
+- 2024-25 estimates: gross expenditure $11,013,336,000.00
+- 2025-26 estimates: gross expenditure $12,056,608,000.00
+- 2026-27 estimates: gross expenditure $12,926,768,400.00
+
+## Budget against actual, the deficit and net debt
+
+Two bases, kept apart. Budgeted and spent are from the Estimates and the Report on the Program Expenditures and Revenues of the Consolidated Revenue Fund (modified cash, departments). The surplus or deficit and net debt are from the audited Public Accounts (accrual, all government bodies).
+
+| Check | Holds |
+|---|---:|
+| Report: each printed subtotal of the Statement of Budgetary Contribution recomputed (net expenditure, cash requirement; actual and original estimates) | 48 of 48 |
+| Report: the departments in the summary statements add to the statement's gross expenditure | 6 of 6 |
+| Estimates: the departments' program lines add to the gross expenditure in the budget's Summary of Cash Requirements | 8 of 8 |
+| The Report's Original Estimates column equals the budget's own Summary of Cash Requirements (revenue, gross expenditure, related revenue, cash requirement) | 36 of 36 |
+| Department by department, the Original column the Report reprints equals the Estimates as tabled | 112 of 114 |
+| Public Accounts: revenue less expense equals the printed surplus or deficit; liabilities less financial assets equals net debt; net debt agrees between two statements | 24 of 24 |
+| The Public Accounts' Original Budget column equals the budget's own statements (from Budget 2024, when they were first published as Statements and Schedules) | 4 of 4 |
+
+Checks that do not hold:
+
+- 2020-21: Executive Council: the Original column the Report reprints equals the Estimates as tabled. $250,118,900.00 against $252,162,100.00. The 2020-21 report prints a dash for the original Salaries estimate of program 2.2.01 (PDF page 38), while that program's printed total includes it; the budgeted figure is the Estimates'.
+- 2024-25: Labrador Affairs: the Original column the Report reprints equals the Estimates as tabled. Nothing against $18,124,300.00. The 2024-25 report prints no program detail for Labrador Affairs, so it reprints no Original figure; the budgeted figure is the Estimates'.
+
+| Fiscal year | Budgeted (Estimates) | Spent (Report) | Surplus or (deficit), budget | Surplus or (deficit), actual | Net debt |
+|---|---:|---:|---:|---:|---:|
+| 2019-20 | $8,654,325,000 | $8,214,259,000 | $1,924,452,000 | $1,117,181,000 | $14,434,860,000 |
+| 2020-21 | $8,514,893,000 | $7,929,214,000 | ($1,838,099,000) | ($1,491,821,000) | $16,016,181,000 |
+| 2021-22 | $9,102,803,000 | $8,880,154,000 | ($825,473,000) | ($271,910,000) | $16,371,691,000 |
+| 2022-23 | $9,087,285,000 | $9,110,447,000 | ($351,404,000) | $323,136,000 | $16,510,536,000 |
+| 2023-24 | $9,912,038,000 | $9,571,840,000 | ($159,923,000) | ($458,974,000) | $17,666,520,000 |
+| 2024-25 | $11,013,336,000 | $10,644,852,000 | ($151,949,000) | ($296,637,000) | $18,435,914,000 |
+| 2025-26 | $12,056,609,000 | not yet published | ($371,754,000) | not yet published | not yet published |
+| 2026-27 | $12,926,768,000 | not yet published | ($688,545,000) | not yet published | not yet published |

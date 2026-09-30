@@ -3,8 +3,11 @@
  "minister_total": 40507.56,
  "mha_lines": 46,
  "mha_total": 11464.85,
- "program_departments_checked": 31,
- "program_lines": 2326,
+ "program_departments_checked": 55,
+ "program_lines": 4625,
+ "budget_figures": 46,
+ "budget_checks": 40,
+ "budget_departments": 20,
  "pay_rows": 4,
  "pay_total": 475600.0
 }

@@ -1,5 +1,5 @@
 """Provincial sources: ministerial expense claims, MHA expense reports, sunshine list,
-program expenditure reports and budget estimates.
+program expenditure reports, budget estimates and statements, and the Public Accounts.
 
 Each listing page is scraped for its file links; files are cached under data/cache.
 Link lists with their page context are saved beside the files as _index.json.
@@ -118,8 +118,30 @@ CRF_REPORTS = {  # Report on the Program Expenditures and Revenues of the CRF, b
     "2020-21": "https://www.gov.nl.ca/exec/tbs/files/The-Report-FINAL-1-1.pdf",
     "2019-20": "https://www.gov.nl.ca/exec/tbs/files/FINAL-for-the-web-The-Report-1-1.pdf",
 }
-ESTIMATES = {
+ESTIMATES = {  # Estimates of the Program Expenditure and Revenue of the CRF, as tabled with each budget
     "2026-27": "https://www.gov.nl.ca/budget/2026/wp-content/uploads/sites/10/Estimates-2026.pdf",
+    "2025-26": "https://www.gov.nl.ca/budget/2025/wp-content/uploads/sites/9/2025/04/Estimates-2025.pdf",
+    "2024-25": "https://www.gov.nl.ca/budget/2024/wp-content/uploads/sites/8/2024/03/Estimates-2024.pdf",
+    "2023-24": "https://www.gov.nl.ca/budget/2023/wp-content/uploads/sites/7/2023/03/Estimates-2023.pdf",
+    "2022-23": "https://www.gov.nl.ca/budget/2022/wp-content/uploads/sites/6/2022/04/Estimates-2022.pdf",
+    "2021-22": "https://www.gov.nl.ca/budget/2021/wp-content/uploads/sites/5/Estimates.pdf",
+    "2020-21": "https://www.gov.nl.ca/budget/2020/wp-content/uploads/sites/3/2020/09/Estimates-2020.pdf",
+    "2019-20": "https://www.gov.nl.ca/budget/2019/wp-content/uploads/sites/2/2019/04/estimates.pdf",
+}
+# Statements and Schedules: from Budget 2024 the budget's summary statements (cash requirements,
+# consolidated statement of operations, net debt) are printed here instead of in the Estimates.
+BUDGET_STATEMENTS = {
+    "2026-27": "https://www.gov.nl.ca/budget/2026/wp-content/uploads/sites/10/Statements-and-Schedules-2026.pdf",
+    "2025-26": "https://www.gov.nl.ca/budget/2025/wp-content/uploads/sites/9/2025/04/Statements-and-Schedules-2025.pdf",
+    "2024-25": "https://www.gov.nl.ca/budget/2024/wp-content/uploads/sites/8/2024/03/Statements-and-Schedules-2024.pdf",
+}
+PUBLIC_ACCOUNTS = {  # Public Accounts, Consolidated Summary Financial Statements (audited), by fiscal year
+    "2024-25": "https://www.gov.nl.ca/exec/tbs/files/Consolidated-Summary-Financial-Statements-March-31-2025-FINAL.pdf",
+    "2023-24": "https://www.gov.nl.ca/exec/tbs/files/168496-PUB-ACC-CON-SUM-FIN-STAT-2024-web.pdf",
+    "2022-23": "https://www.gov.nl.ca/exec/tbs/files/Public-Accounts-2022-23.pdf",
+    "2021-22": "https://www.gov.nl.ca/exec/tbs/files/Public-Accounts-2021-22.pdf",
+    "2020-21": "https://www.gov.nl.ca/exec/tbs/files/Public-Accounts-March-31-2021-1.pdf",
+    "2019-20": "https://www.gov.nl.ca/exec/tbs/files/Public-Accounts-2019-20.pdf",
 }
 
 
@@ -128,7 +150,11 @@ def programs(m: dict) -> None:
         fetch(url, CACHE / "crf" / f"crf-{fy}.pdf", manifest=m)
     for fy, url in ESTIMATES.items():
         fetch(url, CACHE / "estimates" / f"estimates-{fy}.pdf", manifest=m)
-    print("crf and estimates fetched")
+    for fy, url in BUDGET_STATEMENTS.items():
+        fetch(url, CACHE / "budget" / f"statements-{fy}.pdf", manifest=m)
+    for fy, url in PUBLIC_ACCOUNTS.items():
+        fetch(url, CACHE / "public-accounts" / f"public-accounts-{fy}.pdf", manifest=m)
+    print("crf, estimates, budget statements and public accounts fetched")
 
 
 

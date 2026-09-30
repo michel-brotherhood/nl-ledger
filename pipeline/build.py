@@ -7,6 +7,7 @@ items: one row per published line (an award, a contract, a grant, a payment, a
        claim, a pay record). Every row carries its receipt: source_url, source_file
        and a human-readable locator ("page 3, row t1r12").
 programs: department and program spending, planned against actual.
+fiscal, dept_budget, fiscal_checks: budget against actual, the deficit and net debt (parse_fiscal.py).
 publishers: per-source publishing facts (broken links, discrepancies) for the
        publisher report card.
 """
@@ -95,8 +96,14 @@ CREATE TABLE programs (
 );
 CREATE TABLE facts (key TEXT PRIMARY KEY, value TEXT);
 CREATE TABLE buyers (buyer_key TEXT PRIMARY KEY, buyer TEXT);
-CREATE TABLE dept_summary (fiscal_year TEXT, department TEXT, account TEXT, gross REAL, parsed REAL, ok INTEGER,
+CREATE TABLE dept_summary (fiscal_year TEXT, kind TEXT, department TEXT, account TEXT, gross REAL, parsed REAL, ok INTEGER,
   source_url TEXT, source_file TEXT, page INTEGER);
+CREATE TABLE fiscal (fiscal_year TEXT, basis TEXT, measure TEXT, col TEXT, amount REAL, doc TEXT, label TEXT,
+  source_url TEXT, source_file TEXT, page INTEGER);
+CREATE TABLE dept_budget (fiscal_year TEXT, department TEXT, spent REAL, budget REAL, budget_doc TEXT,
+  report_original REAL, report_amended REAL, spent_url TEXT, spent_file TEXT, spent_page INTEGER,
+  budget_url TEXT, budget_file TEXT, budget_page INTEGER);
+CREATE TABLE fiscal_checks (fiscal_year TEXT, name TEXT, what TEXT, a REAL, b REAL, ok INTEGER);
 CREATE TABLE publisher_issues (source TEXT, listed_on TEXT, url TEXT, issue TEXT);
 """
 
@@ -327,9 +334,22 @@ def main():
           r["program"], r["line_type"], r["object_code"], r["object"], f(r["col1"]), f(r["col2"]), f(r["col3"]),
           r["source_url"], r["source_file"], int(r["page"])) for r in prog])
 
-    con.executemany("INSERT INTO dept_summary VALUES (?,?,?,?,?,?,?,?,?)",
-                    [(r["fiscal_year"], r["department"], r["account"], f(r["summary"]), f(r["parsed"]), 1 if r["ok"] == "True" else 0,
+    con.executemany("INSERT INTO dept_summary VALUES (?,?,?,?,?,?,?,?,?,?)",
+                    [(r["fiscal_year"], r["kind"], r["department"], r["account"], f(r["summary"]), f(r["parsed"]), 1 if r["ok"] == "True" else 0,
                       r["source_url"], r["source_file"], int(r["page"])) for r in rows("program_check.csv")])
+
+    # --- budget against actual, the deficit and net debt (parse_fiscal.py)
+    con.executemany("INSERT INTO fiscal VALUES (?,?,?,?,?,?,?,?,?,?)",
+                    [(r["fiscal_year"], r["basis"], r["measure"], r["col"], f(r["amount"]), r["doc"], r["label"],
+                      r["source_url"], r["source_file"], int(r["page"])) for r in rows("fiscal.csv")])
+    page = lambda v: int(v) if v else None  # noqa: E731
+    con.executemany("INSERT INTO dept_budget VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    [(r["fiscal_year"], r["department"], f(r["spent"]), f(r["budget"]), r["budget_doc"], f(r["report_original"]),
+                      f(r["report_amended"]), r["spent_url"], r["spent_file"], page(r["spent_page"]),
+                      r["budget_url"], r["budget_file"], page(r["budget_page"])) for r in rows("dept_budget.csv")])
+    fiscal_checks = rows("fiscal_check.csv")
+    con.executemany("INSERT INTO fiscal_checks VALUES (?,?,?,?,?,?)",
+                    [(r["fiscal_year"], r["check"], r["what"], f(r["a"]), f(r["b"]), 1 if r["ok"] == "True" else 0) for r in fiscal_checks])
 
     # --- publisher issues
     issues = []
@@ -348,6 +368,12 @@ def main():
         if "duplicate" in r["status"] or "superseded" in r["status"] or "no lines" in r["status"]:
             issues.append(("Town of Paradise payment registers", "https://www.paradise.ca/government-engage/cheque-register/",
                            r["file"], r["status"]))
+    for r in fiscal_checks:
+        if r["check"] == "original-department" and r["ok"] != "True":
+            issues.append(("Program expenditure reports", "https://www.gov.nl.ca/exec/tbs/public-accounts/", f"{r['fiscal_year']} report",
+                           f"{r['what'].split(':')[0]}, {r['fiscal_year']}: the Original estimates the report reprints add to "
+                           f"{'nothing (no detail is printed)' if f(r['a']) is None else '${:,.0f}'.format(f(r['a']))}; "
+                           f"the Estimates as tabled say ${f(r['b']):,.0f}"))
     con.executemany("INSERT INTO publisher_issues VALUES (?,?,?,?)", issues)
 
     stats = json.loads((CLEAN / "stats.json").read_text())
