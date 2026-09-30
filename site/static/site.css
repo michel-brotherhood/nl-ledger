@@ -376,11 +376,16 @@ strong {
 .theme {
   grid-area: theme;
 }
+.theme .ic {
+  inline-size: 1.4rem;
+  block-size: 1.4rem;
+}
 .gh {
   grid-area: gh;
 }
-.gh:hover {
-  color: var(--gold);
+.gh .ic {
+  inline-size: 1.1rem;
+  block-size: 1.1rem;
 }
 .theme .i-sun {
   display: none;
