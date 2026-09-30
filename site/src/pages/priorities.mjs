@@ -194,7 +194,8 @@ ${awards.length ? html`<section class="section"><div class="wrap">
   ${schedule({ cols: ITEM_COLS, rows: awards.slice(0, 60).map((a) => itemRow(D, a, { showBuyer: false })) })}
   ${awards.length > 60 ? `<p><a href="${bodyHref(D, awards[0].buyer)}">All ${num(awards.length)} awards</a></p>` : ""}
 </div></section>` : ""}`;
-    const budgeted = progs.reduce((t, p) => t + (p.c3 || 0), 0);
+    // The department's budget in the Estimates as tabled, the figure /budget/ shows.
+    const budgeted = (latest && D.one("SELECT budget v FROM dept_budget WHERE fiscal_year=? AND lower(department)=lower(?)", latest, dep.name)?.v) || 0;
     const spent = sum ? `${dep.name} spent ${moneyWords(sum.gross)} in ${latest}${budgeted > 0 ? `, against a budget of ${moneyWords(budgeted)}` : ""}.` : `${dep.name}: the ${estYear} budget estimates by program.`;
     out.push([`/department/${slug}/`, { title: `${dep.name} spending, ${latest || estYear}`,
       description: desc(`${spent} Spending by program and contracts awarded, with sources.`), body, notes }]);
