@@ -35,7 +35,7 @@ jobs:
         run: ./site/check.sh
       - name: MCP checks on the sample
         # Exercise the read-only MCP tools over HTTP, through the local server and committed sample data.
-        run: node site/check-mcp.mjs
+        run: npm ci --prefix site && node site/check-mcp.mjs
 
   reconcile:
     name: Reconciliation on sample sources
