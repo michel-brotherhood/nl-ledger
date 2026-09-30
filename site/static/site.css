@@ -249,6 +249,7 @@ strong {
   margin: 0;
 }
 .grid-2 {
+  grid-template-columns: minmax(0, 1fr);
   display: grid;
   gap: clamp(2rem, 4vw, 3.5rem);
 }
@@ -533,6 +534,7 @@ strong {
 
 /* ---------- forms ---------- */
 .field {
+  grid-template-columns: minmax(0, 1fr);
   display: grid;
   gap: 0.35rem;
   text-align: start;
@@ -546,6 +548,8 @@ strong {
   color: var(--ink-2);
 }
 .field-row {
+  min-inline-size: 0;
+  max-inline-size: 100%;
   display: flex;
   align-items: stretch;
   background: var(--paper);
@@ -566,7 +570,8 @@ strong {
 }
 .field-row input,
 .field-row select {
-  flex: 1;
+  flex: 1 1 0;
+  inline-size: 0;
   min-inline-size: 0;
   border: 0;
   background: transparent;
@@ -2285,7 +2290,7 @@ article a,
   gap: 1rem;
   min-inline-size: 0;
 }
-.tryform { display: grid; gap: 0.8rem; }
+.tryform { grid-template-columns: minmax(0, 1fr); min-inline-size: 0; display: grid; gap: 0.8rem; }
 .tryform select { padding-inline-end: 0.5rem; }
 .tryout:empty { display: none; }
 .tryout {
@@ -2815,4 +2820,14 @@ article a,
 }
 @media (max-width: 22rem) {
   .phone-menu summary { padding-inline: 6px; gap: 5px; }
+}
+
+/* Receipt controls keep their full text size as the available measure narrows. */
+.receipt-form { inline-size: 100%; max-inline-size: 26rem; margin-block-start: 1rem; container-type: inline-size; }
+.receipt-help, .receipt-error { margin: 0; }
+.receipt-error { font-weight: 700; }
+.receipt-form [aria-invalid="true"] { box-shadow: inset 0 -3px var(--ink); }
+@container (max-width: 22rem) {
+  .receipt-form .field-row { flex-wrap: wrap; }
+  .receipt-form .field-row .btn { flex: 0 0 100%; white-space: normal; border-radius: 0 0 var(--radius) var(--radius); font-size: .95rem; }
 }

@@ -1,5 +1,5 @@
 // Home: the cover, your receipt, a working life, priorities, where it went, patterns, receipts.
-import { esc, html, icon, flagItem, Notes, leaders, oneToOne, bar, receipt, REPO } from "../../lib/html.mjs";
+import { esc, html, receiptForm, icon, flagItem, Notes, leaders, oneToOne, bar, receipt, REPO } from "../../lib/html.mjs";
 import { money, moneyWords, num, pct, workTime, perPerson, perHousehold, yearsOfWage, nlIncomeTax, date as fmtDate, SITE } from "../../lib/format.mjs";
 import { renderReceipt } from "../../lib/receipt.mjs";
 import { caveat } from "../common.mjs";
@@ -47,10 +47,7 @@ export function home(D, R, B) {
     ${ledger}
     <hr class="cover-rule">
     <div class="cover-forms">
-      <form class="field" action="/receipt/" method="get" data-receipt-form>
-        <label for="inc">What did your taxes pay for?</label>
-        <div class="field-row"><span class="pre">$</span><input id="inc" name="income" inputmode="numeric" pattern="[0-9,]*" placeholder="Your yearly income" autocomplete="off"><button class="btn" type="submit">Show me</button></div>
-      </form>
+      ${receiptForm({ id: "inc", button: "Show me" })}
       <form class="field" action="/search/" method="get" role="search">
         <label for="cq">Search ${num(R.itemCount)} records</label>
         <div class="field-row"><span class="pre">${icon("search")}</span><input id="cq" name="q" type="search" placeholder="A company, a town, a word" autocomplete="off"><button class="btn" type="submit">Search</button></div>
@@ -90,14 +87,11 @@ export function home(D, R, B) {
     <div class="sticky">
       <div class="section-head">
         <h2 id="rc-h">Your receipt</h2>
-        <p class="lede">Put in your income and see what your provincial income tax paid for, department by department, down to real contracts.</p>
+        <p class="lede">Enter employment income to estimate provincial income tax and illustrate its share of spending, department by department.</p>
       </div>
-      <p>The receipt works out your ${S.nl_tax.year} Newfoundland and Labrador income tax${citeTax}, then spreads it the way the province spread all its spending in ${fy}. Health got ${pct(depts[0].share)} of every dollar spent, so ${pct(depts[0].share)} of your tax lands there.</p>
-      <p class="muted small">Personal income tax brought in ${pct(S.provincial_government.personal_income_tax / S.provincial_government.revenue)} of provincial revenue in ${S.provincial_government.year}${citeRev}; sales taxes, federal transfers and resource revenue pay most of the rest. The receipt shows your part, not the whole bill. <a href="/method/receipt/">How the receipt works</a>.</p>
-      <form class="field" action="/receipt/" method="get" data-receipt-form style="max-inline-size:26rem;margin-block-start:1.5rem">
-        <label for="inc2">Your yearly income</label>
-        <div class="field-row"><span class="pre">$</span><input id="inc2" name="income" inputmode="numeric" pattern="[0-9,]*" value="${num(median)}" autocomplete="off"><button class="btn" type="submit">Update</button></div>
-      </form>
+      <p>The receipt estimates ${S.nl_tax.year} Newfoundland and Labrador income tax${citeTax}, then spreads it the way the province spread all its spending in ${fy}. Health got ${pct(depts[0].share)} of every dollar spent, so ${pct(depts[0].share)} of the estimated tax is shown there.</p>
+      <p class="muted small">Personal income tax brought in ${pct(S.provincial_government.personal_income_tax / S.provincial_government.revenue)} of provincial revenue in ${S.provincial_government.year}${citeRev}; sales taxes, federal transfers and resource revenue pay most of the rest. The receipt illustrates spending shares; it does not trace an individual’s tax payments. <a href="/method/receipt/">How the receipt works</a>.</p>
+      ${receiptForm({ id: "inc2", value: num(median) })}
     </div>
     <div data-receipt-out>${renderReceipt(R, median, S)}</div>
   </div>

@@ -3,7 +3,7 @@
 import { readFileSync } from "node:fs";
 import { DatabaseSync } from "node:sqlite";
 import worker from "./worker.mjs";
-import { layout, FEEDBACK_MAX } from "./lib/html.mjs";
+import { layout, feedbackForm, FEEDBACK_MAX } from "./lib/html.mjs";
 import { addressOf } from "./routes/feedback.js";
 
 const HERE = new URL(".", import.meta.url).pathname;
@@ -50,6 +50,8 @@ const check = (ok, what) => {
 // ---- the box is on every page, and posts to the endpoint
 {
   const h = layout({ title: "T", body: "<p>x</p>", path: "/flags/" });
+  check(/name="kind" value="" checked/.test(feedbackForm()), "no category is the native default");
+  check(/name="kind" value="wrong" checked/.test(feedbackForm({ kind: "wrong" })) && !/name="kind" value="" checked/.test(feedbackForm({ kind: "wrong" })), "a returned category keeps its selection and can be cleared");
   check(/<section class="fb" id="feedback"/.test(h) && /action="\/feedback" method="post"/.test(h), "every page carries the box");
   check(/name="page" value="\/flags\/"/.test(h), "the page's address travels with the note");
   check(/href="#feedback"/.test(h), "the top bar links to the box");
