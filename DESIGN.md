@@ -149,7 +149,7 @@ One family, Archivo (variable, self-hosted), on its width axis:
 - Container 76rem with a gutter of `clamp(1rem, 4vw, 2.5rem)`; sections breathe at `clamp(3rem, 7vw, 5.5rem)`.
 - Two-column grid from 60rem (`1.15fr / 1fr`); a single column below.
 - Wide schedules scroll inside their own wrapper; the page never scrolls sideways at 375px.
-- Masthead is sticky; the nav scrolls horizontally on phones.
+- Masthead is sticky; below 60rem a native Menu disclosure opens a ruled, scrollable list. Desktop navigation stays in one row.
 
 ## Elevation & Depth
 
