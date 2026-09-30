@@ -1794,6 +1794,27 @@ article a,
   }
 }
 
+/* Seven nav items beside the search box: between the width where the nav goes inline and the full
+   container, the search box gives up its width first, so no nav item is cut off. */
+@media (min-width: 60rem) and (max-width: 67.99rem) {
+  .mast-search {
+    inline-size: 2.6rem;
+    background: none;
+    border-color: transparent;
+  }
+  .mast-search input {
+    display: none;
+  }
+  .nav a {
+    padding-inline: 0.38rem;
+  }
+}
+@media (min-width: 68rem) and (max-width: 76rem) {
+  .mast-search {
+    max-inline-size: calc(100vw - 61rem);
+  }
+}
+
 /* Year tabs on a blue page head: paper pills, the current year reversed. Blue in both schemes, so fixed tones. */
 .pagehead .chips {
   margin: 0.4rem 0 0;
