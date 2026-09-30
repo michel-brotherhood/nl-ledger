@@ -1,5 +1,5 @@
 // Patterns: an index, a results page per flag, and a method page per flag.
-import { esc, html, icon, Notes, schedule, receipt, bar, flagItem } from "../../lib/html.mjs";
+import { esc, html, icon, Notes, schedule, receipt, bar, flagItem, methodCode } from "../../lib/html.mjs";
 import { money, moneyWords, num, pct, date as fmtDate } from "../../lib/format.mjs";
 import { desc } from "../seo.mjs";
 import { pagehead, itemRow, ITEM_COLS, caveat, datasetLabel, bodyAnchor } from "../common.mjs";
@@ -109,6 +109,7 @@ export function flagPages(D, R) {
   <h2>What it cannot tell you</h2><p>${esc(f.limits)}</p>
   ${caveat(esc(cat.caveat))}
   <p style="margin-block-start:1.5rem">This page and the calculation are generated from one definition, so they cannot drift apart. <a href="/flags/${f.id}/">See the results</a>.</p>
+  ${methodCode([["pipeline/flags.py", `defines this pattern (the entry with id "${f.id}") and counts it`]], { title: f.title, path: `/method/${f.id}/` })}
 </div></section>`,
     }]);
   }

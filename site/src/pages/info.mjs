@@ -1,5 +1,5 @@
 // Sources and report card, methods, corrections, about, data access, the fold-out scale, 404.
-import { esc, html, icon, Notes, schedule, leaders } from "../../lib/html.mjs";
+import { esc, html, icon, Notes, schedule, leaders, methodCode, REPO } from "../../lib/html.mjs";
 import { money, moneyWords, num, pct, date as fmtDate, workTime, SITE, payrollContributions, nlIncomeTax } from "../../lib/format.mjs";
 import { desc } from "../seo.mjs";
 import { DATASETS } from "../../lib/search.mjs";
@@ -8,7 +8,6 @@ import { connectPage } from "./connect.mjs";
 import { LICENCES, SOURCE_LICENCE } from "../licences.mjs";
 
 
-const REPO = "https://github.com/steveclarke/nl-ledger";
 
 const SOURCES = [
   { ds: "ppa", publisher: "Public Procurement Agency, Government of Newfoundland and Labrador", url: "https://www.gov.nl.ca/ppa/tenders/awarded/", what: "Contract award reports filed every two weeks under sections 31 and 32 of the Public Procurement Regulations: limited calls for bids, exceptions to open calls (sole source, emergency and others) and some open calls, for every public body that must report.", form: "PDF tables, read with a table parser. Where a fortnight was reissued as REVISED, the revised report replaces the original." },
@@ -137,6 +136,7 @@ export function info(D, R) {
   <h2>Supplier names</h2><p><a href="/method/suppliers/">How names printed different ways are matched to one supplier</a>.</p>
   <h2>Totals and checks</h2><p>Every total on this site is a sum of line items loaded from the sources. Where a source prints its own totals, the sum is compared with them; the results are on the <a href="/sources/#report-card">report card</a>.</p>
   <h2>Patterns</h2><ul>${D.catalog.flags.map((f) => `<li><a href="/method/${f.id}/">${esc(f.title)}</a></li>`)}</ul>
+  ${methodCode([["pipeline/flags.py", "defines and counts every pattern"], ["pipeline/build.py", "builds the database the site is made from"]], { title: "how each figure is worked out", path: "/method/" })}
 </div></section>`,
   }]);
   const S = D.stats;
@@ -156,6 +156,7 @@ export function info(D, R) {
   </ol>
   ${workedExample(S)}
   <p>Provincial spending is paid for by many revenues. Personal income tax was ${pct(S.provincial_government.personal_income_tax / S.provincial_government.revenue)} of provincial revenue in ${S.provincial_government.year} (Statistics Canada table ${S.provincial_government.table}). The receipt shows how your part would be spread, not the whole bill. Nothing you enter leaves your browser except as a web address when you press the button without JavaScript.</p>
+  ${methodCode([["site/lib/receipt.mjs", "spreads a tax bill across departments and contracts"], ["site/lib/format.mjs", "the NL428 tax calculation with CPP and EI credits"], ["pipeline/stats.py", "loads the Statistics Canada figures it uses"]], { title: "the personal tax receipt", path: "/method/receipt/" })}
 </div></section>`,
   }]);
   const F = D.federal;
@@ -183,6 +184,7 @@ export function info(D, R) {
   <li>Rows with no agreement number are one agreement each, except where a department reports an amendment under a new reference number (Infrastructure Canada, Veterans Affairs): those join on recipient, start date, program and title.</li></ol>
   <p>As published: ${num(F.grants.raw_rows)} rows, ${money(F.grants.raw_value)}. Counted once: ${num(F.grants.agreements)} agreements, ${money(F.grants.dedup_value)}. The code is <a href="${REPO}/blob/main/pipeline/parse_federal.py">parse_federal.py</a>.</p>
   <h2>CanadaBuys award notices</h2><p>Grouped by reference number and supplier, latest amendment kept. The same contract can appear here and in the contracts disclosure, so notices are shown and searchable but never added to a total.</p>
+  ${methodCode([["pipeline/parse_federal.py", "reads the federal files and keeps each contract and grant once"], ["pipeline/reconcile.py", "checks totals against the sources' own"]], { title: "counting federal contracts once", path: "/method/federal/" })}
 </div></section>`,
   }]);
 
@@ -219,6 +221,7 @@ export function info(D, R) {
   ${schedule({ compact: true, caption: "Largest close names kept apart", cols: [{ label: "Name" }, { label: "Other name" }, { label: "Why not joined" }], rows: M.near_sample.map((r) => ({ cells: [esc(r.a), esc(r.b), esc(r.why)] })) })}
   <h2>Every match, and how to question one</h2>
   <p>Every joined name, with the evidence that joined it, is in <a href="${GH}/blob/main/docs/supplier-merges.csv">supplier-merges.csv</a>; close names kept apart are in <a href="${GH}/blob/main/docs/supplier-near-matches.csv">supplier-near-matches.csv</a>, and the reviewed decisions in <a href="${GH}/blob/main/pipeline/supplier_rules.csv">supplier_rules.csv</a>. Each supplier page lists the names it combines, each linking to its own records. To question a match, or to show that two names are one supplier, <a href="${GH}/issues/new?template=challenge-method.yml">challenge the method</a>.</p>
+  ${methodCode([["pipeline/suppliers.py", "groups the names printed in each source into suppliers"], ["pipeline/supplier_rules.csv", "the reviewed decisions, each with its reason"], ["pipeline/check_matching.py", "the cases that must join and the false joins that once happened"]], { title: "matching supplier names", path: "/method/suppliers/" })}
 </div></section>`,
   }]);
 
@@ -306,8 +309,23 @@ export function info(D, R) {
     <li>Plain, neutral wording. The site says what the records say and does not accuse anyone.</li>
   </ul>
   <p>Every suggestion is read and every change is reviewed before it goes on the site. A suggestion that needs more work stays open with a note on what would settle it.</p>
-  <h2>For programmers</h2>
-  <p>The code is open source under the MIT licence. It fetches each source, reads it, checks it against the source's own totals and builds this site. Setup takes a few commands and no accounts. Start with the <a href="${REPO}#readme">README</a> and the <a href="${REPO}/blob/main/CONTRIBUTING.md">contributing guide</a>, or pick up <a href="${REPO}/issues">an open issue</a>.</p>
+  <h2 id="code">For programmers</h2>
+  <p>The code is open source under the MIT licence. It fetches each source, reads it, checks it against the source's own totals and builds this site. To run the whole site on a laptop with a small sample of the records, with no accounts, only <a href="https://nodejs.org">Node</a> 22.13 or newer is needed:</p>
+  <pre><code>git clone ${REPO}.git &amp;&amp; cd nl-ledger &amp;&amp; ./dev.sh</code></pre>
+  <p>Then open <code>localhost:8787</code>. The <a href="${REPO}#readme">README</a> and the <a href="${REPO}/blob/main/CONTRIBUTING.md">contributing guide</a> say what is where.</p>
+  <h2 id="starter">Starter issues</h2>
+  <p>Each says what to do, where in the code and how to tell it is done. The first two need no code.</p>
+  <ul>
+    <li><a href="${REPO}/issues/19">Trace 20 random records back to their source documents</a> (no code)</li>
+    <li><a href="${REPO}/issues/24">Read the Methods pages as a newcomer and rewrite what is unclear</a> (no code)</li>
+    <li><a href="${REPO}/issues/9">The St. John's sample reads one fixed file name</a> (Python)</li>
+    <li><a href="${REPO}/issues/20">Test the personal tax calculation against form NL428</a> (JavaScript)</li>
+    <li><a href="${REPO}/issues/21">Add a federal grants fixture so counting each agreement once is checked in CI</a> (Python)</li>
+    <li><a href="${REPO}/issues/25">Smoke-test every MCP tool against the sample data in CI</a> (JavaScript)</li>
+    <li><a href="${REPO}/issues/22">Download a search or supplier's records as CSV</a> (JavaScript)</li>
+    <li><a href="${REPO}/issues/23">Run an accessibility check over the built pages and fix what it finds</a> (HTML, CSS)</li>
+  </ul>
+  <p><a href="${REPO}/issues?q=is%3Aopen+label%3A%22good+first+issue%22%2C%22help+wanted%22">Every open starter issue on GitHub ${icon("arrow")}</a></p>
 </div></div></section>`,
   }]);
 

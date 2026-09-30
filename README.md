@@ -16,6 +16,14 @@
 
 # NL Ledger
 
+**Open source (MIT).** The code, the data pipeline and the methods are all here, and anyone can help. To run the site on your machine with one command (needs only [Node](https://nodejs.org) 22.13 or newer):
+
+```sh
+git clone https://github.com/steveclarke/nl-ledger.git && cd nl-ledger && ./dev.sh
+```
+
+Then open <http://localhost:8787>. **Where to start:** the [starter issues](https://github.com/steveclarke/nl-ledger/issues?q=is%3Aopen+label%3A%22good+first+issue%22), or a [source on the wishlist](docs/wishlist.md). Most help needs no code; see [CONTRIBUTING.md](CONTRIBUTING.md).
+
 NL Ledger gathers the spending records that Newfoundland and Labrador governments already publish and puts them in one searchable place: contract awards, minister and MHA expenses, public sector pay over $100,000, department budgets, federal contracts and grants in the province. Every figure links back to the document it came from. Live site: <https://nlledger.ca>.
 
 It is a thought experiment in what public records can show an ordinary citizen. Three things to know before relying on it:

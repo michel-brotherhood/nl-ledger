@@ -1,6 +1,6 @@
 // Home: the cover, your receipt, a working life, priorities, where it went, patterns, receipts.
-import { esc, html, icon, flagItem, Notes, leaders, oneToOne, bar, receipt } from "../../lib/html.mjs";
-import { money, moneyWords, num, pct, workTime, perPerson, perHousehold, yearsOfWage, nlIncomeTax, date as fmtDate } from "../../lib/format.mjs";
+import { esc, html, icon, flagItem, Notes, leaders, oneToOne, bar, receipt, REPO } from "../../lib/html.mjs";
+import { money, moneyWords, num, pct, workTime, perPerson, perHousehold, yearsOfWage, nlIncomeTax, date as fmtDate, SITE } from "../../lib/format.mjs";
 import { renderReceipt } from "../../lib/receipt.mjs";
 import { caveat } from "../common.mjs";
 import { EXAMPLE } from "../connect.mjs";
@@ -212,5 +212,29 @@ export function home(D, R, B) {
   </div>
 </section>`;
 
-  return { body: cover + receiptSec + lifeSec + prioSec + aiSec + whereSec + flagSec + rcptSec, notes };
+  const helpSec = html`
+<section class="section help-home" id="help-build" aria-labelledby="hb-h">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 id="hb-h">Help build this</h2>
+      <p class="lede">${SITE.name} is open source. The code, the data pipeline and every method are public, and a correction from a reader is as useful as a fix from a programmer.</p>
+    </div>
+    <div class="doors">
+      <article class="door">
+        <h3>If you write code</h3>
+        <p>Python for the pipeline, JavaScript for the site. It runs on a laptop with one command and no accounts, on a small sample of the records.</p>
+        <p><code class="cmd">git clone ${esc(REPO.replace("https://", ""))} &amp;&amp; cd nl-ledger &amp;&amp; ./dev.sh</code></p>
+        <p><a class="btn" href="${REPO}/issues?q=is%3Aopen+label%3A%22good+first+issue%22%2C%22help+wanted%22">Pick a starter issue ${icon("arrow")}</a></p>
+      </article>
+      <article class="door">
+        <h3>If you do not</h3>
+        <p>Know of public records the site is missing? Spot a figure that does not match its document? Think something is counted the wrong way? A link and a sentence is a full contribution.</p>
+        <p><a class="btn" href="/help/">See the four ways in ${icon("arrow")}</a></p>
+      </article>
+    </div>
+    <p class="small muted">MIT licence. Every change is reviewed, and every figure must link to its source. <a href="${REPO}">The repository on GitHub</a>.</p>
+  </div>
+</section>`;
+
+  return { body: cover + receiptSec + lifeSec + prioSec + aiSec + whereSec + flagSec + rcptSec + helpSec, notes };
 }
