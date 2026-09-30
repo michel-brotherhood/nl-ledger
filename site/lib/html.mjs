@@ -93,6 +93,21 @@ export function flagItem(f, { count = "", method = false } = {}) {
   return `<li class="flagitem"><span class="q" aria-hidden="true">${icon("query")}</span><h3><a href="/flags/${f.id}/">${esc(f.title)}${icon("arrow")}</a></h3><span class="count">${count}</span><p>${esc(f.short)}${method ? ` <a class="method" href="/method/${f.id}/">Method<span class="vh"> for ${esc(f.title)}</span></a>` : ""}</p></li>`;
 }
 
+// ---- the open-source repository
+export const REPO = "https://github.com/steveclarke/nl-ledger";
+
+// Closing block of a method page: where the code lives, and the way to challenge the method.
+// files: [path, what it does]. Each links to the file on GitHub.
+export function methodCode(files, { title, path }) {
+  const form = `${REPO}/issues/new?template=challenge-method.yml&page=${encodeURIComponent(`${SITE.url}${path}`)}&title=${encodeURIComponent(`Method: ${title}`)}`;
+  return `<aside class="codeat" aria-labelledby="codeat-h">
+  <h2 id="codeat-h">Where the code is</h2>
+  <p>This is open source. The calculation behind this page is public, so it can be read, run and questioned.</p>
+  <ul>${files.map(([f, what]) => `<li><a href="${REPO}/blob/main/${f}"><code>${esc(f)}</code></a> ${esc(what)}</li>`).join("")}</ul>
+  <p><a class="btn" href="${form}">Challenge this method ${icon("arrow")}</a></p>
+</aside>`;
+}
+
 // ---- layout
 const NAV = [
   ["/priorities/", "Priorities"],
@@ -196,6 +211,7 @@ ${notes ? notes.render() : ""}
     <div class="foot-statement">
     <p class="foot-lede"><strong>${SITE.name} is an independent prototype.</strong> It republishes public records from the Government of Newfoundland and Labrador, the Government of Canada, and the House of Assembly. Every figure links to the record it came from.</p>
     <p class="foot-flag">${icon("query")}<span>${STANDING}</span></p>
+    <p class="foot-open"><strong>Open source.</strong> The code, the data pipeline and the methods are public under the MIT licence, and anyone can help: <a href="${REPO}">read the code on GitHub</a> or <a href="/help/">see how to help</a>.</p>
     </div>
     <nav class="foot-nav" aria-label="About this site">
       <a href="/about/">What is this?</a><a href="/sources/">Sources and report card</a><a href="/method/">Methods</a><a href="/corrections/">Corrections</a><a href="/data/">Ask your AI</a><a href="/help/">Help build this</a>

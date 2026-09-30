@@ -15,6 +15,31 @@ People who use an AI assistant to prepare a change are equally welcome. The same
 
 All four are at [Issues, New issue](https://github.com/steveclarke/nl-ledger/issues/new/choose). Sources already known but not yet loaded are in [`docs/wishlist.md`](docs/wishlist.md); check there first, and pick one up if it interests you.
 
+## Where to start
+
+To run the site on your machine, you need only [Node](https://nodejs.org) 22.13 or newer:
+
+```sh
+git clone https://github.com/steveclarke/nl-ledger.git && cd nl-ledger && ./dev.sh
+```
+
+Open <http://localhost:8787>. It loads a small sample of the records, so no download or account is involved. The [README](README.md#project-layout) maps the folders.
+
+Starter issues, each with what to do, where in the code and how to tell it is done:
+
+| Issue | What | Skills |
+|---|---|---|
+| [#19](https://github.com/steveclarke/nl-ledger/issues/19) | Trace 20 random records back to their source documents | no code |
+| [#24](https://github.com/steveclarke/nl-ledger/issues/24) | Read the Methods pages as a newcomer and rewrite what is unclear | no code |
+| [#9](https://github.com/steveclarke/nl-ledger/issues/9) | The St. John's sample reads one fixed file name | Python |
+| [#20](https://github.com/steveclarke/nl-ledger/issues/20) | Test the personal tax calculation against form NL428 | JavaScript |
+| [#21](https://github.com/steveclarke/nl-ledger/issues/21) | Add a federal grants fixture so counting each agreement once is checked in CI | Python |
+| [#25](https://github.com/steveclarke/nl-ledger/issues/25) | Smoke-test every MCP tool against the sample data in CI | JavaScript |
+| [#22](https://github.com/steveclarke/nl-ledger/issues/22) | Download a search or supplier's records as CSV | JavaScript |
+| [#23](https://github.com/steveclarke/nl-ledger/issues/23) | Run an accessibility check over the built pages and fix what it finds | HTML, CSS |
+
+All of them are under the [`good first issue`](https://github.com/steveclarke/nl-ledger/labels/good%20first%20issue) and [`help wanted`](https://github.com/steveclarke/nl-ledger/labels/help%20wanted) labels. Comment on one to say you are taking it.
+
 ## What a good contribution includes
 
 - **A source link for every figure.** Each new record links to the file and the page or row it came from. A reader should reach the original in one click.
