@@ -1,5 +1,6 @@
 // Page shell and the accounting-schedule components. Used by the static build and by
 // the Worker routes, so every page, static or rendered on request, is one design.
+import { RECEIPT_ASSUMPTIONS } from "./receipt.mjs";
 import { SITE, money, moneyShort, date as fmtDate } from "./format.mjs";
 
 export function esc(s) {
@@ -13,6 +14,16 @@ export function esc(s) {
 
 export const html = (strings, ...vals) =>
   strings.reduce((out, s, i) => out + s + (i < vals.length ? (Array.isArray(vals[i]) ? vals[i].join("") : vals[i] ?? "") : ""), "");
+
+// Every entry point uses the same assumptions and associated field error.
+export function receiptForm({ id, value = "", button = "Update", error = "" } = {}) {
+  return `<form class="field receipt-form" action="/receipt/" method="get" data-receipt-form>
+    <label for="${esc(id)}">Yearly employment income</label>
+    <p class="small receipt-help" id="${esc(id)}-help">${RECEIPT_ASSUMPTIONS}</p>
+    <div class="field-row"><span class="pre" aria-hidden="true">$</span><input id="${esc(id)}" name="income" inputmode="decimal" value="${esc(value)}" placeholder="For example, 55000" autocomplete="off" aria-describedby="${esc(id)}-help ${esc(id)}-error"${error ? ' aria-invalid="true"' : ""}><button class="btn" type="submit">${esc(button)}</button></div>
+    <p class="small receipt-error" id="${esc(id)}-error" data-receipt-error role="alert"${error ? "" : " hidden"}>${esc(error)}</p>
+  </form>`;
+}
 
 // ---- icons: one stroke family, 1.6px, drawn on a 20px grid
 const I = {
@@ -143,7 +154,7 @@ export function feedbackForm({ page = "/", note = "", email = "", kind = "", err
     ${error ? `<p class="fb-error" id="fb-error" role="alert">${icon("query")}<span>${esc(error)}</span></p>` : ""}
     <fieldset class="fb-kinds">
       <legend>What kind of note is it? <span class="fb-opt">Optional</span></legend>
-      <div class="fb-chips">${FEEDBACK_KINDS.map(([v, label]) => `<label><input type="radio" name="kind" value="${v}"${v === kind ? " checked" : ""}><span>${esc(label)}</span></label>`).join("")}</div>
+      <div class="fb-chips">${[["", "No category"], ...FEEDBACK_KINDS].map(([v, label]) => `<label><input type="radio" name="kind" value="${v}"${v === kind ? " checked" : ""}><span>${esc(label)}</span></label>`).join("")}</div>
     </fieldset>
     <div class="fb-field">
       <label for="fb-note">Your note</label>
@@ -301,7 +312,7 @@ export function setAssetVersion(v) {
 
 // A schedule: the Estimates-book table. rows: [{label, cells:[...], cls, href}], cols: [{label, num}]
 export function schedule({ caption, cols, rows, foot, id, compact = false }) {
-  return html`<div class="sched-wrap"${id ? ` id="${id}"` : ""}><table class="sched${compact ? " compact" : ""}">
+  return html`<div class="sched-wrap"${id ? ` id="${esc(id)}"` : ""}><table class="sched${compact ? " compact" : ""}">
     ${caption ? `<caption>${caption}</caption>` : ""}
     <thead><tr>${cols.map((c) => `<th scope="col"${c.num ? ' class="n"' : ""}${c.w ? ` style="inline-size:${c.w}"` : ""}>${c.label}</th>`)}</tr></thead>
     <tbody>${rows.map(

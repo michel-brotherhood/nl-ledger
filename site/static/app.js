@@ -72,37 +72,66 @@
   const out = document.querySelector("[data-receipt-out]");
   const forms = document.querySelectorAll("[data-receipt-form]");
   if (out && forms.length) {
-    let R, stats, render;
-    const ready = Promise.all([
-      fetch("/data/receipt.json").then((r) => r.json()),
-      fetch("/data/stats.json").then((r) => r.json()),
+    let ready;
+    const prepare = () => ready ||= Promise.all([
+      fetch("/data/receipt.json").then((r) => { if (!r.ok) throw new Error("Receipt unavailable"); return r.json(); }),
+      fetch("/data/stats.json").then((r) => { if (!r.ok) throw new Error("Statistics unavailable"); return r.json(); }),
       import("/lib/receipt.mjs"),
-    ]).then(([r, s, m]) => {
-      R = r;
-      stats = s;
-      render = m.renderReceipt;
-    });
-    let t;
+    ]);
+    let revision = 0;
     for (const form of forms) {
       const input = form.querySelector("input[name=income]");
-      const update = () => {
-        const cleaned = (input.value || "").replace(/[\s,$]/g, "");
-        if (!/^\d{1,8}(\.\d{0,2})?$/.test(cleaned)) return;
-        const v = Math.floor(Number(cleaned));
-        ready.then(() => (out.innerHTML = render(R, Math.min(10000000, v), stats)));
+      const error = form.querySelector("[data-receipt-error]");
+      let timer;
+      const clearError = () => {
+        input.removeAttribute("aria-invalid");
+        error.hidden = true;
+        error.textContent = "";
       };
-      // on the home cover the receipt sits further down: jump to it
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        update();
-        const sec = document.getElementById("receipt");
-        const other = document.getElementById("inc2");
-        if (other && other !== input) other.value = input.value;
-        if (sec && !sec.contains(form)) sec.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      const update = async (submitted = false) => {
+        const current = ++revision;
+        const cleaned = input.value.replace(/[\s,$]/g, "");
+        if (!/^\d{1,8}(\.\d{0,2})?$/.test(cleaned)) {
+          input.setAttribute("aria-invalid", "true");
+          error.hidden = false;
+          error.textContent = "Enter an amount in dollars, for example 55000. The receipt has not been updated.";
+          if (submitted) input.focus();
+          return;
+        }
+        clearError();
+        try {
+          const [r, stats, module] = await prepare();
+          if (current !== revision) return;
+          out.innerHTML = module.renderReceipt(r, Math.min(10000000, Math.floor(Number(cleaned))), stats);
+          for (const other of forms) {
+            if (other === form) continue;
+            other.querySelector("input[name=income]").value = input.value;
+            other.querySelector("input[name=income]").removeAttribute("aria-invalid");
+            const message = other.querySelector("[data-receipt-error]");
+            message.hidden = true;
+            message.textContent = "";
+          }
+          const sec = document.getElementById("receipt");
+          if (submitted && sec && !sec.contains(form)) sec.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+        } catch {
+          if (current !== revision) return;
+          if (submitted) form.submit();
+          else {
+            error.hidden = false;
+            error.textContent = "The receipt has not been updated. Press the button to load it as a page.";
+          }
+        }
+      };
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        clearTimeout(timer);
+        update(true);
       });
+      input.addEventListener("focus", () => { prepare().catch(() => {}); }, { once: true });
       input.addEventListener("input", () => {
-        clearTimeout(t);
-        t = setTimeout(update, 180);
+        ++revision;
+        clearTimeout(timer);
+        timer = setTimeout(() => update(), 180);
       });
     }
   }
@@ -290,16 +319,6 @@
       const left = note.maxLength - note.value.length;
       count.textContent = left <= 200 ? `${left} characters left.` : "";
     });
-
-    // A kind is optional, so a second press on the chosen one takes it back.
-    for (const radio of form.querySelectorAll("input[name=kind]")) {
-      let was = radio.checked;
-      radio.addEventListener("pointerdown", () => (was = radio.checked));
-      radio.addEventListener("click", (e) => {
-        if (was && e.detail) radio.checked = false;
-        was = radio.checked;
-      });
-    }
 
     const say = (text, error) => {
       status.textContent = text;
