@@ -2518,7 +2518,7 @@ article a,
   text-underline-offset: 0.25em;
 }
 .mast-in {
-  grid-template-columns: auto 1fr auto auto auto;
+  grid-template-columns: auto minmax(0, 1fr) auto auto auto;
   grid-template-areas: "brand search fb theme gh" "nav nav nav nav nav";
 }
 @media (min-width: 60rem) {
@@ -2527,15 +2527,43 @@ article a,
     grid-template-areas: "brand nav search fb theme gh";
   }
 }
-@media (max-width: 30rem) {
-  /* a phone's top row: the word is the link, the icon gives way */
-  .mast-in { column-gap: 0.15rem; }
-  .fb-link { padding-inline: 0.35rem; font-size: 0.9rem; }
+.brand { min-inline-size: 5.5rem; }
+@media (max-width: 40rem) {
+  /* a narrow top row: the word is the link, the icon gives way; the search box folds to its button a little sooner */
   .fb-link .ic { display: none; }
 }
-@media (max-width: 22.4rem) {
+@media (min-width: 30.01rem) and (max-width: 36rem) {
+  .mast-search { inline-size: 2.6rem; background: none; border-color: transparent; }
+  .mast-search input { display: none; }
+}
+@media (max-width: 30rem) {
+  /* a phone: the search button keeps its size and the wordmark takes what is left */
+  .mast-in { column-gap: 0.15rem; grid-template-columns: minmax(5.5rem, 1fr) auto auto auto auto; }
+  .mast-search { justify-self: start; }
+  .fb-link { padding-inline: 0.35rem; font-size: 0.9rem; }
+}
+@media (max-width: 22.4rem), (min-width: 60rem) and (max-width: 69.99rem) {
+  /* no room for the word: the icon alone, still named "Feedback" for a screen reader */
+  .fb-link { justify-content: center; min-inline-size: 2.5rem; padding-inline: 0; }
   .fb-link .ic { display: block; inline-size: 1.3rem; block-size: 1.3rem; }
   .fb-link span { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); }
+}
+/* One row holds the brand, seven nav items, search, this link and two buttons. The nav is never cut off:
+   the search box folds to its button below 76rem and is narrower above it, and the link is a word from 70rem. */
+@media (min-width: 60rem) and (max-width: 62.99rem) {
+  .nav a { font-size: 0.875rem; padding-inline: 0.32rem; }
+}
+@media (min-width: 60rem) and (max-width: 75.99rem) {
+  .mast-search { inline-size: 2.6rem; max-inline-size: none; background: none; border-color: transparent; }
+  .mast-search input { display: none; }
+}
+@media (min-width: 70rem) {
+  .fb-link .ic { display: none; }
+}
+@media (min-width: 76rem) {
+  .mast-search { inline-size: 11.4rem; }
+  .mast-search input { font-size: 0.9rem; padding-inline: 0.6rem 0; }
+  .nav a { padding-inline: 0.45rem; }
 }
 .fb {
   background: var(--paper-2);
