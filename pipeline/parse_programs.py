@@ -8,11 +8,13 @@ lines such as "Professional Services", "10. Grants and Subsidies") and related
 revenue ("01. Revenue - Federal"), each with three amounts: Actual, Amended
 estimate, Original estimate.
 
-Also parses the Budget Estimates PDF, which has the same layout with the columns
-Estimates (this year), Revised (last year), Original (last year).
+Also parses the Budget Estimates PDFs, which have the same layout with the columns
+Estimates (this year), Revised (last year), Original (last year). Each department
+opens with a page that prints its name and a Program Funding Summary.
 
 Check: per department, gross expenditure summed from object lines must equal the
-department's gross expenditure in the report's own summary statement.
+department's gross expenditure in the report's own summary statement (the report),
+or the "Total: Program Estimates" line of its Program Funding Summary (the Estimates).
 """
 import csv
 import re
@@ -22,8 +24,13 @@ from common import CACHE, CLEAN, load_manifest, norm_space, pdf_pages
 
 AMT = r"(\(?-?[\d,]+\)?|-)"
 THREE = re.compile(rf"\s{{2,}}{AMT}\s+{AMT}\s+{AMT}\s*$")
-PROGRAM = re.compile(r"^\s{1,14}(\d{1,2}\.\d{1,2}\.\d{2})\.\s+(.+?)\s*$")
-OBJECT = re.compile(r"^\s+(\d{2})\.\s+(.+?)$")
+PROGRAM = re.compile(r"^\s{1,14}(\d{1,2}\.\d{1,2}\.\d{2})\.?\s+(.+?)\s*$")  # "3.2.02 FIRE SUPPRESSION" is printed without the last period
+OBJECT = re.compile(r"^\s+(\d{2})\.\s*(.+?)$")  # "01.Salaries" is printed without the space
+# An object printed with no amounts of its own ("11. Debt Expenses:", "10. Grants and Subsidies"):
+# its amounts are the lines printed under it.
+OBJECT_HEAD = re.compile(r"^\s+(\d{2})\.\s*([A-Z][A-Za-z ,&'’\-]+?):?\s*$")
+# Current, Capital and Total; a department with no capital account prints the Current column alone.
+FUNDING_TOTAL = re.compile(rf"^\s*TOTAL: PROGRAM ESTIMATES\s+{AMT}(?:\s+{AMT}\s+{AMT})?\s*$", re.M)
 TOTAL = re.compile(r"^\s+Total:\s+(.+)$")
 SUMMARY_DEPT = re.compile(rf"^\s{{2,4}}([A-Z][A-Za-z ,\-&'’]+?)\s{{2,}}{AMT}\s+{AMT}\s+{AMT}\s+{AMT}\s+{AMT}\s*$")
 
@@ -79,6 +86,50 @@ def known_departments(pages) -> list[str]:
     return sorted(names, key=len, reverse=True)
 
 
+CONTROL = re.compile(r"[\x01-\x08\x0b\x0c\x0e-\x1f]")
+SHIFTED_WORD = re.compile(r"[$%&'()*+,\-./0-9:;<=][D-Z\[\\\]]+|[D-Z\[\\\]]+")  # "6XSSOLHV" is "Supplies", "DQG" is "and"
+SHIFTED_CAPS = re.compile(r"[$%&'()*+,\-./0-9:;<=]{4,}")  # "&855(17" is "CURRENT"
+PRINTED_FIGURE = re.compile(rf"{AMT}|\d{{4}}-\d{{2}}")
+
+
+def unshifted(text: str) -> str:
+    """Two Estimates pages (2025-26 PDF page 48, 2026-27 PDF page 148) carry a text layer of glyph
+    numbers instead of characters for some or all of their text: each character sits 29 places below
+    its own code, so digits and punctuation come out as control characters. Shift those runs back.
+    A run is the text between gaps of two or more spaces; it is shifted when it holds a control
+    character, when every word in it reads as a shifted word and one starts with a shifted capital,
+    or when it reads as shifted capitals and is not an amount or a fiscal year. pdftotext drops the
+    shifted brackets, so a bracketed amount in a shifted run comes back without them."""
+    if len(CONTROL.findall(text)) < 20:
+        return text
+
+    def fix(run: str) -> str:
+        words = run.split(" ")
+        shifted = CONTROL.search(run) or (all(SHIFTED_WORD.fullmatch(w) for w in words if w)
+                                          and any(w[:1] < "A" for w in words if w)) \
+            or (SHIFTED_CAPS.fullmatch(run) and not PRINTED_FIGURE.fullmatch(run))
+        return "".join(chr(ord(c) + 29) if c != " " and ord(c) < 98 else c for c in run) if shifted else run
+
+    return "\n".join("".join(fix(part) if part.strip(" ") else part for part in re.split(r"( {2,})", line))
+                     for line in text.split("\n"))
+
+
+def estimates_department(lines: list[str], detail: list[str]) -> str:
+    """The department named at the top of its opening page in the Estimates. The name runs over
+    one to three capital-letter lines and is followed by the people who head it, also in capitals;
+    the department's first detail page opens with the same name, so the name is as many of the
+    opening page's lines as that page repeats."""
+    caps = []
+    for ln in (x.strip() for x in lines if x.strip()):
+        if ln.startswith("HON.") or not re.fullmatch(r"[A-Z][A-Z ,&'’\-.()]+", ln):
+            break
+        caps.append(ln)
+    top = norm_space(" ".join(x.strip() for x in detail if x.strip()))
+    while len(caps) > 1 and not top.startswith(norm_space(" ".join(caps))):
+        caps.pop()
+    return dept_name(caps)
+
+
 def words(s: str) -> set[str]:
     return set(re.findall(r"[a-z]+", s.lower())) - {"of", "and", "the", "department"}
 
@@ -106,16 +157,21 @@ def parse(path, kind: str, fy: str, rel: str, url: str):
     pending_program = None
     summary: dict[tuple[str, str], float] = {}
     summary_account = None
+    open_object = None
     for pno, text in enumerate(pages, 1):
-        lines = text.splitlines()
-        if kind == "estimates":
-            # Estimates pages open with the department name, then the branch name.
-            first = [ln.strip() for ln in lines if ln.strip()][:3]
-            if first and re.search(r"Estimates", text[:1500]) and re.fullmatch(r"[A-Z][A-Z ,&'’\-]+", first[0]):
-                if first[0] != "THIS PAGE INTENTIONALLY LEFT BLANK":
-                    new = dept_name([first[0]])
-                    if new != dept:
-                        dept, program = new, None
+        lines = unshifted(text).splitlines()
+        brackets_lost = CONTROL.search(text) is not None
+        orphan = None  # amounts printed on a line of their own, just above the object they belong to
+        if kind == "estimates" and "PROGRAM FUNDING SUMMARY" in text:
+            # A department's opening page: its name, then its gross total for the year, current and capital.
+            detail = next((p for p in pages[pno:pno + 4] if THREE.search(p)), "")
+            dept, program = estimates_department(lines, detail.splitlines()[:8]), None
+            m = FUNDING_TOTAL.search(text)
+            if m:
+                summary[(dept.lower(), "CURRENT")] = (num(m[1]), pno)
+                if m[2]:
+                    summary[(dept.lower(), "CAPITAL")] = (num(m[2]), pno)
+            continue
         # department header: lines between the rule and "Statement of Expenditure and Related Revenue"
         for i, ln in enumerate(lines[:14]):
             if "Statement of Expenditure and Related Revenue" in ln and i > 0:
@@ -148,6 +204,9 @@ def parse(path, kind: str, fy: str, rel: str, url: str):
             continue
         for ln in lines:
             s = ln.strip()
+            if not s:
+                pending_program = None
+                continue
             if s in ("CURRENT", "CAPITAL"):
                 account = s
                 continue
@@ -155,6 +214,7 @@ def parse(path, kind: str, fy: str, rel: str, url: str):
             if m:
                 program = {"code": m[1], "name": m[2].strip()}
                 pending_program = program
+                open_object = None
                 continue
             if pending_program and (re.match(r"^\s+-\s+\S", ln) or (
                     re.fullmatch(r"\s+[A-Z][A-Z0-9 ,'’&\-/().]+", ln) and not THREE.search(ln)
@@ -165,23 +225,45 @@ def parse(path, kind: str, fy: str, rel: str, url: str):
             if not program:
                 continue
             t = THREE.search(ln)
+            above, orphan = orphan, None
             if not t:
-                continue
-            label = ln[: t.start()].rstrip()
-            vals = [num(t.group(k)) for k in (1, 2, 3)]
-            tm = TOTAL.match(label)
-            om = OBJECT.match(label)
-            if tm:
-                rows.append({"line_type": "program_total", "object_code": "", "object": "Total (net of revenue)"})
-            elif om:
-                name = om[2].strip()
-                ltype = "revenue" if name.lower().startswith("revenue") else "object"
-                rows.append({"line_type": ltype, "object_code": om[1], "object": name})
-            elif label.strip() and not label.strip().upper().startswith(("TOTAL", "AMOUNT TO BE VOTED", "STATUTORY")) \
-                    and len(label) - len(label.lstrip()) >= 12:
-                rows.append({"line_type": "detail", "object_code": "02", "object": norm_space(label)})
+                oh = OBJECT_HEAD.match(ln)
+                if oh and above:
+                    rows.append({"line_type": "object", "object_code": oh[1], "object": oh[2].strip()})
+                    vals = above
+                elif oh:
+                    open_object = {"line_type": "object", "object_code": oh[1], "object": oh[2].strip()}
+                    rows.append(open_object)
+                    vals = [0.0, 0.0, 0.0]
+                else:
+                    continue
             else:
-                continue
+                label = ln[: t.start()].rstrip()
+                vals = [num(t.group(k)) for k in (1, 2, 3)]
+                if not label.strip():
+                    orphan = vals
+                tm = TOTAL.match(label)
+                om = OBJECT.match(label)
+                if tm:
+                    open_object = None
+                    rows.append({"line_type": "program_total", "object_code": "", "object": "Total (net of revenue)"})
+                elif om:
+                    open_object = None
+                    name = om[2].strip()
+                    ltype = "revenue" if name.lower().startswith("revenue") else "object"
+                    if ltype == "revenue" and brackets_lost:  # related revenue is printed in brackets
+                        vals = [-abs(v) for v in vals]
+                    rows.append({"line_type": ltype, "object_code": om[1], "object": name})
+                elif label.strip() and not label.strip().upper().startswith(("TOTAL", "AMOUNT TO BE VOTED", "STATUTORY")) \
+                        and len(label) - len(label.lstrip()) >= 12:
+                    rows.append({"line_type": "detail", "object_code": open_object["object_code"] if open_object else "02",
+                                 "object": norm_space(label)})
+                    if open_object:
+                        for k, v in zip(("col1", "col2", "col3"), vals):
+                            open_object[k] += v
+                else:
+                    open_object = None
+                    continue
             rows[-1].update({
                 "fiscal_year": fy, "kind": kind, "department": dept, "account": account,
                 "program_code": program["code"], "program": title_case(program["name"]),
@@ -215,8 +297,13 @@ def main():
                 mine = sum(gross[k] for k in cand) if cand else None
             if mine is None and d == "service nl":  # 2019-20 summary uses the short name
                 mine = gross.get(("service newfoundland and labrador", acct))
-            ok = mine is not None and abs(mine - v) <= 1000 * 1.5  # summary is rounded to $000
-            checks.append({"fiscal_year": fy, "department": d, "account": acct, "summary": v, "parsed": mine, "ok": ok,
+            if kind == "estimates":  # printed to the dollar; a department with no capital account prints a dash
+                if mine is None and v == 0:
+                    continue
+                ok = mine is not None and abs(mine - v) < 1
+            else:
+                ok = mine is not None and abs(mine - v) <= 1000 * 1.5  # summary is rounded to $000
+            checks.append({"fiscal_year": fy, "kind": kind, "department": d, "account": acct, "summary": v, "parsed": mine, "ok": ok,
                            "page": spage, "source_url": manifest.get(rel, {}).get("url", ""), "source_file": rel})
     with open(CLEAN / "program_lines.csv", "w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=list(out[0].keys()))

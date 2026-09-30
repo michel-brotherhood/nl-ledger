@@ -9,6 +9,12 @@ own totals:
                                                the detail adds to the summary
   crf        one year's program spending       each department's gross adds to the summary
                                                statement (to the $1,000 it is rounded to)
+  estimates  the same year's Estimates         each department's program lines add to its printed
+                                               total; the budget's cash summary, and the Original
+                                               column the report reprints, equal the Estimates
+  public-    the three consolidated            revenue less expense is the printed deficit;
+  accounts   statements of the same year       liabilities less financial assets is net debt
+             (four pages of the real file)
   sunshine   one employer's pay disclosure     each person's pay parts add to the total
 
 The parsers run on a copy of those files (NL_LEDGER_DATA points them at it), then every
@@ -29,7 +35,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 FIXTURES = HERE.parent / "tests" / "fixtures"
-PARSERS = ["parse_ministers.py", "parse_mha.py", "parse_programs.py", "parse_sunshine.py"]
+PARSERS = ["parse_ministers.py", "parse_mha.py", "parse_programs.py", "parse_fiscal.py", "parse_sunshine.py"]
 
 
 def rows(clean: Path, name: str) -> list[dict]:
@@ -67,6 +73,10 @@ def main() -> int:
     problems += [f"program spending {c['fiscal_year']} {c['department']} ({c['account']}): parsed {c['parsed']}, "
                  f"summary statement {c['summary']} (page {c['page']})" for c in programs if c["ok"] != "True"]
 
+    fiscal_checks = rows(clean, "fiscal_check.csv")
+    problems += [f"budget and accounts {c['fiscal_year']}: {c['what']}: {c['a'] or 'not found'} against {c['b'] or 'not found'}"
+                 for c in fiscal_checks if c["ok"] != "True"]
+
     pay = rows(clean, "sunshine.csv")
     parts = ("base", "overtime", "bonus", "shift", "retro", "severance", "other")
     problems += [f"pay disclosure {r['source_file']} row {r['row']}: parts add to {sum(num(r[k]) for k in parts):,.2f}, "
@@ -76,6 +86,8 @@ def main() -> int:
     counts = {"minister_claim_lines": len(claims), "minister_total": round(sum(num(r["amount"]) for r in claims), 2),
               "mha_lines": len(lines), "mha_total": round(detail, 2),
               "program_departments_checked": len(programs), "program_lines": len(rows(clean, "program_lines.csv")),
+              "budget_figures": len(rows(clean, "fiscal.csv")), "budget_checks": len(fiscal_checks),
+              "budget_departments": len(rows(clean, "dept_budget.csv")),
               "pay_rows": len(pay), "pay_total": round(sum(num(r["total"]) for r in pay), 2)}
     expected_file = FIXTURES / "expected.json"
     if "--update" in sys.argv:
@@ -94,8 +106,8 @@ def main() -> int:
         for p in problems:
             print("  " + p)
         return 1
-    print(f"PASS: {len(programs)} department totals, {len(summary)} MHA categories, the minister report and "
-          f"{len(pay)} pay rows reconcile with their sources' printed totals")
+    print(f"PASS: {len(programs)} department totals, {len(fiscal_checks)} budget and Public Accounts checks, {len(summary)} MHA categories, "
+          f"the minister report and {len(pay)} pay rows reconcile with their sources' printed totals")
     return 0
 
 

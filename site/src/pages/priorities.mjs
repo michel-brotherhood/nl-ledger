@@ -71,7 +71,7 @@ ${pagehead({ crumbs: [["/", "Home"], [null, "Priorities"]], title: "Priorities",
     })}</tbody>
     <tfoot><tr class="total"><th scope="row">Total</th><td class="hide-sm"></td><td class="n">${moneyWords(R.total)}</td><td class="n">${moneyWords(depts.reduce((s, d) => s + (d.original || 0), 0))}</td><td></td><td class="n hide-sm">100%</td></tr></tfoot>
   </table></div>
-  <p class="small muted">Amounts in parentheses, in red, are spending below the original estimate. Gross spending, before revenue departments collect themselves (federal cost-sharing, fees). Estimates are summed from the program lines of the same report. The 2024-25 report prints no program detail for Labrador Affairs; its total comes from the summary statement.</p>
+  <p class="small muted">Amounts in parentheses, in red, are spending below the original estimate. Gross spending, before revenue departments collect themselves (federal cost-sharing, fees). The estimate is each department's total in the Estimates given to the House with the budget. <a href="/budget/">Budget against actual, largest differences first, with the deficit and net debt</a>.</p>
 </div></section>
 
 <section class="section"><div class="wrap grid-2">
@@ -130,8 +130,8 @@ export function departments(D, R) {
     if (!all.has(k)) all.set(k, { name: d.name, years: [] });
     all.get(k).years.push(y);
   }
-  const est = D.q("SELECT DISTINCT department FROM programs WHERE kind='estimates'").map((r) => r.department);
   const estYear = D.one("SELECT max(fiscal_year) y FROM programs WHERE kind='estimates'").y;
+  const est = D.q("SELECT DISTINCT department FROM programs WHERE kind='estimates' AND fiscal_year=?", estYear).map((r) => r.department);
   for (const n of est) {
     const k = n.toLowerCase();
     if (!all.has(k)) all.set(k, { name: n, years: [] });
@@ -194,7 +194,8 @@ ${awards.length ? html`<section class="section"><div class="wrap">
   ${schedule({ cols: ITEM_COLS, rows: awards.slice(0, 60).map((a) => itemRow(D, a, { showBuyer: false })) })}
   ${awards.length > 60 ? `<p><a href="${bodyHref(D, awards[0].buyer)}">All ${num(awards.length)} awards</a></p>` : ""}
 </div></section>` : ""}`;
-    const budgeted = progs.reduce((t, p) => t + (p.c3 || 0), 0);
+    // The department's budget in the Estimates as tabled, the figure /budget/ shows.
+    const budgeted = (latest && D.one("SELECT budget v FROM dept_budget WHERE fiscal_year=? AND lower(department)=lower(?)", latest, dep.name)?.v) || 0;
     const spent = sum ? `${dep.name} spent ${moneyWords(sum.gross)} in ${latest}${budgeted > 0 ? `, against a budget of ${moneyWords(budgeted)}` : ""}.` : `${dep.name}: the ${estYear} budget estimates by program.`;
     out.push([`/department/${slug}/`, { title: `${dep.name} spending, ${latest || estYear}`,
       description: desc(`${spent} Spending by program and contracts awarded, with sources.`), body, notes }]);
@@ -202,7 +203,7 @@ ${awards.length ? html`<section class="section"><div class="wrap">
 
   // estimates overview
   const estRows = D.q(`SELECT department, sum(col1) c1, sum(col2) c2, sum(col3) c3, min(page) page, source_url FROM programs
-      WHERE kind='estimates' AND line_type='object' GROUP BY department ORDER BY c1 DESC`);
+      WHERE kind='estimates' AND fiscal_year=? AND line_type='object' GROUP BY department ORDER BY c1 DESC`, estYear);
   const notes = new Notes();
   const estTotal = estRows.reduce((s, r) => s + r.c1, 0);
   const cite = notes.cite({ url: estRows[0].source_url, label: `Estimates of the Program Expenditure and Revenue of the Consolidated Revenue Fund ${estYear}, gross expenditure summed from each department's program lines` });

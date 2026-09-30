@@ -133,12 +133,17 @@ def main():
 
     # Programs
     section("Department and program spending")
-    pchk = rows("program_check.csv")
+    allchk = rows("program_check.csv")
+    pchk = [r for r in allchk if r["kind"] == "actual"]
+    echk = [r for r in allchk if r["kind"] == "estimates"]
     ok = sum(1 for r in pchk if r["ok"] == "True")
     out += [f"- Check: for each department and account (current, capital), gross expenditure summed from the parsed object lines "
             f"equals the department's gross expenditure in the report's own summary statement (rounded to $000). "
-            f"{ok} of {len(pchk)} match."]
-    for r in pchk:
+            f"{ok} of {len(pchk)} match.",
+            f"- Check, Estimates: each department's program lines add to the \"Total: Program Estimates\" line of its Program Funding "
+            f"Summary, current and capital, to the dollar. {sum(1 for r in echk if r['ok'] == 'True')} of {len(echk)} match "
+            f"({len({r['fiscal_year'] for r in echk})} years of Estimates)."]
+    for r in allchk:
         if r["ok"] != "True":
             note = ""
             if r["department"] == "labrador affairs":
@@ -147,6 +152,54 @@ def main():
                        f"parsed {money(float(r['parsed'])) if r['parsed'] else 'nothing'}.{note}")
     for fy, kind, tot in con.execute("SELECT fiscal_year, kind, sum(col1) FROM programs WHERE line_type='object' GROUP BY 1,2 ORDER BY 1"):
         out.append(f"- {fy} {kind}: gross expenditure {money(tot)}")
+
+    # Budget against actual, the deficit and net debt
+    section("Budget against actual, the deficit and net debt")
+    fchk = rows("fiscal_check.csv")
+    fig = {(r["fiscal_year"], r["basis"], r["measure"], r["col"], r["doc"]): float(r["amount"]) for r in rows("fiscal.csv")}
+    groups = [
+        ("Report: each printed subtotal of the Statement of Budgetary Contribution recomputed (net expenditure, cash requirement; actual and original estimates)", "report-c", "report-n"),
+        ("Report: the departments in the summary statements add to the statement's gross expenditure", "report-departments",),
+        ("Estimates: the departments' program lines add to the gross expenditure in the budget's Summary of Cash Requirements", "estimates-departments",),
+        ("The Report's Original Estimates column equals the budget's own Summary of Cash Requirements (revenue, gross expenditure, related revenue, cash requirement)", "original-c", "original-r"),
+        ("Department by department, the Original column the Report reprints equals the Estimates as tabled", "original-department",),
+        ("Public Accounts: revenue less expense equals the printed surplus or deficit; liabilities less financial assets equals net debt; net debt agrees between two statements", "accounts-",),
+        ("The Public Accounts' Original Budget column equals the budget's own statements (from Budget 2024, when they were first published as Statements and Schedules)", "budget-",),
+    ]
+    out += ["Two bases, kept apart. Budgeted and spent are from the Estimates and the Report on the Program Expenditures and Revenues of the "
+            "Consolidated Revenue Fund (modified cash, departments). The surplus or deficit and net debt are from the audited Public Accounts "
+            "(accrual, all government bodies).", "",
+            "| Check | Holds |", "|---|---:|"]
+    for g in groups:
+        mine = [r for r in fchk if r["check"].startswith(g[1:])]
+        out.append(f"| {g[0]} | {sum(1 for r in mine if r['ok'] == 'True')} of {len(mine)} |")
+    bad = [r for r in fchk if r["ok"] != "True"]
+    if bad:
+        out += ["", "Checks that do not hold:", ""]
+        for r in bad:
+            note = ""
+            if "Labrador Affairs" in r["what"]:
+                note = " The 2024-25 report prints no program detail for Labrador Affairs, so it reprints no Original figure; the budgeted figure is the Estimates'."
+            elif "Executive Council" in r["what"] and r["fiscal_year"] == "2020-21":
+                note = (" The 2020-21 report prints a dash for the original Salaries estimate of program 2.2.01 (PDF page 38), while that program's "
+                        "printed total includes it; the budgeted figure is the Estimates'.")
+            out.append(f"- {r['fiscal_year']}: {r['what']}. {money(float(r['a'])) if r['a'] else 'Nothing'} against {money(float(r['b'])) if r['b'] else 'nothing'}.{note}")
+    out += ["", "| Fiscal year | Budgeted (Estimates) | Spent (Report) | Surplus or (deficit), budget | Surplus or (deficit), actual | Net debt |",
+            "|---|---:|---:|---:|---:|---:|"]
+    def dollars(v):
+        return "not yet published" if v is None else f"(${-v:,.0f})" if v < 0 else f"${v:,.0f}"
+
+    for fy in sorted({k[0] for k in fig}):
+        def g(basis, measure, col, docs):
+            return next((fig[(fy, basis, measure, col, d)] for d in docs if (fy, basis, measure, col, d) in fig), None)
+
+        def gross(col, docs):
+            return (g("cash", "current_gross", col, docs) or 0) + (g("cash", "capital_gross", col, docs) or 0) or None
+
+        out.append(f"| {fy} | {dollars(gross('budget', ('statements', 'estimates', 'report')))} | {dollars(gross('actual', ('report',)))} | "
+                   f"{dollars(g('accrual', 'balance', 'budget', ('public_accounts', 'statements')))} | "
+                   f"{dollars(g('accrual', 'balance', 'actual', ('public_accounts',)))} | "
+                   f"{dollars(g('accrual', 'net_debt', 'actual', ('public_accounts',)))} |")
 
     # Municipal (switched off: common.DISABLED)
     if not DISABLED >= {"paradise", "stjohns"}:

@@ -1694,6 +1694,243 @@ article a,
   font-weight: 850;
   font-size: 1.6rem;
 }
+
+/* ---------- budget against actual ---------- */
+/* Under the cover figure: two ruled groups set like a schedule line. The first is departments'
+   spending against the budget, the second how the year ended for the whole government. */
+.cover-ledger {
+  inline-size: min(100%, 62rem);
+  display: grid;
+  gap: 0 2.5rem;
+  margin-block-start: 0.5rem;
+  text-align: start;
+}
+.cover-ledger dl {
+  margin: 0;
+  display: grid;
+  border-block-start: 1.5px solid var(--on-blue);
+}
+.cover-ledger dl + dl {
+  border-block-start-width: 1px;
+  border-block-start-color: rgb(255 255 255 / 0.3);
+}
+.cover-ledger dl > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 0.6rem;
+  border-block-end: 1px solid rgb(255 255 255 / 0.3);
+}
+.cover-ledger dl + dl > div:first-child {
+  border-block-start: 0;
+}
+.cover-ledger dt {
+  font-stretch: 78%;
+  font-weight: 800;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--on-blue-2);
+}
+.cover-ledger dd {
+  margin: 0;
+  text-align: end;
+}
+.cover-ledger .fig {
+  display: block;
+  font-stretch: 72%;
+  font-weight: 850;
+  font-size: clamp(1.45rem, 2.6vw, 1.85rem);
+  line-height: 1.1;
+  font-variant-numeric: lining-nums proportional-nums;
+  white-space: nowrap;
+}
+.cover-ledger .note {
+  display: block;
+  font-size: 0.875rem;
+  line-height: 1.35;
+  color: var(--on-blue-2);
+}
+.cover-ledger sup.fn a {
+  color: var(--on-blue-2);
+}
+.cover-ledger .fig sup.fn {
+  font-size: 0.45em;
+  font-stretch: 100%;
+  vertical-align: super;
+}
+.cover-ledger-more {
+  max-inline-size: none;
+  margin: 0.9rem 0 0;
+  font-size: 0.975rem;
+  text-align: center;
+}
+@media (min-width: 54rem) {
+  .cover-ledger {
+    grid-template-columns: 3fr 2fr;
+  }
+  .cover-ledger dl,
+  .cover-ledger dl + dl {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: 0 1.5rem;
+    border-block-start: 1.5px solid var(--on-blue);
+    border-block-end: 1px solid rgb(255 255 255 / 0.3);
+  }
+  .cover-ledger dl > div {
+    display: block;
+    padding-block: 0.7rem 0.75rem;
+    border-block-end: 0;
+  }
+  .cover-ledger dt {
+    margin-block-end: 0.3rem;
+  }
+  .cover-ledger dd {
+    text-align: start;
+  }
+  .cover-ledger-more {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Seven nav items beside the search box: between the width where the nav goes inline and the full
+   container, the search box gives up its width first, so no nav item is cut off. */
+@media (min-width: 60rem) and (max-width: 67.99rem) {
+  .mast-search {
+    inline-size: 2.6rem;
+    background: none;
+    border-color: transparent;
+  }
+  .mast-search input {
+    display: none;
+  }
+  .nav a {
+    padding-inline: 0.38rem;
+  }
+}
+@media (min-width: 68rem) and (max-width: 76rem) {
+  .mast-search {
+    max-inline-size: calc(100vw - 61rem);
+  }
+}
+
+/* Year tabs on a blue page head: paper pills, the current year reversed. Blue in both schemes, so fixed tones. */
+.pagehead .chips {
+  margin: 0.4rem 0 0;
+}
+.pagehead .chips a {
+  background: #fcfcfa;
+  border-color: #fcfcfa;
+  color: #14171a;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.pagehead .chips a:hover {
+  background: var(--blue-deep);
+  border-color: #fcfcfa;
+  color: #fcfcfa;
+}
+.pagehead .chips a[aria-current] {
+  background: #14171a;
+  border-color: #14171a;
+  color: #fcfcfa;
+}
+
+/* A statement: a short schedule whose total sits inside the body, with lines carried on under it. */
+.sched tbody tr.total > * {
+  font-weight: 800;
+}
+.sched tbody tr.total th {
+  font-stretch: 85%;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+.sched tbody tr.total td.n {
+  border-block-start: 1px solid var(--ink);
+  border-block-end: 5px double var(--ink);
+}
+.sched.stmt tbody th {
+  min-inline-size: 0;
+}
+.stmts {
+  align-items: start;
+}
+.sched td.muted {
+  color: var(--ink-3);
+}
+@media (max-width: 40rem) {
+  .sched.tight .unit {
+    font-size: 0;
+  }
+  .sched.tight .unit::after {
+    content: attr(data-s);
+    font-size: 0.93rem;
+  }
+  .sched.tight tr.total .unit::after {
+    font-size: 0.975rem;
+  }
+  .sched.tight tbody th {
+    min-inline-size: 0;
+  }
+  .sched.tight td.n,
+  .sched.tight th.n {
+    padding-inline: 0.3rem;
+  }
+  .sched.tight caption {
+    font-size: 1rem;
+  }
+  .sched.tight thead th {
+    white-space: normal;
+  }
+}
+.show-sm {
+  display: none !important;
+}
+@media (max-width: 40rem) {
+  .show-sm {
+    display: block !important;
+  }
+}
+
+/* Over or under the budget: a bar to the right of the axis is spending over the budget, in the bar
+   blue; a bar to the left is budget not spent, in the estimate tint. */
+.dv {
+  display: block;
+  position: relative;
+  block-size: 0.7rem;
+  margin-block-start: 0.3rem;
+}
+.dv::before {
+  content: "";
+  position: absolute;
+  inset-block: -0.3rem;
+  inset-inline-start: 50%;
+  border-inline-start: 1px solid var(--ink-3);
+}
+.dv > span {
+  position: absolute;
+  inset-block: 0;
+}
+.dv > .over {
+  inset-inline-start: 50%;
+  background: var(--bar);
+  border-radius: 0 4px 4px 0;
+}
+.dv > .under {
+  inset-inline-end: 50%;
+  background: var(--bar-ghost);
+  border-radius: 4px 0 0 4px;
+}
+.dv-ends {
+  display: flex;
+  justify-content: space-between;
+}
+@media (forced-colors: active) {
+  .dv > span {
+    forced-color-adjust: none;
+    background: CanvasText;
+  }
+}
 .leaders.big > div {
   padding-block: 0.55rem;
   border-block-end: 1px solid var(--hair);

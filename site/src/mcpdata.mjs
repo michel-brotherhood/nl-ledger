@@ -2,7 +2,8 @@
 export function departmentsJSON(D) {
   const out = { years: [], departments: {} };
   const rows = D.q(`SELECT fiscal_year, kind, department, program_code, program, account, sum(col1) c1, sum(col2) c2, sum(col3) c3, min(page) page, source_url
-    FROM programs WHERE line_type='object' GROUP BY fiscal_year, kind, department, program_code, program, account ORDER BY program_code`);
+    FROM programs WHERE line_type='object' AND (kind='actual' OR fiscal_year > (SELECT max(fiscal_year) FROM programs WHERE kind='actual'))
+    GROUP BY fiscal_year, kind, department, program_code, program, account ORDER BY program_code`);
   for (const r of rows) {
     const dep = (out.departments[r.department] ||= {});
     const y = (dep[r.fiscal_year] ||= {

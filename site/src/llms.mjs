@@ -6,7 +6,7 @@ export function llmsTxt(D, R, TOOLS) {
   const u = SITE.url;
   return `# ${SITE.name}
 
-> ${SITE.tagline}. ${num(R.itemCount)} public spending records (provincial contract awards, minister and MHA expenses, public sector pay over $100,000, department and program spending, federal contracts, grants and transfers in the province), each linked to the government file and page or row it came from. A prototype: the figures were gathered and combined by automated scripts and have not been independently vetted.
+> ${SITE.tagline}. ${num(R.itemCount)} public spending records (provincial contract awards, minister and MHA expenses, public sector pay over $100,000, department and program spending, the budget against actual with the deficit and net debt, federal contracts, grants and transfers in the province), each linked to the government file and page or row it came from. A prototype: the figures were gathered and combined by automated scripts and have not been independently vetted.
 
 The best way for an AI assistant to use the records is the read-only MCP server at ${MCP_URL} (streamable HTTP, no authentication). Cite source_url for every figure. A flagged pattern is a question, not a finding of wrongdoing.
 
@@ -21,6 +21,7 @@ The best way for an AI assistant to use the records is the read-only MCP server 
 
 - [Search every record](${u}/search/): full-text search, filter by source, year and pattern
 - [Priorities](${u}/priorities/): provincial department and program spending, actual against estimates
+- [Budget against actual](${u}/budget/): what was budgeted and spent, by department, with the annual surplus or deficit and net debt
 - [Patterns](${u}/flags/): patterns people ask about, each with its method and caveats
 - [Members and ministers](${u}/members/): MHA allowance spending and ministers' expense claims
 - [Sources and report card](${u}/sources/): what each source covers and how well it is published
@@ -30,6 +31,7 @@ The best way for an AI assistant to use the records is the read-only MCP server 
 
 - [stats.json](${u}/data/stats.json): population, households, median wage, provincial revenue, with Statistics Canada tables
 - [departments.json](${u}/data/departments.json): department spending by program and year
+- [budget.json](${u}/data/budget.json): budgeted and spent by year and department, surplus or deficit and net debt, each with its source page
 - [members.json](${u}/data/members.json): MHA spending by member, year and category; ministers' claim totals
 - [flags.json](${u}/data/flags.json): each pattern's definition and method
 

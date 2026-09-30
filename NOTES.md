@@ -46,6 +46,15 @@ Paradise (`paradise`) and St. John's (`stjohns`) are switched off. Their fetch a
 - The first weekly run after switching on needs `NL_LEDGER_ACCEPT_CHANGES=1`, since the record count rises and the new sources appear.
 - On switching on, the D1 sync adds their search documents.
 
+## Adding a fiscal year's budget documents
+
+The budget and accounts documents are fetched from addresses listed by hand in `pipeline/fetch_provincial.py` (the province gives each file its own name): `CRF_REPORTS`, `ESTIMATES`, `BUDGET_STATEMENTS`, `PUBLIC_ACCOUNTS`.
+
+- A new budget (spring): add the year's Estimates and Statements and Schedules. The year appears on `/budget/` as a budget with no results yet, and as the estimates page under Priorities.
+- A year's results (the Report in late summer, the Public Accounts in the fall): add each address when it is published. Once both are in, that year becomes the one on the home page and `/budget/`; the year before moves to `/budget/<year>/`.
+- Run `./run.sh`, read the "Budget against actual" section of `docs/reconciliation.md`, and open the home page figures against the documents. A check that fails is either a new layout (fix the parser) or the documents disagreeing (it goes on the report card by itself).
+- The first weekly run afterwards needs no override: the guards count line items and cached files, and both only grow.
+
 ## Run the pipeline
 
 ```sh
@@ -115,7 +124,7 @@ cf deploy --dry-run            # build and checks only
 | D1: 100,000 rows written a day | 143,133 line items packed into 29,035 search documents (one per award or contract; grouped per MHA category-year and pay-list job title). Diff-based sync |
 | D1: 5 million rows read a day | Every filter is an indexed full-text token, no table scans. Search, supplier and record pages cached at the edge for an hour |
 | Workers: 10 ms CPU | Pages are rendered from small documents; supplier pages read one of 512 JSON shards |
-| Workers static assets: 20,000 files a version | 916 files: 404 static pages plus 512 shards; supplier, search, record and receipt pages are rendered on request |
+| Workers static assets: 20,000 files a version | 922 files: 410 static pages plus 512 shards; supplier, search, record and receipt pages are rendered on request |
 | Workers: 100,000 requests a day | Only search, supplier, record, receipt and `/mcp` requests count. Static asset requests are free and unlimited |
 
 ## What is verified
@@ -123,7 +132,9 @@ cf deploy --dry-run            # build and checks only
 - Totals against the sources' own printed totals (details in `docs/reconciliation.md`):
   - 224 minister reports: every report's lines add to its printed total.
   - 58,521 MHA lines: every category adds to its printed Period Activity; detail total equals the summary reports' total exactly.
-  - Program spending: 173 of 175 department totals match the summary statements (one small 2019-20 gap; one department whose detail pages the 2024-25 report prints empty).
+  - Program spending: 174 of 175 department totals match the summary statements (the one department whose detail pages the 2024-25 report prints empty). Estimates: 248 of 248 department totals match the printed Program Funding Summaries.
+  - Budget against actual, the deficit and net debt (`pipeline/parse_fiscal.py`, method on `/method/budget/`): 238 of 240 checks hold. The Report's cash statement recomputes; departments add to the statements' totals; the Original Estimates the Report reprints equal the budget's own Summary of Cash Requirements and, department by department, the Estimates as tabled; the Public Accounts' surplus or deficit and net debt recompute, and their Original Budget column equals the budget's statements. The two that fail are the province's documents disagreeing with each other (Executive Council 2020-21, Labrador Affairs 2024-25); both are on the report card.
+  - The two parsers give identical output on the weekly job's image (poppler 25.03) and on macOS (poppler 26.09), checked 2026-09-30 on all 23 documents.
   - Federal contracts: $11.89B as published, $2.63B once each contract is counted once (grouped by purchase order and cleaned vendor name across departments; an earlier grouping gave $2.83B before those two corrections).
   - Federal grants: $11.68B as published, $8.43B as 29,207 agreements. Latest amendment where a department reports running totals (the data dictionary's rule); amendments summed for the four that report changes (Indigenous Services, Crown-Indigenous Relations, Canadian Heritage, Public Health Agency), each named with its evidence in `CHANGE_REPORTING` in `pipeline/parse_federal.py`. Public Accounts payments rule out reading Indigenous Services and Crown-Indigenous Relations as totals (the reviewer's $6.0B). Reading Heritage and the Public Health Agency as totals would give $8.37B. Corrections from $8.67B and $8.51B are on `/corrections/`.
 - Supplier pages add up to the records: `site/src/shards.mjs` stops the build when the pages' records, totals or overlap differ from the database.
@@ -211,7 +222,7 @@ The NL Ledger account's first load on 2026-09-29 wrote 29,697 rows (D1's own cou
 ## AI access (/data/ and the MCP server)
 
 - Page: `site/src/pages/connect.mjs`; the client list, one-click links, starter questions and the home example answer are data in `site/src/connect.mjs`. Every client there is marked tested, seen or docs-only, with its doc link. Keep that true when adding one.
-- Server: `site/lib/mcp.mjs`. `search_records` reads one window of 40 documents ordered by total, flattens to line items and pages them 25 at a time, so "largest" questions get the largest records. `get_members` reads `/data/members.json` (built by `site/src/mcpdata.mjs`). `search` and `fetch` follow OpenAI's deep-research shape. Four MCP prompts.
+- Server: `site/lib/mcp.mjs`. `get_budget` reads `/data/budget.json` (built by `site/src/budgetdata.mjs`, the same figures the home page and `/budget/` show). `search_records` reads one window of 40 documents ordered by total, flattens to line items and pages them 25 at a time, so "largest" questions get the largest records. `get_members` reads `/data/members.json` (built by `site/src/mcpdata.mjs`). `search` and `fetch` follow OpenAI's deep-research shape. Four MCP prompts.
 - Discovery: `/server.json` (MCP registry format, schema 2025-12-11, validates), `/mcp/server-card` and `/.well-known/ai-catalog.json` (draft SEP-2127, served by the Worker), `/llms.txt`. Nothing submitted to any registry. The registry name `ca.nlledger/nl-ledger` needs HTTP proof at `/.well-known/mcp-registry-auth` when submitting.
 - Icons: `icons` on the `initialize` server info, in `server.json` and in the server card point at `/nl-ledger-icon-256.png` and `/app-icon.svg` (from `brand/svg/app-icon.svg`). ChatGPT only takes an icon when an app is created, so `/data/` offers the 256 px PNG as a download.
 - Tested 2026-09-29, before the move to nlledger.ca: Claude Code (`claude mcp add --transport http nl-ledger <address>/mcp`, then `claude -p`) and Codex CLI (`codex mcp add nl-ledger --url ...`, then `codex exec`) both connected and answered with source links. Gemini CLI added the server but was not signed in, so it did not answer.

@@ -25,8 +25,9 @@ const SOURCES = [
 ];
 
 const OTHER = [
-  ["Report on the Program Expenditures and Revenues of the Consolidated Revenue Fund, 2019-20 to 2024-25", "https://www.gov.nl.ca/exec/tbs/public-accounts/", "Department and program spending, actual against amended and original estimates.", "nl"],
-  ["Estimates of the Program Expenditure and Revenue of the Consolidated Revenue Fund, 2026-27", "https://www.gov.nl.ca/budget/2026/", "This year's budget by program.", "nl"],
+  ["Report on the Program Expenditures and Revenues of the Consolidated Revenue Fund, 2019-20 to 2024-25", "https://www.gov.nl.ca/exec/tbs/public-accounts/", "Department and program spending, actual against amended and original estimates; what departments spent against the budget.", "nl"],
+  ["Estimates of the Program Expenditure and Revenue of the Consolidated Revenue Fund, 2019-20 to 2026-27, and the budgets' Statements and Schedules from 2024-25", "https://www.gov.nl.ca/budget/", "What each year's budget gave each department and program; the budget's forecast deficit and net debt.", "nl"],
+  ["Public Accounts, Consolidated Summary Financial Statements, 2019-20 to 2024-25", "https://www.gov.nl.ca/exec/tbs/public-accounts/", "The annual surplus or deficit and net debt, audited, against the original budget.", "nl"],
   ["Statistics Canada tables 14-10-0064, 17-10-0009, 98-10-0002, 36-10-0450", "https://www150.statcan.gc.ca/", "Median wage, population, households, provincial revenue and interest.", "statcan"],
   ["Canada Revenue Agency, Form NL428", "https://www.canada.ca/en/revenue-agency.html", "Provincial income tax brackets, CPP and EI rates for the personal receipt.", "gc"],
 ];
@@ -76,12 +77,14 @@ export function info(D, R) {
   const late = D.flagSummary["late-publication"]?.items || 0;
   const bad = D.flagSummary["date-check"]?.items || 0;
   const ppaN = counts.ppa.n;
+  const estChecks = D.one("SELECT sum(ok) ok, count(*) n, count(DISTINCT fiscal_year) years FROM dept_summary WHERE kind='estimates'");
   const card = [
     { body: "Public Procurement Agency award reports", grade: [`${pct(late / ppaN, 1)} of awards reported more than 90 days after the award date`, `${num(bad)} printed award dates fall after the report or years before it`, "4 fortnights reissued as REVISED", "Open-call awards by departments are on MERX, not in these reports"] },
     { body: "Executive Council, ministers' claims", grade: ["Every report adds up to its printed total", ...(issuesBySource["Ministerial expense claims"] || []).map((i) => `${i.url.split("/").pop()}: ${i.issue}`)] },
     { body: "House of Assembly, MHA reports", grade: ["Every category adds up to its printed period activity", `${(issuesBySource["MHA expense report"] || []).length} report links lead to a web page instead of a PDF`] },
     { body: "Treasury Board Secretariat, compensation lists", grade: [`${(issuesBySource["Compensation disclosure"] || []).length} of the workbooks linked from the disclosure page return "page not found"`, "Names are withheld for police officers (identifiers only), as the Act allows"] },
-    { body: "Treasury Board Secretariat, program expenditure reports", grade: ["173 of 175 department totals match the printed statement", "The 2024-25 report prints Labrador Affairs' detail pages empty, with the text #MISSING"] },
+    { body: "Treasury Board Secretariat, program expenditure reports", grade: [`${R.reportCard.find((x) => /Department totals/.test(x.label)).value} department totals match the printed statement`, "The 2024-25 report prints Labrador Affairs' detail pages empty, with the text #MISSING", ...(issuesBySource["Program expenditure reports"] || []).map((i) => i.issue)] },
+    { body: "Department of Finance, budget Estimates", grade: [`${estChecks.ok} of ${estChecks.n} department totals match the printed Program Funding Summary, in ${estChecks.years} years of Estimates`, "One page in each of the 2025-26 and 2026-27 Estimates stores its text as glyph numbers, so a search or copy of that page returns unreadable characters"] },
     { body: "Province, small purchases", grade: ["No line-by-line payment data is published at all"] },
   ];
   out.push(["/sources/", {
@@ -129,6 +132,7 @@ export function info(D, R) {
     <li><strong>Time to earn:</strong> divided by the median full-time wage, ${money(D.stats.median_weekly_wage.value, { cents: true })} a week in ${D.stats.median_weekly_wage.year} (table ${D.stats.median_weekly_wage.table}, vector ${D.stats.median_weekly_wage.vector}) times 52, which is ${money(D.stats.median_annual_wage.value)} a year. Weeks, days and hours assume 52 working weeks of five 7.5-hour days.</li>
   </ul>
   <h2>The personal receipt</h2><p><a href="/method/receipt/">How the receipt is worked out</a>.</p>
+  <h2>Budget against actual, the deficit and net debt</h2><p><a href="/method/budget/">Which budget is set against which actual, and why the deficit comes from the Public Accounts</a>.</p>
   <h2>Federal amendments</h2><p><a href="/method/federal/">How amended federal contracts and grants are counted once</a>.</p>
   <h2>Supplier names</h2><p><a href="/method/suppliers/">How names printed different ways are matched to one supplier</a>.</p>
   <h2>Totals and checks</h2><p>Every total on this site is a sum of line items loaded from the sources. Where a source prints its own totals, the sum is compared with them; the results are on the <a href="/sources/#report-card">report card</a>.</p>

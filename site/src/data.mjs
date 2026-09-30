@@ -32,7 +32,7 @@ export function load() {
     .pop();
 
   // Department names as printed, keyed by lower-case name, per year
-  const deptSummary = q("SELECT * FROM dept_summary");
+  const deptSummary = q("SELECT * FROM dept_summary WHERE kind='actual'");
   const programs = q("SELECT * FROM programs");
   const nameFix = new Map();
   for (const p of programs) nameFix.set(p.department.toLowerCase(), p.department);

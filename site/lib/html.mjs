@@ -96,6 +96,7 @@ export function flagItem(f, { count = "", method = false } = {}) {
 // ---- layout
 const NAV = [
   ["/priorities/", "Priorities"],
+  ["/budget/", "Budget"],
   ["/search/", "Search"],
   ["/flags/", "Patterns"],
   ["/members/", "Members"],

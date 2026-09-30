@@ -20,7 +20,8 @@ process() {
                    uv run python parse_sunshine.py | tail -3
                    uv run python parse_ministers.py | tail -4
                    uv run python parse_mha.py | tail -3
-                   uv run python parse_programs.py | tail -12
+                   uv run python parse_programs.py | tail -18
+                   uv run python parse_fiscal.py | tail -6
                    uv run python parse_municipal.py
                    uv run python stats.py | tail -2
   step "build";    uv run python build.py

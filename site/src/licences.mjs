@@ -38,6 +38,10 @@ export const LICENCES = {
   },
 };
 
+// Which licence each budget and accounts document falls under (site/src/budgetdata.mjs, DOCS): all four are
+// published on gov.nl.ca under the province's copyright notice (read 2026-09-30).
+export const DOCUMENT_LICENCE = { report: "nl", estimates: "nl", statements: "nl", public_accounts: "nl" };
+
 // Which licence each line-item source (ds) falls under.
 export const SOURCE_LICENCE = {
   ppa: "nl", minister: "nl", sunshine: "nl", mha: "hoa",

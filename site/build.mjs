@@ -16,6 +16,8 @@ import { pay } from "./src/pages/pay.mjs";
 import { consulting } from "./src/pages/consulting.mjs";
 import { info } from "./src/pages/info.mjs";
 import { buildReceiptData } from "./src/receiptdata.mjs";
+import { buildBudget, budgetJSON } from "./src/budgetdata.mjs";
+import { budget } from "./src/pages/budget.mjs";
 import { buildSupplierShards } from "./src/shards.mjs";
 import { departmentsJSON, flagResultsJSON, membersJSON } from "./src/mcpdata.mjs";
 import { serverJson, TOOLS } from "./lib/mcp.mjs";
@@ -72,17 +74,20 @@ writeJSON("data/version.json", { v, data: createHash("sha1").update(readFileSync
 writeJSON("data/departments.json", departmentsJSON(D));
 writeJSON("data/flag_results.json", flagResultsJSON(D));
 writeJSON("data/members.json", membersJSON(D));
+const B = buildBudget(D);
+writeJSON("data/budget.json", budgetJSON(B));
 // Every word the search documents contain, with how many hold it: spelling help in search (lib/spell.mjs).
 // From the same docs.jsonl the D1 sync loads, so a corrected word always has records behind it.
 const docsPath = join(dirname(D_PATH), "d1", "docs.jsonl");
 if (!existsSync(docsPath)) throw new Error(`${docsPath} is missing: run the pipeline's export step (or ./dev.sh for the sample)`);
 writeJSON("data/words.json", buildVocab(readFileSync(docsPath, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l).body), words));
 
-const h = home(D, R);
+const h = home(D, R, B);
 write("/", { title: "NL government spending: every contract, expense and salary", description: desc(`Every Newfoundland and Labrador government contract, grant, expense claim and $100,000+ salary in one place. Each figure links to its source.`), body: h.body, notes: h.notes, bodyClass: "home", jsonld: siteLd() });
 
 for (const [path, page] of [
   ...priorities(D, R),
+  ...budget(D, R, B),
   ...departments(D, R),
   ...bodies(D, R),
   ...flagPages(D, R),
